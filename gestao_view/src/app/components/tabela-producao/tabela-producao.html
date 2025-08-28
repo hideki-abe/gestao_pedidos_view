@@ -1,0 +1,45 @@
+<div class="table-container">
+  <table class="production-table">
+    <thead>
+      <tr>
+        <th>Nº Pedido</th>
+        <th>Cliente</th>
+        <th>Status</th>
+        <th>Fase</th>
+        <th>Prioridade</th>
+        <th>Prazo</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Loop para exibir cada pedido -->
+      <tr *ngFor="let pedido of pedidos">
+        <td data-label="Nº Pedido">{{ pedido.numero_do_pedido }}</td>
+        <td data-label="Cliente">Cliente {{ pedido.cliente }}</td>
+        <td data-label="Status">
+          <span class="tag" [ngClass]="'status-' + pedido.status">{{ pedido.status.replace('_', ' ') }}</span>
+        </td>
+        <td data-label="Fase">
+          <span class="tag" [ngClass]="'fase-' + pedido.fase">{{ pedido.fase }}</span>
+        </td>
+        <td data-label="Prioridade">
+          <span class="tag" [ngClass]="'prioridade-' + pedido.prioridade">{{ pedido.prioridade }}</span>
+        </td>
+        <td data-label="Prazo">{{ pedido.prazo | date: 'dd/MM/yyyy' }}</td>
+        <td data-label="Ações">
+          <button class="action-button">Detalhes</button>
+        </td>
+      </tr>
+
+      <!-- Mensagem se não houver pedidos -->
+      <tr *ngIf="pedidos.length === 0 && !erroAoCarregar">
+        <td colspan="7" style="text-align: center;">Nenhum pedido encontrado.</td>
+      </tr>
+
+      <!-- Mensagem de erro -->
+      <tr *ngIf="erroAoCarregar">
+        <td colspan="7" style="text-align: center; color: red;">Ocorreu um erro ao carregar os pedidos.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

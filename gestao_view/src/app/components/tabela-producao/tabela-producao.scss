@@ -1,0 +1,134 @@
+// --- Variáveis de Cores ---
+@use 'sass:color';
+$table-bg: #fff;
+$header-bg: #f8f9fa;
+$border-color: #dee2e6;
+$text-color: #212529;
+$mobile-breakpoint: 768px;
+
+
+// Cores para os status, fases e prioridades
+$colors: (
+  "status-pendente": #ffc107,
+  "status-em_producao": #007bff,
+  "status-concluido": #28a745,
+  "status-cancelado": #dc3545,
+  "fase-inicial": #6c757d,
+  "fase-producao": #17a2b8,
+  "fase-finalizacao": #20c997,
+  "prioridade-baixa": #6c757d,
+  "prioridade-normal": #007bff,
+  "prioridade-alta": #fd7e14
+);
+
+// --- Estilos Base da Tabela ---
+.table-container {
+  width: 100%;
+  overflow-x: auto; // Garante que a tabela não quebre o layout em telas muito pequenas
+}
+
+.production-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: $table-bg;
+
+  th, td {
+    padding: 12px 15px;
+    border: 1px solid $border-color;
+    text-align: left;
+  }
+
+  thead tr {
+    background-color: $header-bg;
+    
+    th {
+      font-weight: 600;
+      color: $text-color;
+    }
+  }
+
+  tbody tr {
+    &:nth-of-type(even) {
+      background-color: #f8f9fa;
+    }
+    &:hover {
+      background-color: #f1f1f1;
+    }
+  }
+}
+
+// --- Estilos para as Tags (Status, Fase, Prioridade) ---
+.tag {
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 0.85em;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+// Gera as classes de cor dinamicamente a partir do mapa $colors
+@each $name, $color in $colors {
+  .#{$name} {
+    background-color: $color;
+  }
+}
+
+// --- Estilo do Botão de Ação ---
+.action-button {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: color.adjust(#6c757d, $lightness: -10%);
+  }
+}
+
+// --- Estilos Responsivos ---
+@media screen and (max-width: $mobile-breakpoint) {
+  .production-table {
+    border: 0;
+
+    thead {
+      display: none; // Esconde o cabeçalho da tabela
+    }
+
+    tr {
+      display: block;
+      margin-bottom: 15px;
+      border: 1px solid $border-color;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    td {
+      display: block;
+      text-align: right; // Alinha o valor à direita
+      border: none;
+      border-bottom: 1px solid #eee;
+      position: relative;
+      padding-left: 50%; // Deixa espaço para o label
+
+      // Adiciona o label (do atributo data-label) antes do conteúdo da célula
+      &::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        width: calc(50% - 30px);
+        text-align: left;
+        font-weight: bold;
+        white-space: nowrap;
+      }
+
+      &:last-child {
+        border-bottom: 0;
+      }
+    }
+  }
+}
