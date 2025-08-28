@@ -1,0 +1,142 @@
+// Variáveis para fácil customização
+$sidebar-width: 250px;
+$sidebar-width-collapsed: 80px;
+$primary-bg-color: #68b04d; // Um fundo escuro
+$secondary-bg-color: #2d3748;
+$text-color: #e2e8f0;
+$accent-color: #4299e1; // Cor de destaque para links ativos e hover
+$border-color: #4a5568;
+$transition-speed: 0.3s;
+
+.sidebar {
+  width: $sidebar-width;
+  height: 100vh; // Ocupa toda a altura da tela
+  position: fixed; // Fica fixo na tela
+  top: 0;
+  left: 0;
+  background-color: $primary-bg-color;
+  color: $text-color;
+  display: flex;
+  flex-direction: column;
+  transition: width $transition-speed ease;
+
+  // Estilo do cabeçalho (logo)
+  .sidebar-header {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid $border-color;
+
+    .logo {
+      color: $text-color;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+  }
+
+  // Lista de links de navegação
+  .nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+    flex-grow: 1; // Ocupa o espaço disponível
+
+    li {
+      a {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        color: $text-color;
+        text-decoration: none;
+        transition: background-color $transition-speed, color $transition-speed;
+
+        i { // Ícones
+          font-size: 1.2rem;
+          margin-right: 15px;
+          min-width: 25px; // Garante alinhamento
+          text-align: center;
+        }
+
+        .link-text {
+          opacity: 1;
+          transition: opacity 0.2s ease;
+        }
+
+        &:hover {
+          background-color: $secondary-bg-color;
+        }
+
+        // Estilo do link ativo
+        &.active-link {
+          background-color: $accent-color;
+          color: #fff;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  // Rodapé da barra lateral
+  .sidebar-footer {
+    padding: 20px;
+    border-top: 1px solid $border-color;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: $text-color;
+
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+        object-fit: cover;
+      }
+
+      .user-name {
+        font-size: 0.9rem;
+      }
+    }
+
+    .logout {
+      color: $text-color;
+      font-size: 1.5rem;
+      text-decoration: none;
+
+      &:hover {
+        color: $accent-color;
+      }
+    }
+  }
+
+  // Estilos para quando a barra estiver recolhida (exemplo)
+  // Você pode adicionar uma classe .collapsed ao .sidebar
+  &.collapsed {
+    width: $sidebar-width-collapsed;
+
+    .sidebar-header .logo {
+      // Esconder o texto do logo, talvez mostrar só um ícone
+    }
+
+    .link-text, .user-name {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+    
+    .nav-links li a {
+      justify-content: center;
+      padding: 15px 0;
+    }
+
+    .sidebar-footer {
+      flex-direction: column;
+      gap: 15px;
+    }
+  }
+}
