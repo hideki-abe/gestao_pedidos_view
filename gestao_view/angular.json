@@ -65,7 +65,8 @@
               "buildTarget": "gestao_view:build:production"
             },
             "development": {
-              "buildTarget": "gestao_view:build:development"
+              "buildTarget": "gestao_view:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

@@ -22,6 +22,7 @@ export class PedidoService {
         try {
           // 3. Tentamos converter o texto em JSON
           const responseObject = JSON.parse(responseText);
+          console.log(responseText);
           return responseObject.results;
         } catch (e) {
           // 4. Se a conversão falhar, lançamos um erro claro
