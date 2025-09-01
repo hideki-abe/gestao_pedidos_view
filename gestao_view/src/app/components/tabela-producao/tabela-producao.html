@@ -2,8 +2,9 @@
   <table class="production-table">
     <thead>
       <tr>
-        <th>Nº Pedido</th>
         <th>Cliente</th>
+        <th>Vendedor</th>
+        <th>N° do Pedido</th>
         <th>Status</th>
         <th>Fase</th>
         <th>Prioridade</th>
@@ -14,8 +15,9 @@
     <tbody>
       <!-- Loop para exibir cada pedido -->
       <tr *ngFor="let pedido of pedidos">
+        <td data-label="Cliente"> {{ pedido.clienteObj?.nome }}</td>
+        <td data-label="Vendedor"> {{ pedido.usuario_responsavelObj?.nome }}</td>
         <td data-label="Nº Pedido">{{ pedido.numero_do_pedido }}</td>
-        <td data-label="Cliente">Cliente {{ pedido.cliente }}</td>
         <td data-label="Status">
           <span class="tag" [ngClass]="'status-' + pedido.status">{{ pedido.status.replace('_', ' ') }}</span>
         </td>

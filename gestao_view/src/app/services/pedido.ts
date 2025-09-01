@@ -18,11 +18,9 @@ export class PedidoService {
     return this.http.get(this.apiUrl, { responseType: 'text' }).pipe(
       map(responseText => {
         // 2. Exibimos a resposta bruta no console do navegador
-        console.log('Resposta bruta da API:', responseText);
         try {
           // 3. Tentamos converter o texto em JSON
           const responseObject = JSON.parse(responseText);
-          console.log(responseText);
           return responseObject.results;
         } catch (e) {
           // 4. Se a conversão falhar, lançamos um erro claro
@@ -33,6 +31,10 @@ export class PedidoService {
       catchError(this.handleError)
     );
   }
+
+
+
+
 /* 
   getPedidoById(id: number): Observable<Pedido> {
     const url = `${this.apiUrl}/${id}`;

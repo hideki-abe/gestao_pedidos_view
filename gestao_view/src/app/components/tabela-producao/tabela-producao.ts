@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Necessário para *ngFor, pipes, etc.
 import { PedidoService } from '../../services/pedido';
 import { Pedido } from '../../interfaces/pedido';
-
+import { ClienteService } from '../../services/cliente';
+import { VendedorService } from '../../services/vendedor';
 @Component({
   selector: 'app-tabela-producao',
   standalone: true,
@@ -15,7 +16,11 @@ export class TabelaProducao implements OnInit {
   public pedidos: Pedido[] = [];
   public erroAoCarregar: boolean = false;
 
-  constructor(private pedidoService: PedidoService) {}
+  constructor(
+    private pedidoService: PedidoService, 
+    private clienteService: ClienteService, 
+    private vendedorService: VendedorService
+  ) {}
 
   ngOnInit(): void {
     console.log('Componente TabelaProdução inicializado');
@@ -27,6 +32,9 @@ export class TabelaProducao implements OnInit {
       next: (data) => {
         this.pedidos = data;
         this.erroAoCarregar = false;
+         this.relacionaCliente();
+         this.relacionaVendedor();
+         console.log("Carregando clientes: ", this.pedidos);
       },
       error: (err) => {
         console.error('Falha ao carregar pedidos da API:', err);
@@ -34,4 +42,36 @@ export class TabelaProducao implements OnInit {
       }
     });
   }
+
+  private relacionaCliente(): void {
+    this.pedidos.forEach(pedido => {
+      // Usamos o ID original para buscar o cliente
+      this.clienteService.getClienteById(pedido.cliente).subscribe({
+        next: (cliente) => {
+          // Atribuímos o objeto retornado à nova propriedade
+          pedido.clienteObj = cliente;
+        },
+        error: (err) => {
+          console.error(`Falha ao carregar cliente para o pedido ${pedido.id}:`, err);
+        }
+      });
+    });
+  }
+
+  private relacionaVendedor(): void {
+    this.pedidos.forEach(pedido => {
+      // Usamos o ID original para buscar o vendedor
+      this.vendedorService.getVendedorById(pedido.usuario_responsavel).subscribe({
+        next: (vendedor) => {
+          // Atribuímos o objeto retornado à nova propriedade
+          pedido.usuario_responsavelObj = vendedor;
+          console.log(`Vendedor ${vendedor.nome} relacionado ao pedido ${pedido.id}`);
+        },
+        error: (err) => {
+          console.error(`Falha ao carregar vendedor para o pedido ${pedido.id}:`, err);
+        }
+      });
+    });
+  }
+
 }
