@@ -8,9 +8,11 @@ export interface Pedido {
   usuario_responsavel: number;
   usuario_responsavelObj?: Vendedor;
   numero_do_pedido: string;
-  status: 'pendente' | 'em_producao' | 'concluido' | 'cancelado';
+  status: 'encaminhar' | 'producao' | 'finalizado' | 'cancelado' | 'aguardando';
+  statusDisplay?: string;
   fase: 'inicial' | 'producao' | 'finalizacao';
-  prioridade: 'baixa' | 'normal' | 'alta';
+  prioridade: 'baixa' | 'normal' | 'alta' | 'urgente';
+  prioridadeDisplay?: string;
   observacoes: string;
   prazo: string | Date;
   data_inicial: string | Date;

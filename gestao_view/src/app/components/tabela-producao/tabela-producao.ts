@@ -34,6 +34,7 @@ export class TabelaProducao implements OnInit {
         this.erroAoCarregar = false;
          this.relacionaCliente();
          this.relacionaVendedor();
+         this.formataStatusEPrioridade();
          console.log("Carregando clientes: ", this.pedidos);
       },
       error: (err) => {
@@ -50,6 +51,7 @@ export class TabelaProducao implements OnInit {
         next: (cliente) => {
           // Atribuímos o objeto retornado à nova propriedade
           pedido.clienteObj = cliente;
+          console.log(`Status do pedido: ${pedido.statusDisplay}`);
         },
         error: (err) => {
           console.error(`Falha ao carregar cliente para o pedido ${pedido.id}:`, err);
@@ -71,6 +73,51 @@ export class TabelaProducao implements OnInit {
           console.error(`Falha ao carregar vendedor para o pedido ${pedido.id}:`, err);
         }
       });
+    });
+  }
+
+  private formataStatusEPrioridade(): void {
+    this.pedidos.forEach(pedido => {
+      // Usamos um switch para mais clareza e facilidade de expansão
+      switch (pedido.status) {
+        case 'encaminhar':
+          pedido.statusDisplay = 'Pronto para Envio';
+          break;
+        case 'producao':
+          pedido.statusDisplay = 'Em Produção';
+          break;
+        case 'finalizado':
+          pedido.statusDisplay = 'Concluído';
+          break;
+        case 'aguardando':
+          pedido.statusDisplay = 'Aguardando Arquivos';
+          break;
+        case 'cancelado':
+          pedido.statusDisplay = 'Cancelado';
+          break;
+        default:
+          // Caso padrão, apenas exibe o status original capitalizado
+          pedido.statusDisplay = pedido.status;
+          break;
+      }
+
+      switch (pedido.prioridade) {
+        case 'baixa':
+          pedido.prioridadeDisplay = 'Baixa';
+          break;
+        case 'normal':
+          pedido.prioridadeDisplay = 'Normal';
+          break;
+        case 'alta':
+          pedido.prioridadeDisplay = 'Alta';
+          break;
+        case 'urgente':
+          pedido.prioridadeDisplay = 'Urgente';
+          break;
+        default:
+          pedido.prioridadeDisplay = pedido.prioridade;
+          break;
+      }
     });
   }
 
