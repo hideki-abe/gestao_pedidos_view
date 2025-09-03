@@ -3,17 +3,17 @@
 $table-bg: #fff;
 $header-bg: #f8f9fa;
 $border-color: #dee2e6;
-$text-color: #3A7CA5;
+$text-color: #000000;
 $mobile-breakpoint: 768px;
 
 
 $colors: (
   // --- Status ---
-  "status-producao": #a7c7e7,      // Azul Céu
-  "status-finalizado": #c1e1c1,    // Verde Menta
-  "status-aguardando": #fdfd96,    // Amarelo Pastel
-  "status-encaminhar": #b2dfdb,    // Ciano Suave
-  "status-cancelado": #ffb6c1,     // Rosa Claro
+  "status-producao": #E3F2FD,      // Azul Céu
+  "status-finalizado": #E6F4EA,    // Verde Menta
+  "status-aguardando": #F1F3F4,    // Amarelo Pastel
+  "status-encaminhar": #FFF8E1,    // Ciano Suave
+  "status-cancelado": #FCE8E6,     // Rosa Claro
 
   // --- Fases ---
   "fase-inicial": #e9ecef,         // Cinza Claro
@@ -21,11 +21,12 @@ $colors: (
   "fase-finalizacao": #c1e1c1,     // Verde Menta
 
   // --- Prioridades ---
-  "prioridade-baixa": #e9ecef,      // Cinza Claro
-  "prioridade-normal": #a7c7e7,     // Azul Céu
-  "prioridade-alta": #ffdac1,       // Pêssego
-  "prioridade-urgente": #ffb6c1      // Rosa Claro
+  "prioridade-baixa": #F1F3F4,      // Cinza Claro
+  "prioridade-normal": #E3F2FD,     // Azul Céu
+  "prioridade-alta": #FFF8E1,       // Pêssego
+  "prioridade-urgente": #FCE8E6      // Rosa Claro
 );
+
 // --- Estilos Base da Tabela ---
 .table-container {
   width: 100%;
@@ -57,7 +58,7 @@ $colors: (
   }
 
   tbody tr {
-    border-bottom: 1px solid $border-color;
+    border-bottom: 1px solid $border-color; 
 
     &:nth-of-type(even) {
       background-color: #fff;
@@ -90,6 +91,7 @@ $colors: (
 @each $name, $color in $colors {
   .#{$name} {
     background-color: $color;
+    color: color.adjust($color, $lightness: -60%);
   }
 }
 
