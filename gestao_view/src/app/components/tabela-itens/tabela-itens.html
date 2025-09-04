@@ -1,7 +1,7 @@
 <div class="itens-container">
   <!-- Cabeçalho com Título e Parâmetros -->
   <header class="itens-header">
-    <h2 class="header-title">Itens do pedido</h2>
+    <h2 class="header-title">Itens do pedido {{ pedido.numero_do_pedido }}</h2>
     <div class="header-parameters">
       <!-- Exemplo de Parâmetros/Filtros 
       <input type="text" placeholder="Buscar por nome..." class="search-input">
@@ -15,7 +15,11 @@
       -->
       <div class="client-info">
         <span class="client-label">Contato:</span>
-        <span class="client-name">{{ pedido.clienteObj?.contato }}</span>
+        <span class="client-contato">{{ pedido.clienteObj?.contato }}</span>
+      </div>
+      <div class="pedido-date">
+        <span class="pedido-label">Data do pedido:</span>
+        <span class="pedido-data">{{ pedido.created_at | date: 'dd/MM/yy HH:mm' }}</span>
       </div>
     </div>
   </header>

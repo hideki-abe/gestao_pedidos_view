@@ -110,7 +110,10 @@ $mobile-breakpoint: 768px;
 
 // --- Tags e Botões de Ação ---
 .tag {
+  display: flex;
+  justify-content: center;
   padding: 4px 8px;
+  width: 100px;
   border-radius: 4px;
   font-size: 0.85em;
   font-weight: 600;
