@@ -1,9 +1,9 @@
 export interface Item {
   id: number;
   nome: string;
-  tipo: string; // Ex: 'vidro', 'perfil', 'acessorio'
+  tipo: string; 
   descricao: string;
-  fase: string; // Ex: 'inicial', 'corte', 'montagem'
+  fase: string; 
   quantidade: number;
   medida_1: string;
   medida_2: string;

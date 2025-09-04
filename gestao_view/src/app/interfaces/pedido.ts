@@ -8,6 +8,7 @@ export interface Pedido {
   usuario_responsavel: number;
   usuario_responsavelObj?: Vendedor;
   numero_do_pedido: string;
+  contato: string;
   status: 'encaminhar' | 'producao' | 'finalizado' | 'cancelado' | 'aguardando';
   statusDisplay?: string;
   fase: 'inicial' | 'producao' | 'finalizacao';

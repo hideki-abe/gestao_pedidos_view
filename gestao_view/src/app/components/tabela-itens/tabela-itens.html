@@ -1,0 +1,62 @@
+<div class="itens-container">
+  <!-- Cabeçalho com Título e Parâmetros -->
+  <header class="itens-header">
+    <h2 class="header-title">Itens do pedido</h2>
+    <div class="header-parameters">
+      <!-- Exemplo de Parâmetros/Filtros 
+      <input type="text" placeholder="Buscar por nome..." class="search-input">
+      <select class="filter-select">
+        <option value="">Todos os Tipos</option>
+        <option value="vidro">Vidro</option>
+        <option value="perfil">Perfil</option>
+        <option value="acessorio">Acessório</option>
+      </select>
+      <button class="btn-add-item">Adicionar Item</button>
+      -->
+      <div class="client-info">
+        <span class="client-label">Contato:</span>
+        <span class="client-name">{{ pedido.clienteObj?.contato }}</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Container da Tabela para Responsividade -->
+  <div class="table-responsive-container">
+    <table class="itens-table">
+      <thead>
+        <tr>
+          <th>Nome do Item</th>
+          <th>Tipo</th>
+          <th>Quantidade</th>
+          <th>Medida 1</th>
+          <th>Medida 2</th>
+          <th>Furo</th>
+          <th>Fase</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Exemplo de como seria o loop com dados reais -->
+        <tr *ngFor="let item of itens">
+          <td data-label="Nome">{{ item.nome }}</td>
+          <td data-label="Tipo">{{ item.tipo }}</td>
+          <td data-label="Quantidade">{{ item.quantidade }}</td>
+          <td data-label="Medida 1">{{ item.medida_1 }}</td>
+          <td data-label="Medida 2">{{ item.medida_2 }}</td>
+          <td data-label="Furo">{{ item.furo}}</td>
+          <td data-label="Fase">
+            <span [class]="'tag fase-' + item.fase">{{ item.fase }}</span>
+          </td>
+          <td data-label="Ações">
+            <button class="action-button">Editar</button>
+          </td>
+        </tr>
+
+        <!-- Mensagem para quando não houver itens -->
+        <tr *ngIf="!itens || itens.length === 0">
+          <td colspan="6" class="no-items-message">Nenhum item encontrado.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

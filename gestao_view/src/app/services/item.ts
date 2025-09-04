@@ -9,7 +9,7 @@ import { Item } from '../interfaces/item';
 })
 export class ItemService {
 
-  private apiUrl = '/api/itens/';
+  private apiUrl = '/api/pedidos/';
 
   constructor(private http: HttpClient) { }
 
@@ -26,6 +26,14 @@ export class ItemService {
       }),
       catchError(this.handleError)
     );
+  }
+
+  getItensDoPedido(pedidoId: number): Observable<Item[]> {
+    const url = `${this.apiUrl}${pedidoId}/itens/`;
+
+    return this.http.get<Item[]>(url).pipe(
+      catchError(this.handleError)
+    );  
   }
 
   private handleError(error: HttpErrorResponse) {

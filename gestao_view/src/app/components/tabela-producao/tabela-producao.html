@@ -13,21 +13,31 @@
     </thead>
     <tbody>
       <!-- Loop para exibir cada pedido -->
-      <tr *ngFor="let pedido of pedidos">
-        <td data-label="Cliente"> {{ pedido.clienteObj?.nome }}</td>
-        <td data-label="Vendedor"> {{ pedido.usuario_responsavelObj?.nome }}</td>
-        <td data-label="Nº Pedido">{{ pedido.numero_do_pedido }}</td>
-        <td data-label="Status">
-          <span class="tag" [class]="'status-' + pedido.status">{{ pedido.statusDisplay }}</span>
-        </td>
-        <td data-label="Prioridade">
-          <span class="tag" [class]="'prioridade-' + pedido.prioridade">{{ pedido.prioridadeDisplay }}</span>
-        </td>
-        <td data-label="Prazo">{{ pedido.prazo | date: 'dd/MM/yy HH:mm' }}</td>
-        <td data-label="Ações">
-          <button class="action-button">+</button>
-        </td>
-      </tr>
+      <ng-container *ngFor="let pedido of pedidos">
+        <!-- Linha 1: Dados do Pedido (não tem mais o *ngFor) -->
+        <tr>
+          <td data-label="Cliente"> {{ pedido.clienteObj?.nome }}</td>
+          <td data-label="Vendedor"> {{ pedido.usuario_responsavelObj?.nome }}</td>
+          <td data-label="Nº Pedido">{{ pedido.numero_do_pedido }}</td>
+          <td data-label="Status">
+            <span class="tag" [class]="'status-' + pedido.status">{{ pedido.statusDisplay }}</span>
+          </td>
+          <td data-label="Prioridade">
+            <span class="tag" [class]="'prioridade-' + pedido.prioridade">{{ pedido.prioridadeDisplay }}</span>
+          </td>
+          <td data-label="Prazo">{{ pedido.prazo | date: 'dd/MM/yy HH:mm' }}</td>
+          <td data-label="Ações">
+            <button class="action-button" (click)="toggleItens(pedido.id)">+</button>
+          </td>
+        </tr>
+
+        <!-- Linha 2: Tabela de Itens (agora está DENTRO do loop e no escopo correto) -->
+        <tr *ngIf="pedidoSelecionadoId === pedido.id" class="itens-row">
+          <td colspan="7">
+            <app-tabela-itens [pedido]="pedido" ></app-tabela-itens>
+          </td>
+        </tr>
+      </ng-container>
 
       <!-- Mensagem se não houver pedidos -->
       <tr *ngIf="pedidos.length === 0 && !erroAoCarregar">

@@ -4,10 +4,11 @@ import { PedidoService } from '../../services/pedido';
 import { Pedido } from '../../interfaces/pedido';
 import { ClienteService } from '../../services/cliente';
 import { VendedorService } from '../../services/vendedor';
+import { TabelaItens } from "../tabela-itens/tabela-itens";
 @Component({
   selector: 'app-tabela-producao',
   standalone: true,
-  imports: [CommonModule], // Adicionado CommonModule
+  imports: [CommonModule, TabelaItens], // Adicionado CommonModule
   templateUrl: './tabela-producao.html',
   styleUrl: './tabela-producao.scss'
 })
@@ -15,6 +16,7 @@ export class TabelaProducao implements OnInit {
 
   public pedidos: Pedido[] = [];
   public erroAoCarregar: boolean = false;
+  public pedidoSelecionadoId: number | null = null;
 
   constructor(
     private pedidoService: PedidoService, 
@@ -35,7 +37,7 @@ export class TabelaProducao implements OnInit {
          this.relacionaCliente();
          this.relacionaVendedor();
          this.formataStatusEPrioridade();
-         console.log("Carregando clientes: ", this.pedidos);
+         //console.log("Carregando clientes: ", this.pedidos);
       },
       error: (err) => {
         console.error('Falha ao carregar pedidos da API:', err);
@@ -51,7 +53,7 @@ export class TabelaProducao implements OnInit {
         next: (cliente) => {
           // Atribuímos o objeto retornado à nova propriedade
           pedido.clienteObj = cliente;
-          console.log(`Status do pedido: ${pedido.statusDisplay}`);
+          //console.log(`Status do pedido: ${pedido.statusDisplay}`);
         },
         error: (err) => {
           console.error(`Falha ao carregar cliente para o pedido ${pedido.id}:`, err);
@@ -67,7 +69,7 @@ export class TabelaProducao implements OnInit {
         next: (vendedor) => {
           // Atribuímos o objeto retornado à nova propriedade
           pedido.usuario_responsavelObj = vendedor;
-          console.log(`Vendedor ${vendedor.nome} relacionado ao pedido ${pedido.id}`);
+          //console.log(`Vendedor ${vendedor.nome} relacionado ao pedido ${pedido.id}`);
         },
         error: (err) => {
           console.error(`Falha ao carregar vendedor para o pedido ${pedido.id}:`, err);
@@ -81,7 +83,7 @@ export class TabelaProducao implements OnInit {
       // Usamos um switch para mais clareza e facilidade de expansão
       switch (pedido.status) {
         case 'encaminhar':
-          pedido.statusDisplay = 'Pronto para Envio';
+          pedido.statusDisplay = 'Pronto para Encaminhar';
           break;
         case 'producao':
           pedido.statusDisplay = 'Em Produção';
@@ -119,6 +121,16 @@ export class TabelaProducao implements OnInit {
           break;
       }
     });
+  }
+
+    public toggleItens(pedidoId: number): void {
+    // Se o mesmo pedido for clicado novamente, esconde a tabela de itens.
+    if (this.pedidoSelecionadoId === pedidoId) {
+      this.pedidoSelecionadoId = null;
+    } else {
+      // Se for um novo pedido, mostra a tabela de itens para ele.
+      this.pedidoSelecionadoId = pedidoId;
+    }
   }
 
 }
