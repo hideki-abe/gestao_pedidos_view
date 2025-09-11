@@ -19,7 +19,7 @@ export class TabelaItens implements OnChanges{
   public erroAoCarregar: boolean = false;
 
   constructor(private itemService: ItemService) {
-    console.log("Componente TabelaItens carregado");
+    console.log("Componente TabelaItens carregado, fase atual: ");
   }
 
   ngOnChanges(changes: SimpleChanges): void {

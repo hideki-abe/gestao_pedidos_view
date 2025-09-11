@@ -3,7 +3,8 @@ export interface Item {
   nome: string;
   tipo: string; 
   descricao: string;
-  fase: string; 
+  fase_atual: string; 
+  fase_atual_nome: string;
   quantidade: number;
   medida_1: string;
   medida_2: string;
