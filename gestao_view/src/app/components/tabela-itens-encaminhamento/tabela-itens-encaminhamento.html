@@ -23,8 +23,7 @@
           <th>Medida 1</th>
           <th>Medida 2</th>
           <th>Furo</th>
-          <th>Fase</th>
-          <th>Concluir Item</th>
+          <th>Fluxo</th>
           <th>Ações</th>
         </tr>
       </thead>
@@ -36,7 +35,7 @@
           <td data-label="Medida 1">{{ item.medida_1 }}</td>
           <td data-label="Medida 2">{{ item.medida_2 }}</td>
           <td data-label="Furo">{{ item.furo}}</td>
-          <td data-label="Fase">
+          <td data-label="Fluxo">
             <span [class]="'tag fase-' + item.fase_atual_nome">{{ item.fase_atual_nome }}</span>
           </td>
           <td data-label="Concluir">

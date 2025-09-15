@@ -1,0 +1,55 @@
+<div class="table-container">
+  <div>
+      <input type="text" placeholder="Buscar por nome..." class="search-input">
+      <select class="filter-select">
+        <option value="">Todos os Tipos</option>
+        <option value="vidro">Vidro</option>
+        <option value="perfil">Perfil</option>
+        <option value="acessorio">Acessório</option>
+      </select>
+      <button class="btn-add-item">Adicionar Item</button>
+  </div>
+  <table class="production-table">
+    <thead>
+      <tr>
+        <th>Cliente</th>
+        <th>Vendedor</th>
+        <th>N° do Pedido</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let pedido of pedidos">
+        <tr>
+          <td data-label="Cliente"> {{ pedido.clienteObj?.nome }}</td>
+          <td data-label="Vendedor"> {{ pedido.usuario_responsavelObj?.nome }}</td>
+          <td data-label="Nº Pedido">{{ pedido.numero_do_pedido }}</td>
+          <td data-label="Status">
+            <span class="tag" [class]="'status-' + pedido.status">{{ pedido.statusDisplay }}</span>
+          </td>
+          <td data-label="Ações">
+            <button class="action-button" (click)="toggleItens(pedido.id)">+</button>
+          </td>
+        </tr>
+
+        <!-- Linha 2: Tabela de Itens (agora está DENTRO do loop e no escopo correto) -->
+        <tr *ngIf="pedidoSelecionadoId === pedido.id" class="itens-row">
+          <td colspan="7">
+            <app-tabela-itens-encaminhamento [pedido]="pedido" ></app-tabela-itens-encaminhamento>
+          </td>
+        </tr>
+      </ng-container>
+
+      <!-- Mensagem se não houver pedidos -->
+      <tr *ngIf="pedidos.length === 0 && !erroAoCarregar">
+        <td colspan="7" style="text-align: center;">Nenhum pedido encontrado.</td>
+      </tr>
+
+      <!-- Mensagem de erro -->
+      <tr *ngIf="erroAoCarregar">
+        <td colspan="7" style="text-align: center; color: red;">Ocorreu um erro ao carregar os pedidos.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
