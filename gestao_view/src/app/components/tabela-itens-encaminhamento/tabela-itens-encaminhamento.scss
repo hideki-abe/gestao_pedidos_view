@@ -141,6 +141,40 @@ $mobile-breakpoint: 768px;
   }
 }
 
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+
+  // Adiciona um ícone de seta para o dropdown
+  &::after {
+    content: '▼';
+    font-size: 0.6em;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; // Permite clicar através do ícone
+    color: inherit; // Herda a cor do texto da tag
+  }
+}
+
+// Estilo para o dropdown
+.fluxo-select {
+  // Remove a aparência padrão do navegador
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  // Herda os estilos da sua classe .tag
+  @extend .tag; 
+  
+  padding-right: 30px; // Espaço para a seta
+  cursor: pointer;
+  border: none; // Remove a borda padrão do select
+  width: 100%; // Ocupa todo o espaço da célula
+}
+
+
 // --- Responsividade ---
 @media (max-width: $mobile-breakpoint) {
   .itens-table {

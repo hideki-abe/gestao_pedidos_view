@@ -31,7 +31,7 @@
       <tbody>
         <tr *ngFor="let item of itens">
           <td data-label="Nome">{{ item.nome }}</td>
-          <td data-label="Tipo">{{ item.tipo }}</td>
+          <td data-label="Tipo">{{ item.fluxo_nome | slice:0:3 }}</td>
           <td data-label="Quantidade">{{ item.quantidade }}</td>
           <td data-label="Medida 1">{{ item.medida_1 }}</td>
           <td data-label="Medida 2">{{ item.medida_2 }}</td>

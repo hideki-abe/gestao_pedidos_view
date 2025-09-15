@@ -24,7 +24,7 @@
           <th>Medida 2</th>
           <th>Furo</th>
           <th>Fluxo</th>
-          <th>Ações</th>
+          <th>Arquivo</th>
         </tr>
       </thead>
       <tbody>
@@ -36,13 +36,35 @@
           <td data-label="Medida 2">{{ item.medida_2 }}</td>
           <td data-label="Furo">{{ item.furo}}</td>
           <td data-label="Fluxo">
-            <span [class]="'tag fase-' + item.fase_atual_nome">{{ item.fase_atual_nome }}</span>
+            <div class="select-wrapper">
+              <select 
+                class="fluxo-select" 
+                [class]="'tag fase-' + item.fase_atual_nome"
+                [ngModel]="item.fase_atual" 
+                (ngModelChange)="onFaseChange(item, $event)">
+                
+                <!-- 
+                <option *ngFor="let fase of item.fluxo_de_trabalho.fases" [value]="fase.id">
+                  {{ fase.nome }}
+                </option>
+                -->
+                <option [ngValue]="null" disabled selected>
+                  Selecionar Fluxo
+                </option>
+                <option>
+                  Opção 1
+                </option>
+                <option>
+                  Opção 2
+                </option>
+                <option>
+                  Opção 3
+                </option>
+              </select>
+            </div>
           </td>
           <td data-label="Concluir">
-            <button class="action-button">Concluir Fase</button>
-          </td>
-          <td data-label="Ações">
-            <button class="action-button">Editar</button>
+            <button class="action-button">Carregar Arquivo</button>
           </td>
         </tr>
         

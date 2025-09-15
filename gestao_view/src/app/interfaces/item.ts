@@ -3,6 +3,8 @@ export interface Item {
   nome: string;
   tipo: string; 
   descricao: string;
+  fluxo_nome: string;
+  fluxo_sequencia: string
   fase_atual: string; 
   fase_atual_nome: string;
   quantidade: number;
