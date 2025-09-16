@@ -30,7 +30,7 @@ export class TabelaProducao implements OnInit {
   }
 
   private carregarPedidos(): void {
-    this.pedidoService.getPedidos().subscribe({
+    this.pedidoService.getPedidosEmProducao().subscribe({
       next: (data) => {
         this.pedidos = data;
         this.erroAoCarregar = false;

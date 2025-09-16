@@ -8,6 +8,7 @@ import { FluxoService } from '../../services/fluxo';
 import { Fluxo } from '../../interfaces/fluxo';
 import { Fase } from '../../interfaces/fase';
 import { FaseService } from '../../services/fase';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-tabela-itens-encaminhamento',
@@ -35,52 +36,81 @@ export class TabelaItensEncaminhamento implements OnChanges{
 
   ngOnChanges(changes: SimpleChanges): void {
     if(changes['pedido'] && changes['pedido'].currentValue) {
-      this.carregarItensDoPedido(this.pedido.id); 
-      this.carregarFluxos();
-      this.carregarFases();
+      this.carregarDadosIniciais();
     }
   }
 
-  private carregarItensDoPedido(id: number): void {
-    this.itemService.getItensDoPedido(id).subscribe({
-      next: (data) => {
-        this.itens = data;
-        this.erroAoCarregar = false;
-        console.log(this.fases);
+  private carregarDadosIniciais(): void {
+    this.erroAoCarregar = false;
+
+    // forkJoin espera todas as chamadas de API terminarem
+    forkJoin({
+      itens: this.itemService.getItensDoPedido(this.pedido.id),
+      fluxos: this.fluxoService.getFluxos(),
+      fases: this.faseService.getFases() // Descomente se precisar das fases
+    }).subscribe({
+      next: (resultados) => {
+        // Neste ponto, AMBOS os dados chegaram
+        this.itens = resultados.itens;
+        this.fluxos = resultados.fluxos;
+        this.fases = resultados.fases;
+
+        console.log("DADOS BRUTOS RECEBIDOS DA API:");
+        console.log("Fluxos:", JSON.stringify(this.fluxos, null, 2));
+        console.log("Fases:", JSON.stringify(this.fases, null, 2));
+        console.log("---------------------------------");
+
+        // Agora é o momento seguro para relacionar os dados
+        this.relacionaFluxoComTipo();
       },
       error: (err) => {
-        console.error('Falha ao carregar itens da API:', err);
+        console.error('Falha ao carregar dados iniciais:', err);
         this.erroAoCarregar = true;
       }
     });
   }
 
-  private carregarFluxos(): void {
-    this.fluxoService.getFluxos().subscribe({
-      next: (data) => {
-        this.fluxos = data;
-        this.erroAoCarregar = false;
-      },
-      error: (err) => {
-        console.error('Falha ao carregar itens da API:', err);
-        this.erroAoCarregar = true;
+  private relacionaFluxoComTipo() {
+    const regexCH = /^CH.*/;
+    const regexCT = /^CT.*/;
+    const regexCR = /^CR.*/;
+    const regexDI = /^DI.*/;
+
+    for (const item of this.itens) {
+      let fluxoEncontrado: Fluxo | undefined;
+
+      if(item.tipo == 'CH'){
+        fluxoEncontrado = this.fluxos.find(fluxo => regexCH.test(fluxo.nome));
+      } 
+      else if(item.tipo == 'CT'){
+        fluxoEncontrado = this.fluxos.find(fluxo => regexCT.test(fluxo.nome));
       }
-    });
+      else if(item.tipo == 'CR'){
+        fluxoEncontrado = this.fluxos.find(fluxo => regexCR.test(fluxo.nome));
+      }
+      else if(item.tipo == 'DI'){
+        fluxoEncontrado = this.fluxos.find(fluxo => regexDI.test(fluxo.nome));
+      }
+
+      if (fluxoEncontrado) {
+        console.log(`Para o item '${item.nome}' (tipo ${item.tipo}), o fluxo encontrado foi '${fluxoEncontrado.nome}' (ID: ${fluxoEncontrado.id}).`);
+
+        // Filtra TODAS as fases que pertencem ao fluxo encontrado
+        const fasesDoFluxo = this.fases.filter(fase => fase.fluxo_id === fluxoEncontrado!.id);
+        
+        // Atribui o array de fases filtradas a uma nova propriedade no item
+        // (Você precisará adicionar 'fluxo_sequencia: Fase[]' à sua interface Item)
+        item.fluxo_sequencia = fasesDoFluxo;
+
+        console.log(`Para o item '${item.nome}', foram encontradas ${fasesDoFluxo.length} fases. ${item.fluxo_sequencia[1]} fases atribuídas.`);
+      } else {
+        // Se nenhum fluxo for encontrado, atribui um array vazio para evitar erros
+        item.fluxo_sequencia = [];
+        console.warn(`Nenhum fluxo correspondente encontrado para o item '${item.nome}' (tipo: ${item.tipo}).`);
+      }
+    }
   }
 
-  private carregarFases(): void {
-    this.faseService.getFases().subscribe({
-      next: (data) => {
-        this.fases = data;
-        this.erroAoCarregar = false;
-        console.log(this.faseService.getFases());
-      },
-      error: (err) => {
-        console.error('Falha ao carregar itens da API:', err);
-        this.erroAoCarregar = true;
-      }
-    });
-  }
 
   private atribuiFluxo() {
     for (const item of this.itens) {

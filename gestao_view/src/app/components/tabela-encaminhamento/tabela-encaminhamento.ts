@@ -31,7 +31,7 @@ export class TabelaEncaminhamento implements OnInit {
   }
 
   private carregarPedidos(): void {
-    this.pedidoService.getPedidos().subscribe({
+    this.pedidoService.getPedidosPendentes().subscribe({
       next: (data) => {
         this.pedidos = data;
         this.erroAoCarregar = false;
@@ -49,12 +49,9 @@ export class TabelaEncaminhamento implements OnInit {
 
   private relacionaCliente(): void {
     this.pedidos.forEach(pedido => {
-      // Usamos o ID original para buscar o cliente
       this.clienteService.getClienteById(pedido.cliente).subscribe({
         next: (cliente) => {
-          // Atribuímos o objeto retornado à nova propriedade
           pedido.clienteObj = cliente;
-          //console.log(`Status do pedido: ${pedido.statusDisplay}`);
         },
         error: (err) => {
           console.error(`Falha ao carregar cliente para o pedido ${pedido.id}:`, err);
@@ -81,7 +78,6 @@ export class TabelaEncaminhamento implements OnInit {
 
   private formataStatusEPrioridade(): void {
     this.pedidos.forEach(pedido => {
-      // Usamos um switch para mais clareza e facilidade de expansão
       switch (pedido.status) {
         case 'encaminhar':
           pedido.statusDisplay = 'Pronto para Encaminhar';
@@ -99,7 +95,6 @@ export class TabelaEncaminhamento implements OnInit {
           pedido.statusDisplay = 'Cancelado';
           break;
         default:
-          // Caso padrão, apenas exibe o status original capitalizado
           pedido.statusDisplay = pedido.status;
           break;
       }
@@ -125,11 +120,9 @@ export class TabelaEncaminhamento implements OnInit {
   }
 
     public toggleItens(pedidoId: number): void {
-    // Se o mesmo pedido for clicado novamente, esconde a tabela de itens.
     if (this.pedidoSelecionadoId === pedidoId) {
       this.pedidoSelecionadoId = null;
     } else {
-      // Se for um novo pedido, mostra a tabela de itens para ele.
       this.pedidoSelecionadoId = pedidoId;
     }
   }

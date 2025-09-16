@@ -32,6 +32,36 @@ export class PedidoService {
     );
   }
 
+  getPedidosEmProducao(): Observable<Pedido[]> {
+    return this.http.get(this.apiUrl + '?status=producao', { responseType: 'text' }).pipe(
+      map(responseText => {
+        try {
+          const responseObject = JSON.parse(responseText);
+          return responseObject.results;
+        } catch (e) {
+          console.error('Falha ao converter a resposta para JSON.', e);
+          throw new Error('A resposta da API não é um JSON válido.');
+        }
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  getPedidosPendentes(): Observable<Pedido[]> {
+    return this.http.get(this.apiUrl + '?status=encaminhar&status=aguardando', { responseType: 'text' }).pipe(
+      map(responseText => {
+        try {
+          const responseObject = JSON.parse(responseText);
+          return responseObject.results;
+        } catch (e) {
+          console.error('Falha ao converter a resposta para JSON.', e);
+          throw new Error('A resposta da API não é um JSON válido.');
+        }
+      }),
+      catchError(this.handleError)
+    );
+  }
+
   getPedidoById(id: number): Observable<Pedido> {
     const url = `${this.apiUrl}/${id}`;
     return this.http.get<Pedido>(url).pipe(

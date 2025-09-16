@@ -1,10 +1,12 @@
+import { Fase } from "./fase";
+
 export interface Item {
   id: number;
   nome: string;
   tipo: string; 
   descricao: string;
   fluxo_nome: string;
-  fluxo_sequencia: string
+  fluxo_sequencia: Fase[];
   fase_atual: string; 
   fase_atual_nome: string;
   quantidade: number;
