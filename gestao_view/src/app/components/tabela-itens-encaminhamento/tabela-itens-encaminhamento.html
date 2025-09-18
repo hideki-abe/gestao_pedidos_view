@@ -42,24 +42,13 @@
                 [class]="'tag fase-' + item.fase_atual_nome"
                 [ngModel]="item.fase_atual" 
                 (ngModelChange)="onFaseChange(item, $event)">
-                
-                <!-- 
-                <option *ngFor="let fase of item.fluxo_de_trabalho.fases" [value]="fase.id">
-                  {{ fase.nome }}
-                </option>
-                -->
                 <option [ngValue]="null" disabled selected>
                   Selecionar Fluxo
                 </option>
-                <option>
-                  Opção 1
+                <option *ngFor="let fluxo of item.fluxos_disponiveis" [value]="fluxo.id">
+                  {{ fluxo.descricao }}
                 </option>
-                <option>
-                  Opção 2
-                </option>
-                <option>
-                  Opção 3
-                </option>
+
               </select>
             </div>
           </td>

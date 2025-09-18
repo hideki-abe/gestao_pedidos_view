@@ -21,17 +21,8 @@ export class FluxoService {
     }
 
     getFluxos(): Observable<Fluxo[]> {
-        return this.http.get(this.apiUrl, { responseType: 'text' }).pipe(
-        map(responseText => {
-            try {
-            const responseObject = JSON.parse(responseText);
-            return responseObject.results;
-            } catch (e) {
-            console.error('Falha ao converter a resposta para JSON.', e);
-            throw new Error('A resposta da API não é um JSON válido.');
-            }
-        }),
-        catchError(this.handleError)
+        return this.http.get<Fluxo[]>(this.apiUrl).pipe(
+            catchError(this.handleError)
         );
     }
 

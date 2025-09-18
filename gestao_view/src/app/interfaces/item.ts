@@ -1,12 +1,13 @@
 import { Fase } from "./fase";
-
+import { Fluxo } from  "./fluxo";
 export interface Item {
   id: number;
   nome: string;
   tipo: string; 
   descricao: string;
   fluxo_nome: string;
-  fluxo_sequencia: Fase[];
+  fluxo_sequencia?: Fase[];
+  fluxos_disponiveis?: Fluxo[];
   fase_atual: string; 
   fase_atual_nome: string;
   quantidade: number;

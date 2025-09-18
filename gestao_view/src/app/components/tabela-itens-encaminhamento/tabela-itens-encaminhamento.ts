@@ -51,17 +51,19 @@ export class TabelaItensEncaminhamento implements OnChanges{
     }).subscribe({
       next: (resultados) => {
         // Neste ponto, AMBOS os dados chegaram
-        this.itens = resultados.itens;
-        this.fluxos = resultados.fluxos;
-        this.fases = resultados.fases;
-
-        console.log("DADOS BRUTOS RECEBIDOS DA API:");
+        this.itens = resultados.itens || [];
+        this.fluxos = resultados.fluxos || [];
+        this.fases = resultados.fases || [];
+        
+     
+        //console.log("DADOS BRUTOS RECEBIDOS DA API:");
         console.log("Fluxos:", JSON.stringify(this.fluxos, null, 2));
-        console.log("Fases:", JSON.stringify(this.fases, null, 2));
-        console.log("---------------------------------");
+        //console.log("Fases:", JSON.stringify(this.fases, null, 2));
+        //console.log("---------------------------------");
 
-        // Agora é o momento seguro para relacionar os dados
+
         this.relacionaFluxoComTipo();
+        //this.atribuiFluxo();
       },
       error: (err) => {
         console.error('Falha ao carregar dados iniciais:', err);
@@ -71,42 +73,55 @@ export class TabelaItensEncaminhamento implements OnChanges{
   }
 
   private relacionaFluxoComTipo() {
-    const regexCH = /^CH.*/;
-    const regexCT = /^CT.*/;
-    const regexCR = /^CR.*/;
-    const regexDI = /^DI.*/;
+
+    const tipoParaRegexMap = new Map<string, RegExp>([
+      ['BR', /^BR.*/],
+      ['CH', /^CH.*/],
+      ['CT', /^CT.*/],
+      ['CR', /^CR.*/],
+      ['DI', /^DI.*/],
+      ['CP', /^CP.*/],
+      ['AN', /^AN.*/],
+      ['MD', /^MD.*/],
+      ['DS', /^DS.*/],
+      ['CL', /^CL.*/], // Corresponde a CL-G, CL-L, CL-LE
+      ['EN', /^EN.*/],
+      ['DN', /^DN.*/], // Corresponde a DN-G, DN-F
+      ['DE', /^DE.*/], // Corresponde a DE-G, DE
+      ['CN', /^CN.*/],
+      ['PA', /^PA.*/], // Corresponde a PA, PA-D
+      ['LR', /^LR.*/],
+      ['LD', /^LD.*/],
+      ['LM', /^LM.*/],
+      ['DL', /^DL.*/],
+      ['LC', /^LC.*/], // Corresponde a LC, LC-E, LCO
+      ['LE', /^LE.*/],
+      ['LN', /^LN.*/],
+      ['LA', /^LA.*/],
+      ['LDE', /^LDE.*/],
+      ['LCO', /^LCO.*/]
+    ]);
 
     for (const item of this.itens) {
-      let fluxoEncontrado: Fluxo | undefined;
 
-      if(item.tipo == 'CH'){
-        fluxoEncontrado = this.fluxos.find(fluxo => regexCH.test(fluxo.nome));
-      } 
-      else if(item.tipo == 'CT'){
-        fluxoEncontrado = this.fluxos.find(fluxo => regexCT.test(fluxo.nome));
-      }
-      else if(item.tipo == 'CR'){
-        fluxoEncontrado = this.fluxos.find(fluxo => regexCR.test(fluxo.nome));
-      }
-      else if(item.tipo == 'DI'){
-        fluxoEncontrado = this.fluxos.find(fluxo => regexDI.test(fluxo.nome));
-      }
+      console.log(`Verificando tipo do item: |${item.tipo}|`);
+      // 2. Obtenha a regex correta diretamente do mapa.
+      const regex = tipoParaRegexMap.get(item.tipo);
 
-      if (fluxoEncontrado) {
-        console.log(`Para o item '${item.nome}' (tipo ${item.tipo}), o fluxo encontrado foi '${fluxoEncontrado.nome}' (ID: ${fluxoEncontrado.id}).`);
+      if (regex) {
+        // 3. Use .filter() para encontrar TODOS os fluxos que correspondem à regex.
+        const fluxosEncontrados = this.fluxos.filter(fluxo => regex.test(fluxo.nome));
+        item.fluxos_disponiveis = fluxosEncontrados;
 
-        // Filtra TODAS as fases que pertencem ao fluxo encontrado
-        const fasesDoFluxo = this.fases.filter(fase => fase.fluxo_id === fluxoEncontrado!.id);
-        
-        // Atribui o array de fases filtradas a uma nova propriedade no item
-        // (Você precisará adicionar 'fluxo_sequencia: Fase[]' à sua interface Item)
-        item.fluxo_sequencia = fasesDoFluxo;
-
-        console.log(`Para o item '${item.nome}', foram encontradas ${fasesDoFluxo.length} fases. ${item.fluxo_sequencia[1]} fases atribuídas.`);
+        if (fluxosEncontrados.length > 0) {
+          console.log(`Para o item '${item.nome}' (tipo ${item.tipo}), foram encontrados ${fluxosEncontrados.length} fluxos.`);
+        } else {
+          console.warn(`Nenhum fluxo com o padrão para '${item.tipo}' foi encontrado na lista de fluxos.`);
+        }
       } else {
-        // Se nenhum fluxo for encontrado, atribui um array vazio para evitar erros
-        item.fluxo_sequencia = [];
-        console.warn(`Nenhum fluxo correspondente encontrado para o item '${item.nome}' (tipo: ${item.tipo}).`);
+        // O tipo do item (ex: 'XY') não está no mapa.
+        item.fluxos_disponiveis = [];
+        console.warn(`Nenhuma regra de regex definida para o tipo de item: '${item.tipo}'.`);
       }
     }
   }
@@ -114,9 +129,11 @@ export class TabelaItensEncaminhamento implements OnChanges{
 
   private atribuiFluxo() {
     for (const item of this.itens) {
-      console.log(item.fase_atual_nome); 
-      const tipo: string = item.tipo;
-
+      if (item.fluxo_sequencia) {
+        for (const fase of item.fluxo_sequencia){
+          console.log(`Fase ${fase.nome} (Ordem: ${fase.ordem})`);
+        }
+      }
     }
   }
 
