@@ -43,14 +43,12 @@ export class TabelaItensEncaminhamento implements OnChanges{
   private carregarDadosIniciais(): void {
     this.erroAoCarregar = false;
 
-    // forkJoin espera todas as chamadas de API terminarem
     forkJoin({
       itens: this.itemService.getItensDoPedido(this.pedido.id),
       fluxos: this.fluxoService.getFluxos(),
-      fases: this.faseService.getFases() // Descomente se precisar das fases
+      fases: this.faseService.getFases() 
     }).subscribe({
       next: (resultados) => {
-        // Neste ponto, AMBOS os dados chegaram
         this.itens = resultados.itens || [];
         this.fluxos = resultados.fluxos || [];
         this.fases = resultados.fases || [];
@@ -84,17 +82,17 @@ export class TabelaItensEncaminhamento implements OnChanges{
       ['AN', /^AN.*/],
       ['MD', /^MD.*/],
       ['DS', /^DS.*/],
-      ['CL', /^CL.*/], // Corresponde a CL-G, CL-L, CL-LE
+      ['CL', /^CL.*/],
       ['EN', /^EN.*/],
-      ['DN', /^DN.*/], // Corresponde a DN-G, DN-F
-      ['DE', /^DE.*/], // Corresponde a DE-G, DE
+      ['DN', /^DN.*/],
+      ['DE', /^DE.*/],
       ['CN', /^CN.*/],
-      ['PA', /^PA.*/], // Corresponde a PA, PA-D
+      ['PA', /^PA.*/], 
       ['LR', /^LR.*/],
       ['LD', /^LD.*/],
       ['LM', /^LM.*/],
       ['DL', /^DL.*/],
-      ['LC', /^LC.*/], // Corresponde a LC, LC-E, LCO
+      ['LC', /^LC.*/],
       ['LE', /^LE.*/],
       ['LN', /^LN.*/],
       ['LA', /^LA.*/],
@@ -105,11 +103,9 @@ export class TabelaItensEncaminhamento implements OnChanges{
     for (const item of this.itens) {
 
       console.log(`Verificando tipo do item: |${item.tipo}|`);
-      // 2. Obtenha a regex correta diretamente do mapa.
       const regex = tipoParaRegexMap.get(item.tipo);
 
       if (regex) {
-        // 3. Use .filter() para encontrar TODOS os fluxos que correspondem à regex.
         const fluxosEncontrados = this.fluxos.filter(fluxo => regex.test(fluxo.nome));
         item.fluxos_disponiveis = fluxosEncontrados;
 
@@ -119,7 +115,6 @@ export class TabelaItensEncaminhamento implements OnChanges{
           console.warn(`Nenhum fluxo com o padrão para '${item.tipo}' foi encontrado na lista de fluxos.`);
         }
       } else {
-        // O tipo do item (ex: 'XY') não está no mapa.
         item.fluxos_disponiveis = [];
         console.warn(`Nenhuma regra de regex definida para o tipo de item: '${item.tipo}'.`);
       }
@@ -137,7 +132,6 @@ export class TabelaItensEncaminhamento implements OnChanges{
     }
   }
 
-    // 3. ADICIONE ESTE MÉTODO para lidar com a mudança no dropdown
   onFaseChange(item: any, novoFluxoId: number): void { 
     const novaFase = item.fluxo_de_trabalho.fases.find((f: any) => f.id === novoFluxoId);
     if (novaFase) {

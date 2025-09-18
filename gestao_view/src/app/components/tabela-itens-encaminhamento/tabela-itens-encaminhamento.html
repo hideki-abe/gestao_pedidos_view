@@ -39,7 +39,7 @@
             <div class="select-wrapper">
               <select 
                 class="fluxo-select" 
-                [class]="'tag fase-' + item.fase_atual_nome"
+                [class]="'tag fase'"
                 [ngModel]="item.fase_atual" 
                 (ngModelChange)="onFaseChange(item, $event)">
                 <option [ngValue]="null" disabled selected>

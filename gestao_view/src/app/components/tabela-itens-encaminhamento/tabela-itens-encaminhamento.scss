@@ -113,7 +113,6 @@ $mobile-breakpoint: 768px;
   display: flex;
   justify-content: center;
   padding: 4px 8px;
-  width: 100px;
   border-radius: 4px;
   font-size: 0.85em;
   font-weight: 600;
@@ -122,9 +121,7 @@ $mobile-breakpoint: 768px;
   background-color: #e9ecef;
 }
 
-.fase-corte { background-color: #a7c7e7; }
-.fase-montagem { background-color: #b2dfdb; }
-.fase-finalizado { background-color: #c1e1c1; }
+.fase { background-color: #dadada; }
 
 .action-button {
   padding: 4px 10px;
@@ -171,7 +168,7 @@ $mobile-breakpoint: 768px;
   padding-right: 30px; // Espaço para a seta
   cursor: pointer;
   border: none; // Remove a borda padrão do select
-  width: 100%; // Ocupa todo o espaço da célula
+  width: 200px; // Ocupa todo o espaço da célula
 }
 
 

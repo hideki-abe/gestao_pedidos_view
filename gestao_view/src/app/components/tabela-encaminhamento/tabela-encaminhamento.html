@@ -33,12 +33,13 @@
           </td>
         </tr>
 
-        <!-- Linha 2: Tabela de Itens (agora está DENTRO do loop e no escopo correto) -->
-        <tr *ngIf="pedidoSelecionadoId === pedido.id" class="itens-row">
-          <td colspan="7">
-            <app-tabela-itens-encaminhamento [pedido]="pedido" ></app-tabela-itens-encaminhamento>
-          </td>
-        </tr>
+        @if (pedidoSelecionadoId === pedido.id) {
+          <tr class="itens-row" [animate.enter]="enterClass()" >
+            <td  colspan="7" class="itens-row" animate.leave="leaving">
+              <app-tabela-itens-encaminhamento [pedido]="pedido" ></app-tabela-itens-encaminhamento>
+            </td>
+          </tr>
+        }
       </ng-container>
 
       <!-- Mensagem se não houver pedidos -->

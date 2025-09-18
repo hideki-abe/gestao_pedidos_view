@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { PedidoService } from '../../services/pedido';
 import { Pedido } from '../../interfaces/pedido';
@@ -18,6 +18,8 @@ export class TabelaEncaminhamento implements OnInit {
   public pedidos: Pedido[] = [];
   public erroAoCarregar: boolean = false;
   public pedidoSelecionadoId: number | null = null;
+  isShown = signal(false);
+  enterClass = signal('enter-animation');
 
   constructor(
     private pedidoService: PedidoService, 
@@ -119,12 +121,17 @@ export class TabelaEncaminhamento implements OnInit {
     });
   }
 
-    public toggleItens(pedidoId: number): void {
+  public toggleItens(pedidoId: number): void {
     if (this.pedidoSelecionadoId === pedidoId) {
       this.pedidoSelecionadoId = null;
     } else {
       this.pedidoSelecionadoId = pedidoId;
     }
+  }
+
+  public toggle() {
+    this.isShown.update((isShown) => !isShown);
+    console.log("estou funcionando")
   }
 
 }
