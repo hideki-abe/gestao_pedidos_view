@@ -42,12 +42,10 @@
         }
       </ng-container>
 
-      <!-- Mensagem se não houver pedidos -->
       <tr *ngIf="pedidos.length === 0 && !erroAoCarregar">
         <td colspan="7" style="text-align: center;">Nenhum pedido encontrado.</td>
       </tr>
 
-      <!-- Mensagem de erro -->
       <tr *ngIf="erroAoCarregar">
         <td colspan="7" style="text-align: center; color: red;">Ocorreu um erro ao carregar os pedidos.</td>
       </tr>

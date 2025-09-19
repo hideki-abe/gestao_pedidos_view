@@ -121,7 +121,10 @@ $mobile-breakpoint: 768px;
   background-color: #e9ecef;
 }
 
-.fase { background-color: #dadada; }
+.fase { 
+  background-color: #dadada; 
+  text-align: center;
+}
 
 .action-button {
   padding: 4px 10px;
