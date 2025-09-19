@@ -41,11 +41,11 @@
                 class="fluxo-select" 
                 [class]="'tag fase'"
                 [ngModel]="item.fase_atual" 
-                (ngModelChange)="onFaseChange(item, $event)">
+                (ngModelChange)="onFluxoChange(item, $event)">
                 <option [ngValue]="null" disabled selected>
                   Selecionar Fluxo
                 </option>
-                <option *ngFor="let fluxo of item.fluxos_disponiveis" [value]="fluxo.id">
+                <option *ngFor="let fluxo of item.fluxos_disponiveis" [value]="fluxo.nome">
                   {{ fluxo.descricao }}
                 </option>
 

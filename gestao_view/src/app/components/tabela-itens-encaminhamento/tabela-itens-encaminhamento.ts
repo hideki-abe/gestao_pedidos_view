@@ -55,10 +55,10 @@ export class TabelaItensEncaminhamento implements OnChanges{
         
      
         //console.log("DADOS BRUTOS RECEBIDOS DA API:");
-        console.log("Fluxos:", JSON.stringify(this.fluxos, null, 2));
+        //console.log("Fluxos:", JSON.stringify(this.fluxos, null, 2));
         //console.log("Fases:", JSON.stringify(this.fases, null, 2));
         //console.log("---------------------------------");
-
+        console.log("Itens do pedido: ", this.itens);
 
         this.relacionaFluxoComTipo();
         //this.atribuiFluxo();
@@ -121,23 +121,30 @@ export class TabelaItensEncaminhamento implements OnChanges{
     }
   }
 
+  onFluxoChange(item: any, novoFluxoNome: string): void { 
+     console.log(`O item '${item.nome}' mudou para o fluxo:`, novoFluxoNome);
 
-  private atribuiFluxo() {
-    for (const item of this.itens) {
-      if (item.fluxo_sequencia) {
-        for (const fase of item.fluxo_sequencia){
-          console.log(`Fase ${fase.nome} (Ordem: ${fase.ordem})`);
-        }
+    if (novoFluxoNome) {
+      // 1. Encontra o objeto do fluxo selecionado.
+      console.log("Fluxos disponíveis: ", item.fluxos_disponiveis);
+      const novoFluxo = item.fluxos_disponiveis?.find((f: Fluxo) => f.nome === novoFluxoNome);
+      // 2. VERIFICAÇÃO DE SEGURANÇA: Prossiga apenas se o fluxo foi encontrado.
+      console.log(item)
+      if (novoFluxo) {
+        this.itemService.atualizarFluxoDoItem(item.id, novoFluxo.id).subscribe({
+          next: (itemAtualizadoDoServidor) => {
+            // 3. Formatação corrigida e lógica de sucesso.
+            console.log('Fluxo atualizado com sucesso no backend!', itemAtualizadoDoServidor);
+            //Object.assign(item, itemAtualizadoDoServidor);
+          },
+          error: (err) => {
+            console.error('Ocorreu um erro ao tentar atualizar o fluxo:', err);
+            // TODO: Adicionar lógica para reverter a mudança na UI em caso de erro.
+          }
+        });
+      } else {
+        console.error(`Fluxo com nome '${novoFluxoNome}' não foi encontrado na lista de fluxos disponíveis do item.`);
       }
-    }
+    } // 4. CHAVE DE FECHAMENTO ADICIONADA.
   }
-
-  onFaseChange(item: any, novoFluxoId: number): void { 
-    const novaFase = item.fluxo_de_trabalho.fases.find((f: any) => f.id === novoFluxoId);
-    if (novaFase) {
-      item.fase_atual_id = novaFase.id;
-      item.fase_atual_nome = novaFase.nome;
-    }
-  }
-
 }

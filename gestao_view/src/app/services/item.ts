@@ -10,6 +10,7 @@ import { Item } from '../interfaces/item';
 export class ItemService {
 
   private apiUrl = '/api/pedidos/';
+  private apiUrlItens = '/api/itens/';
 
   constructor(private http: HttpClient) { }
 
@@ -34,6 +35,21 @@ export class ItemService {
     return this.http.get<Item[]>(url).pipe(
       catchError(this.handleError)
     );  
+  }
+
+  atualizarFluxoDoItem(itemId: number, fluxoId: number): Observable<Item> {
+    console.log("Chamando função para atualizar o fluxo", itemId, fluxoId);
+    // 1. Define a URL específica para o item que será atualizado.
+    const url = `${this.apiUrlItens}${itemId}/`;
+
+    // 2. Cria o corpo da requisição (payload) apenas com o dado que será alterado.
+    const payload = { fluxo_id: fluxoId };
+
+    // 3. Executa a requisição PATCH.
+    //    - O <Item> indica que esperamos receber o objeto Item completo e atualizado como resposta.
+    return this.http.patch<Item>(url, payload).pipe(
+      catchError(this.handleError)
+    );
   }
 
   private handleError(error: HttpErrorResponse) {
