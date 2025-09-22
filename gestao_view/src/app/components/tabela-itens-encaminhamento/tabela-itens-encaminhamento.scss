@@ -81,12 +81,13 @@ $mobile-breakpoint: 768px;
   th,
   td {
     padding: 12px 15px;
-    text-align: left;
+    text-align: center;
     border-bottom: 1px solid $border-color;
   }
 
   thead th {
     background-color: #f8f9fa;
+    text-align: center;
     font-weight: 600;
     font-size: 14px;
     color: #495057;
@@ -100,6 +101,11 @@ $mobile-breakpoint: 768px;
       border-bottom: none;
     }
   }
+    td:first-child {
+      text-align: left;
+      min-width: 150px;
+    }
+
 }
 
 .no-items-message {

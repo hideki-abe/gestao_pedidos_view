@@ -28,35 +28,41 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let item of itens">
-          <td data-label="Nome">{{ item.nome }}</td>
-          <td data-label="Tipo">{{ item.tipo }}</td>
-          <td data-label="Quantidade">{{ item.quantidade }}</td>
-          <td data-label="Medida 1">{{ item.medida_1 }}</td>
-          <td data-label="Medida 2">{{ item.medida_2 }}</td>
-          <td data-label="Furo">{{ item.furo}}</td>
-          <td data-label="Fluxo">
-            <div class="select-wrapper">
-              <select 
-                class="fluxo-select" 
-                [class]="'tag fase'"
-                [ngModel]="item.fase_atual" 
-                (ngModelChange)="onFluxoChange(item, $event)">
-                <option [ngValue]="null" disabled selected>
-                  Selecionar Fluxo
-                </option>
-                <option *ngFor="let fluxo of item.fluxos_disponiveis" [value]="fluxo.nome">
-                  {{ fluxo.descricao }}
-                </option>
+        @for (item of itens; track item.id) {
+          <tr>
+            <td data-label="Nome">{{ item.nome }}</td>
+            <td data-label="Tipo">{{ item.tipo }}</td>
+            <td data-label="Quantidade">{{ item.quantidade }}</td>
+            <td data-label="Medida 1">{{ item.medida_1 }}</td>
+            <td data-label="Medida 2">{{ item.medida_2 }}</td>
+            <td data-label="Furo">{{ item.furo}}</td>
+            <td data-label="Fluxo">
+              <div class="select-wrapper">
+                <select 
+                  class="fluxo-select" 
+                  [class]="'tag fase'"
+                  [ngModel]="item.fluxo_nome" 
+                  (ngModelChange)="onFluxoChange(item, $event)">
+                    @if (item.fluxo_nome == null) {
+                      <option [ngValue]="item.fluxo_nome" disabled selected>
+                        Selecione um fluxo
+                      </option>
+                    }
 
-              </select>
-            </div>
-          </td>
-          <td data-label="Concluir">
-            <button class="action-button">Carregar Arquivo</button>
-          </td>
-        </tr>
-        
+                    <!-- 3. Converta o *ngFor das opções para @for também. -->
+                    @for (fluxo of item.fluxos_disponiveis; track fluxo.id) {
+                      <option [value]="fluxo.nome">
+                        {{ fluxo.descricao }}
+                      </option>
+                    }
+                </select>
+              </div>
+            </td>
+            <td data-label="Concluir">
+              <button class="action-button">Carregar Arquivo</button>
+            </td>
+          </tr>
+        }
         <tr *ngIf="!itens || itens.length === 0">
           <td colspan="6" class="no-items-message">Nenhum item encontrado.</td>
         </tr>

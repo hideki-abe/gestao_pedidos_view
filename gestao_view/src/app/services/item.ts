@@ -43,7 +43,7 @@ export class ItemService {
     const url = `${this.apiUrlItens}${itemId}/`;
 
     // 2. Cria o corpo da requisição (payload) apenas com o dado que será alterado.
-    const payload = { fluxo_id: fluxoId };
+    const payload = { fluxo: fluxoId };
 
     // 3. Executa a requisição PATCH.
     //    - O <Item> indica que esperamos receber o objeto Item completo e atualizado como resposta.
