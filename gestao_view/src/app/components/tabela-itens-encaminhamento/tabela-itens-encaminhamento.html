@@ -48,8 +48,6 @@
                         Selecione um fluxo
                       </option>
                     }
-
-                    <!-- 3. Converta o *ngFor das opções para @for também. -->
                     @for (fluxo of item.fluxos_disponiveis; track fluxo.id) {
                       <option [value]="fluxo.nome">
                         {{ fluxo.descricao }}

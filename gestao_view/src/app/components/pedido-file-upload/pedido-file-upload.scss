@@ -1,0 +1,170 @@
+:host {
+  display: block;
+  font-family: sans-serif;
+  width: 100%;
+  max-width: 1000px;
+  margin: 2rem auto;
+}
+
+.drop-zone {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.3s, background-color 0.3s;
+
+  &.drag-over {
+    border-color: #3a87ad;
+    background-color: #f0f8ff;
+  }
+
+  .drop-zone-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: #666;
+
+    svg {
+      fill: #ccc;
+      transition: fill 0.3s;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      &:hover {
+        background-color: #0056b3;
+      }
+    }
+  }
+
+  &.drag-over svg {
+    fill: #3a87ad;
+  }
+}
+.file-list {
+  // Transforma a lista em um container flex para alinhar os itens lado a lado
+  display: flex;
+  flex-wrap: wrap; // Permite que os itens quebrem para a próxima linha
+  gap: 1.5rem; // Espaçamento entre os ícones
+  margin-top: 1.5rem;
+  justify-content: center; // Centraliza os itens se não preencherem a linha
+}
+
+.file-item {
+  // Transforma cada item em um container flex vertical
+  display: flex;
+  flex-direction: column;
+  align-items: center; // Centraliza o conteúdo horizontalmente
+  gap: 0.5rem; // Espaçamento entre o ícone, nome e botão
+  width: 120px; // Largura fixa para cada item da grade
+  position: relative; // Necessário para o botão de remoção absoluto
+
+  // Remove o fundo e borda anteriores
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+.file-icon-wrapper {
+  position: relative;
+  width: 50px;
+  height: 50px;
+
+  .file-icon {
+    width: 100%;
+    height: 100%;
+    fill: #aab8c2;
+  }
+}
+
+.file-name {
+  // Estilo para o nome do arquivo
+  font-size: 0.8rem;
+  color: #333;
+  width: 100%; // Ocupa toda a largura do .file-item
+  text-align: center;
+  // Trunca nomes de arquivo longos
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.remove-btn {
+  // Posiciona o botão de remoção no canto superior direito do ícone
+  position: absolute;
+  top: -8px;
+  right: 8px;
+  background: #fff;
+  border: 1px solid #ccc;
+  color: #dc3545;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: 22px;
+  text-align: center;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+// Sobrescreve o estilo da barra de progresso para ficar sobre o ícone
+.progress-bar {
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%; // Largura relativa ao ícone
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+// Estilo para a sobreposição de status (sucesso/erro)
+.status-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  border-radius: 4px;
+  
+  &.success {
+    color: white;
+    background-color: rgba(40, 167, 69, 0.7);
+  }
+  &.error {
+    color: white;
+    background-color: rgba(220, 53, 69, 0.7);
+  }
+}
+
+.upload-btn {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  font-size: 1rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  &:hover:not(:disabled) {
+    background-color: #218838;
+  }
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+}

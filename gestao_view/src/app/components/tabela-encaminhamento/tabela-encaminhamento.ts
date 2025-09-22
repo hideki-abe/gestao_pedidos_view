@@ -5,11 +5,12 @@ import { Pedido } from '../../interfaces/pedido';
 import { ClienteService } from '../../services/cliente';
 import { VendedorService } from '../../services/vendedor';
 import { TabelaItensEncaminhamento } from "../tabela-itens-encaminhamento/tabela-itens-encaminhamento";
+import { PedidoFileUpload } from '../pedido-file-upload/pedido-file-upload';
 
 @Component({
   selector: 'app-tabela-encaminhamento',
   standalone: true,
-  imports: [CommonModule, TabelaItensEncaminhamento], 
+  imports: [CommonModule, TabelaItensEncaminhamento, PedidoFileUpload], 
   templateUrl: './tabela-encaminhamento.html',
   styleUrl: './tabela-encaminhamento.scss'
 })
