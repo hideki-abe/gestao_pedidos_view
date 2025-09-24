@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
 import { Subscription, finalize, forkJoin, map, tap } from 'rxjs';
+import { ArquivoService } from '../../services/arquivo';
 
 // Interface para gerenciar o estado de cada arquivo
 export interface FileUploadState {
@@ -19,17 +20,19 @@ export interface FileUploadState {
   styleUrl: './pedido-file-upload.scss'
 })
 export class PedidoFileUpload {
-  // Recebe o ID do item ao qual os arquivos pertencem
-  @Input() itemId!: number; 
+  // Recebe o ID do pedido ao qual os arquivos pertencem
+  @Input() pedidoId!: number; 
   // Emite um evento quando todos os uploads terminam
   @Output() uploadCompleto = new EventEmitter<void>();
 
+  arquivos: any[] = [];
   files: FileUploadState[] = [];
   isDragging = false;
   isUploading = false;
 
   // Injete o HttpClient para fazer as requisições
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private arquivoService: ArquivoService) {
+  }
 
   // --- Manipuladores de Eventos de UI ---
 
@@ -56,6 +59,7 @@ export class PedidoFileUpload {
   }
 
   onFileSelected(event: Event): void {
+    console.log("onFileSelected");
     const input = event.target as HTMLInputElement;
     if (input.files) {
       this.addFiles(Array.from(input.files));
@@ -63,6 +67,7 @@ export class PedidoFileUpload {
   }
 
   addFiles(newFiles: File[]): void {
+    console.log("addFiles");
     newFiles.forEach(file => {
       // Evita adicionar arquivos duplicados
       if (!this.files.some(f => f.file.name === file.name)) {
@@ -78,7 +83,9 @@ export class PedidoFileUpload {
   // --- Lógica de Upload ---
 
   onUpload(): void {
-    if (this.files.length === 0 || this.isUploading) {
+    console.log("Função OnUpload", this.arquivoService.getArquivosDoPedido(this.pedidoId))
+    if (this.files.length === 0 || this.isUploading ) {
+      console.error('Upload não pode ser iniciado: itemId não foi fornecido.');
       return;
     }
 
@@ -98,19 +105,8 @@ export class PedidoFileUpload {
   }
 
   private uploadFile(fileState: FileUploadState) {
-    const formData = new FormData();
-    formData.append('file', fileState.file, fileState.file.name);
-    formData.append('item_id', this.itemId.toString()); // Envia o ID do item junto
-
-    // Substitua pela URL da sua API
-    const uploadUrl = `/api/itens/${this.itemId}/upload/`; 
-
     fileState.status = 'uploading';
-
-    return this.http.post(uploadUrl, formData, {
-      reportProgress: true,
-      observe: 'events'
-    }).pipe(
+    return this.arquivoService.uploadArquivoDoPedido(this.pedidoId, fileState.file).pipe(
       tap(event => {
         if (event.type === HttpEventType.UploadProgress) {
           fileState.progress = Math.round(100 * (event.loaded / (event.total || 1)));
@@ -119,13 +115,24 @@ export class PedidoFileUpload {
           fileState.progress = 100;
         }
       }),
-      map(() => true), // Transforma o resultado para o forkJoin
+      map(() => true),
       finalize(() => {
-        // Garante que o status seja de erro se a subscrição for completada sem sucesso
         if (fileState.status !== 'success') {
           fileState.status = 'error';
         }
       })
     );
+  }
+
+testClick() {
+    this.arquivoService.getArquivosDoPedido(this.pedidoId).subscribe({
+      next: (arquivos) => {
+        this.arquivos = arquivos;
+        console.log('Arquivos recebidos:', arquivos);
+      },
+      error: (err) => {
+        console.error('Erro ao buscar arquivos:', err);
+      }
+    });
   }
 }
