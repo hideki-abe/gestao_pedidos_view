@@ -64,19 +64,13 @@
 @if (arquivos.length > 0) {
   <div class="arquivos-existentes">
     <h4>Arquivos já enviados</h4>
-    <div class="file-list">
+    <ul class="arquivos-lista">
       @for (arquivo of arquivos; track arquivo.id) {
-        <div class="file-item">
-          <div class="file-icon-wrapper">
-            <!-- Ícone genérico de arquivo -->
-            <svg class="file-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zm64 236c0 6.6-5.4 12-12 12H108c-6.6 0-12-5.4-12-12v-8c0-6.6 5.4-12 12-12h168c6.6 0 12 5.4 12 12v8zm0-64c0 6.6-5.4 12-12 12H108c-6.6 0-12-5.4-12-12v-8c0-6.6 5.4-12 12-12h168c6.6 0 12 5.4 12 12v8zm0-64c0 6.6-5.4 12-12 12H108c-6.6 0-12-5.4-12-12v-8c0-6.6 5.4-12 12-12h168c6.6 0 12 5.4 12 12v8zM384 128L256 0v128h128z"/></svg>
-          </div>
-          <span class="file-name" [title]="arquivo.file_name">
-            <a [href]="arquivo.url" target="_blank">{{ arquivo.file_name }}</a>
-          </span>
-        </div>
+        <li>
+          <a [href]="arquivo.url" target="_blank" [title]="arquivo.file_name">{{ arquivo.file_name }}</a>
+        </li>
       }
-    </div>
+    </ul>
   </div>
 }
   <!-- Botão de Upload geral -->

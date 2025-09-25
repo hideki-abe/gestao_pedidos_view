@@ -96,6 +96,31 @@
   text-overflow: ellipsis;
 }
 
+.arquivos-lista {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-auto-flow: row; 
+  padding: 0;
+  margin: 0 0 1rem 0;
+  max-height: 400px;
+  overflow-y: auto;
+  counter-reset: arquivos-num; // Inicia o contador
+
+
+  li {
+    display: flex;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    a {
+      color: #007bff;
+      text-decoration: underline;
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+}
+
 .remove-btn {
   // Posiciona o botão de remoção no canto superior direito do ícone
   position: absolute;
