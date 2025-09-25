@@ -32,15 +32,17 @@ export class ArquivoService {
 
   getArquivosDoPedido(pedidoId: number): Observable<Arquivo[]> {
     const url = `${this.apiUrlPedido}?pedido_id=${pedidoId}`;
-    return this.http.get<Arquivo[]>(url).pipe(
+    console.log('URL chamada:', url);
+    return this.http.get<any>(url).pipe(
+      map(response => response.results), // Corrige para pegar só os arquivos
       catchError(this.handleError)
     );
   }
 
   uploadArquivoDoPedido(pedidoId: number, file: File): Observable<any> {
   const formData = new FormData();
-  formData.append('arquivo', file, file.name);
-  // Adapte o nome do campo 'file' conforme o backend espera
+  formData.append('file', file, file.name);
+  formData.append('pedido', pedidoId.toString());
 
     return this.http.post(this.apiUrlPedido, formData, {
     reportProgress: true,

@@ -34,6 +34,10 @@ export class PedidoFileUpload {
   constructor(private http: HttpClient, private arquivoService: ArquivoService) {
   }
 
+  ngOnInit() {
+    this.getArquivos();
+  }
+
   // --- Manipuladores de Eventos de UI ---
 
   onDragOver(event: DragEvent): void {
@@ -83,7 +87,6 @@ export class PedidoFileUpload {
   // --- Lógica de Upload ---
 
   onUpload(): void {
-    console.log("Função OnUpload", this.arquivoService.getArquivosDoPedido(this.pedidoId))
     if (this.files.length === 0 || this.isUploading ) {
       console.error('Upload não pode ser iniciado: itemId não foi fornecido.');
       return;
@@ -99,6 +102,8 @@ export class PedidoFileUpload {
         finalize(() => {
           this.isUploading = false;
           this.uploadCompleto.emit();
+          this.getArquivos();
+          this.files = [];
         })
       )
       .subscribe();
@@ -124,7 +129,7 @@ export class PedidoFileUpload {
     );
   }
 
-testClick() {
+getArquivos() {
     this.arquivoService.getArquivosDoPedido(this.pedidoId).subscribe({
       next: (arquivos) => {
         this.arquivos = arquivos;

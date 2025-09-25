@@ -63,7 +63,7 @@ $colors: (
   .leaving {
     opacity: 0;
     transform: translateY(0);
-    transition: opacity 500ms ease-out, transform 500ms ease-out;
+  
   }
 
   thead tr {
