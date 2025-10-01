@@ -124,11 +124,14 @@ export class TabelaEncaminhamento implements OnInit {
   }
 
   onObservacaoChange(novaObservacao: string, pedido: Pedido): void {
-    // Atualiza o valor no objeto do pedido em tempo real
     pedido.observacoes = novaObservacao;
     console.log('Texto atual:', pedido.observacoes);
-    // ATENÇÃO: Chamar o serviço de PATCH aqui pode ser ineficiente (muitas requisições).
-    // O ideal é usar um "debounce" ou salvar apenas quando o botão for clicado.
+    console.log(pedido)
+
+  }
+
+  click(pedido: Pedido): void{
+    console.log(pedido)
   }
 
   public toggleItens(pedidoId: number): void {
