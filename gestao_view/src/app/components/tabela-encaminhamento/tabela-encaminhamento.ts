@@ -6,11 +6,12 @@ import { ClienteService } from '../../services/cliente';
 import { VendedorService } from '../../services/vendedor';
 import { TabelaItensEncaminhamento } from "../tabela-itens-encaminhamento/tabela-itens-encaminhamento";
 import { PedidoFileUpload } from '../pedido-file-upload/pedido-file-upload';
+import { Observacao } from "../observacao/observacao";
 
 @Component({
   selector: 'app-tabela-encaminhamento',
   standalone: true,
-  imports: [CommonModule, TabelaItensEncaminhamento, PedidoFileUpload], 
+  imports: [CommonModule, TabelaItensEncaminhamento, PedidoFileUpload, Observacao], 
   templateUrl: './tabela-encaminhamento.html',
   styleUrl: './tabela-encaminhamento.scss'
 })
@@ -120,6 +121,14 @@ export class TabelaEncaminhamento implements OnInit {
           break;
       }
     });
+  }
+
+  onObservacaoChange(novaObservacao: string, pedido: Pedido): void {
+    // Atualiza o valor no objeto do pedido em tempo real
+    pedido.observacoes = novaObservacao;
+    console.log('Texto atual:', pedido.observacoes);
+    // ATENÇÃO: Chamar o serviço de PATCH aqui pode ser ineficiente (muitas requisições).
+    // O ideal é usar um "debounce" ou salvar apenas quando o botão for clicado.
   }
 
   public toggleItens(pedidoId: number): void {

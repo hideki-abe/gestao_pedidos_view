@@ -61,6 +61,10 @@
   </div>
 </div>
 
+<!-- Botão de Upload geral -->
+<button class="upload-btn" (click)="getArquivos()" (click)="onUpload()" [disabled]="isUploading">
+  {{ isUploading ? 'Enviando...' : 'Salvar arquivos' }}
+</button>
 @if (arquivos.length > 0) {
   <div class="arquivos-existentes">
     <h4>Arquivos já enviados</h4>
@@ -73,8 +77,4 @@
     </ul>
   </div>
 }
-  <!-- Botão de Upload geral -->
-  <button class="upload-btn" (click)="getArquivos()" (click)="onUpload()" [disabled]="isUploading">
-    {{ isUploading ? 'Enviando...' : 'Encaminhar Pedido' }}
-  </button>
   
