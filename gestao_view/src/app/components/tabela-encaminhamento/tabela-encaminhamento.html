@@ -38,10 +38,11 @@
             <td  colspan="5" class="itens-row" animate.leave="leaving">
               <app-tabela-itens-encaminhamento [pedido]="pedido" ></app-tabela-itens-encaminhamento>
               <app-pedido-file-upload [pedidoId]="pedido.id"></app-pedido-file-upload>
-              <app-observacao 
+              <app-form-pedido
                 [textoInicial]="pedido.observacoes" 
-                (textoChange)="onObservacaoChange($event, pedido)">
-              </app-observacao>
+                [prioridadeInicial]="pedido.prioridade"
+                (formChange)="onFormChange($event, pedido)">
+              </app-form-pedido>
             </td>
           </tr>
         }

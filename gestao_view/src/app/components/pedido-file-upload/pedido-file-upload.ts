@@ -20,6 +20,7 @@ export interface FileUploadState {
   styleUrl: './pedido-file-upload.scss'
 })
 export class PedidoFileUpload {
+
   // Recebe o ID do pedido ao qual os arquivos pertencem
   @Input() pedidoId!: number; 
   // Emite um evento quando todos os uploads terminam
@@ -63,7 +64,6 @@ export class PedidoFileUpload {
   }
 
   onFileSelected(event: Event): void {
-    console.log("onFileSelected");
     const input = event.target as HTMLInputElement;
     if (input.files) {
       this.addFiles(Array.from(input.files));
@@ -73,7 +73,6 @@ export class PedidoFileUpload {
   addFiles(newFiles: File[]): void {
     console.log("addFiles");
     newFiles.forEach(file => {
-      // Evita adicionar arquivos duplicados
       if (!this.files.some(f => f.file.name === file.name)) {
         this.files.push({ file, status: 'pending', progress: 0 });
       }
@@ -88,7 +87,6 @@ export class PedidoFileUpload {
 
   onUpload(): void {
     if (this.files.length === 0 || this.isUploading ) {
-      console.error('Upload não pode ser iniciado: itemId não foi fornecido.');
       return;
     }
 
@@ -129,15 +127,18 @@ export class PedidoFileUpload {
     );
   }
 
-getArquivos() {
-    this.arquivoService.getArquivosDoPedido(this.pedidoId).subscribe({
-      next: (arquivos) => {
-        this.arquivos = arquivos;
-        console.log('Arquivos recebidos:', arquivos);
-      },
-      error: (err) => {
-        console.error('Erro ao buscar arquivos:', err);
-      }
-    });
+  getArquivos() {
+      this.arquivoService.getArquivosDoPedido(this.pedidoId).subscribe({
+        next: (arquivos) => {
+          this.arquivos = arquivos;
+        },
+        error: (err) => {
+          console.error('Erro ao buscar arquivos:', err);
+        }
+      });
+  }
+
+  cancelar() {
+    this.files = [];
   }
 }

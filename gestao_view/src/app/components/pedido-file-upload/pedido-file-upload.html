@@ -61,10 +61,14 @@
   </div>
 </div>
 
-<!-- Botão de Upload geral -->
-<button class="upload-btn" (click)="getArquivos()" (click)="onUpload()" [disabled]="isUploading">
-  {{ isUploading ? 'Enviando...' : 'Salvar arquivos' }}
-</button>
+<div class="button-container">
+  <button class="upload-btn" (click)="getArquivos()" (click)="onUpload()" [disabled]="isUploading">
+    {{ isUploading ? 'Enviando...' : 'Salvar arquivos' }}
+  </button>
+  <button class="cancel-btn" (click)="cancelar()" [disabled]="isUploading">
+    Cancelar
+  </button>
+</div>
 @if (arquivos.length > 0) {
   <div class="arquivos-existentes">
     <h4>Arquivos já enviados</h4>

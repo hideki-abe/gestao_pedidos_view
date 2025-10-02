@@ -6,12 +6,13 @@ import { ClienteService } from '../../services/cliente';
 import { VendedorService } from '../../services/vendedor';
 import { TabelaItensEncaminhamento } from "../tabela-itens-encaminhamento/tabela-itens-encaminhamento";
 import { PedidoFileUpload } from '../pedido-file-upload/pedido-file-upload';
-import { Observacao } from "../observacao/observacao";
+import { FormPedido } from "../form-pedido/form-pedido";
+import { PrioridadePedido } from '../form-pedido/form-pedido';
 
 @Component({
   selector: 'app-tabela-encaminhamento',
   standalone: true,
-  imports: [CommonModule, TabelaItensEncaminhamento, PedidoFileUpload, Observacao], 
+  imports: [CommonModule, TabelaItensEncaminhamento, PedidoFileUpload, FormPedido], 
   templateUrl: './tabela-encaminhamento.html',
   styleUrl: './tabela-encaminhamento.scss'
 })
@@ -123,11 +124,10 @@ export class TabelaEncaminhamento implements OnInit {
     });
   }
 
-  onObservacaoChange(novaObservacao: string, pedido: Pedido): void {
-    pedido.observacoes = novaObservacao;
-    console.log('Texto atual:', pedido.observacoes);
-    console.log(pedido)
-
+  onFormChange(dados: { texto: string; prioridade: PrioridadePedido }, pedido: Pedido): void {
+    pedido.observacoes = dados.texto;
+    pedido.prioridade = dados.prioridade;
+    console.log('Dados do formulário atualizados:', pedido);
   }
 
   click(pedido: Pedido): void{

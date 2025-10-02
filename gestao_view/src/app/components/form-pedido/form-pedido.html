@@ -1,0 +1,33 @@
+<form (ngSubmit)="salvarForm()">
+  <div class="prioridade-container">
+    <h4 class="prioridade-title">Prioridade</h4>
+    <!-- Substituindo os botões por um select normal -->
+    <select 
+      class="prioridade-select" 
+      name="prioridade"
+      [(ngModel)]="prioridade"
+      (ngModelChange)="onPrioridadeMudou()">
+      <option value="baixa">Baixa</option>
+      <option value="normal">Normal</option>
+      <option value="alta">Alta</option>
+      <option value="urgente">Urgente</option>
+    </select>
+  </div>
+  <div class="observacoes-container">
+    <h4 class="observacoes-title">Observações</h4>
+    <textarea 
+      class="observacoes-textarea"
+      name="observacoes" 
+      [ngModel]="texto"
+      (ngModelChange)="onTextoMudou($event)"
+      placeholder="Digite uma observação sobre o pedido..."
+      rows="4">
+    </textarea>
+  </div>
+  
+  <button 
+    type="submit"
+    class="form-button">
+    Enviar para Produção
+  </button>
+</form>
