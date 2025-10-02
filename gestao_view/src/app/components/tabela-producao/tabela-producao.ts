@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Necessário para *ngFor, pipes, etc.
+import { CommonModule } from '@angular/common';
 import { PedidoService } from '../../services/pedido';
 import { Pedido } from '../../interfaces/pedido';
 import { ClienteService } from '../../services/cliente';
 import { VendedorService } from '../../services/vendedor';
 import { TabelaItens } from "../tabela-itens/tabela-itens";
+import { ToastrService } from 'ngx-toastr';
+
 @Component({
   selector: 'app-tabela-producao',
   standalone: true,
-  imports: [CommonModule, TabelaItens], // Adicionado CommonModule
+  imports: [CommonModule, TabelaItens], 
   templateUrl: './tabela-producao.html',
   styleUrl: './tabela-producao.scss'
 })
@@ -21,7 +23,8 @@ export class TabelaProducao implements OnInit {
   constructor(
     private pedidoService: PedidoService, 
     private clienteService: ClienteService, 
-    private vendedorService: VendedorService
+    private vendedorService: VendedorService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -129,6 +132,25 @@ export class TabelaProducao implements OnInit {
       // Se for um novo pedido, mostra a tabela de itens para ele.
       this.pedidoSelecionadoId = pedidoId;
     }
+  }
+
+  public changeStatus(pedido: Pedido, novoStatus: 'encaminhar'): void {
+    // Fecha a linha de detalhes, se estiver aberta
+    this.pedidoSelecionadoId = null;
+
+    this.pedidoService.updateStatus(pedido.id, novoStatus).subscribe({
+      next: () => {
+        const mensagem = novoStatus === 'encaminhar' ? 'Pedido encaminhado com sucesso!' : 'Pedido cancelado.';
+        this.toastr.success(mensagem, 'Status Atualizado!');
+        
+        // Remove o pedido da lista da UI para uma atualização otimista
+        this.pedidos = this.pedidos.filter(p => p.id !== pedido.id);
+      },
+      error: (err) => {
+        console.error(`Falha ao mudar status para ${novoStatus}:`, err);
+        this.toastr.error('Não foi possível atualizar o status do pedido.', 'Erro!');
+      }
+    });
   }
 
 }

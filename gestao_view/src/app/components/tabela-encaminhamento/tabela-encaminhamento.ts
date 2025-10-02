@@ -9,6 +9,8 @@ import { PedidoFileUpload } from '../pedido-file-upload/pedido-file-upload';
 import { FormPedido } from "../form-pedido/form-pedido";
 import { PrioridadePedido } from '../form-pedido/form-pedido';
 import { switchMap } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
+
 
 @Component({
   selector: 'app-tabela-encaminhamento',
@@ -28,7 +30,8 @@ export class TabelaEncaminhamento implements OnInit {
   constructor(
     private pedidoService: PedidoService, 
     private clienteService: ClienteService, 
-    private vendedorService: VendedorService
+    private vendedorService: VendedorService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -151,7 +154,7 @@ export class TabelaEncaminhamento implements OnInit {
     ).subscribe({
       next: (pedidoAtualizadoComStatus) => {
         console.log('Processo concluído! Pedido final:', pedidoAtualizadoComStatus);
-        
+        this.toastr.success(`Pedido ${pedido.numero_do_pedido} enviado para produção!`, 'Sucesso!');
         this.pedidoSelecionadoId = null;
         this.pedidos = this.pedidos.filter(p => p.id !== pedido.id);
       },
