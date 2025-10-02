@@ -183,14 +183,14 @@
   display: flex;
   justify-content: flex-end; // Alinha o grupo de botões à direita
   gap: 1rem; // Adiciona um espaço entre os botões
-  margin-top: 1.5rem; // Espaço acima dos botões
+  margin-top: 1rem; // Espaço acima dos botões
 }
 
 .upload-btn {
   // Removido 'align-self' e 'display: block' pois o container flex já controla isso.
-  width: 150px;
+  width: 120px;
   padding: 10px;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 500;
   background-color: #3A7CA5; // Cor primária
   color: white;
@@ -210,9 +210,9 @@
 
 // Estilo para o botão de cancelar
 .cancel-btn {
-  width: 150px;
+  width: 120px;
   padding: 10px;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 500;
   background-color: #f8f9fa; // Fundo claro
   color: #6c757d; // Texto cinza escuro

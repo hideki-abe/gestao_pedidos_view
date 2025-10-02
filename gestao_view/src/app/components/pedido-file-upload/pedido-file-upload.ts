@@ -82,9 +82,7 @@ export class PedidoFileUpload {
   removeFile(fileName: string): void {
     this.files = this.files.filter(f => f.file.name !== fileName);
   }
-
-  // --- Lógica de Upload ---
-
+  
   onUpload(): void {
     if (this.files.length === 0 || this.isUploading ) {
       return;

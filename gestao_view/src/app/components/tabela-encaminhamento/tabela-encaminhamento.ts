@@ -8,6 +8,7 @@ import { TabelaItensEncaminhamento } from "../tabela-itens-encaminhamento/tabela
 import { PedidoFileUpload } from '../pedido-file-upload/pedido-file-upload';
 import { FormPedido } from "../form-pedido/form-pedido";
 import { PrioridadePedido } from '../form-pedido/form-pedido';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tabela-encaminhamento',
@@ -132,6 +133,32 @@ export class TabelaEncaminhamento implements OnInit {
 
   click(pedido: Pedido): void{
     console.log(pedido)
+  }
+
+  salvarForm(pedido: Pedido): void {
+    const dadosParaSalvar = {
+      observacoes: pedido.observacoes,
+      prioridade: pedido.prioridade
+    };
+
+    console.log(`Iniciando processo de salvamento para o pedido ${pedido.id}:`, dadosParaSalvar);
+
+    this.pedidoService.updatePedido(pedido.id, dadosParaSalvar).pipe(
+      switchMap((pedidoAtualizadoComDados) => {
+        console.log('Dados do pedido atualizados, agora atualizando o status...');
+        return this.pedidoService.updateStatus(pedido.id, 'producao');
+      })
+    ).subscribe({
+      next: (pedidoAtualizadoComStatus) => {
+        console.log('Processo concluído! Pedido final:', pedidoAtualizadoComStatus);
+        
+        this.pedidoSelecionadoId = null;
+        this.pedidos = this.pedidos.filter(p => p.id !== pedido.id);
+      },
+      error: (err) => {
+        console.error('Ocorreu um erro durante o processo de salvamento:', err);
+      }
+    });
   }
 
   public toggleItens(pedidoId: number): void {

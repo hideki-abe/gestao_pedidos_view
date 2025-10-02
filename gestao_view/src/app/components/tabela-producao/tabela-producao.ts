@@ -80,7 +80,6 @@ export class TabelaProducao implements OnInit {
 
   private formataStatusEPrioridade(): void {
     this.pedidos.forEach(pedido => {
-      // Usamos um switch para mais clareza e facilidade de expansão
       switch (pedido.status) {
         case 'encaminhar':
           pedido.statusDisplay = 'Pronto para Encaminhar';
@@ -98,7 +97,6 @@ export class TabelaProducao implements OnInit {
           pedido.statusDisplay = 'Cancelado';
           break;
         default:
-          // Caso padrão, apenas exibe o status original capitalizado
           pedido.statusDisplay = pedido.status;
           break;
       }

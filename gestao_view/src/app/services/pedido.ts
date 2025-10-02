@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Pedido } from '../interfaces/pedido';
+import { PrioridadePedido } from '../components/form-pedido/form-pedido';
 
 @Injectable({
   providedIn: 'root' 
@@ -77,7 +78,23 @@ export class PedidoService {
     );
   } 
 
+  // Altera a prioridade, observações do pedido
+  updatePedido(pedidoId: number, dados: Partial<{ observacoes: string; prioridade: PrioridadePedido }>): Observable<Pedido> {
+    const url = `${this.apiUrl}${pedidoId}/`;
+    return this.http.patch<Pedido>(url, dados).pipe(
+      catchError(this.handleError)
+    );
+  }
 
+  // Altera o status do pedido
+  updateStatus(pedidoId: number, status: string): Observable<Pedido> {
+    const url = `${this.apiUrl}${pedidoId}/`;
+    const body = { status: status };
+
+    return this.http.patch<Pedido>(url, body).pipe(
+      catchError(this.handleError)
+    );
+  }
 
   /*
   createPedido(pedido: Omit<Pedido, 'id' | 'dataCriacao'>): Observable<Pedido> {

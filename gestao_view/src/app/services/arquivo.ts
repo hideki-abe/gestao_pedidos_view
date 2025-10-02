@@ -32,7 +32,7 @@ export class ArquivoService {
 
   getArquivosDoPedido(pedidoId: number): Observable<Arquivo[]> {
     const url = `${this.apiUrlPedido}?pedido_id=${pedidoId}`;
-    console.log('URL chamada:', url);
+    //console.log('URL chamada:', url);
     return this.http.get<any>(url).pipe(
       map(response => response.results), // Corrige para pegar só os arquivos
       catchError(this.handleError)

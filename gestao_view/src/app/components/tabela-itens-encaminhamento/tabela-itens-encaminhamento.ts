@@ -31,7 +31,6 @@ export class TabelaItensEncaminhamento implements OnChanges{
     private fluxoService: FluxoService, 
     private faseService: FaseService) 
   {
-    console.log("Componente TabelaItensEncaminhamento carregado:");
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -58,7 +57,7 @@ export class TabelaItensEncaminhamento implements OnChanges{
         //console.log("Fluxos:", JSON.stringify(this.fluxos, null, 2));
         //console.log("Fases:", JSON.stringify(this.fases, null, 2));
         //console.log("---------------------------------");
-        console.log("Itens do pedido: ", this.itens);
+        //console.log("Itens do pedido: ", this.itens);
 
         this.relacionaFluxoComTipo();
         //this.atribuiFluxo();
@@ -102,18 +101,20 @@ export class TabelaItensEncaminhamento implements OnChanges{
 
     for (const item of this.itens) {
 
-      console.log(`Verificando tipo do item: |${item.tipo}|`);
+      //console.log(`Verificando tipo do item: |${item.tipo}|`);
       const regex = tipoParaRegexMap.get(item.tipo);
 
       if (regex) {
         const fluxosEncontrados = this.fluxos.filter(fluxo => regex.test(fluxo.nome));
         item.fluxos_disponiveis = fluxosEncontrados;
-
+        
+        /*
         if (fluxosEncontrados.length > 0) {
           console.log(`Para o item '${item.nome}' (tipo ${item.tipo}), foram encontrados ${fluxosEncontrados.length} fluxos.`);
         } else {
           console.warn(`Nenhum fluxo com o padrão para '${item.tipo}' foi encontrado na lista de fluxos.`);
         }
+        */
       } else {
         item.fluxos_disponiveis = [];
         console.warn(`Nenhuma regra de regex definida para o tipo de item: '${item.tipo}'.`);
@@ -122,19 +123,19 @@ export class TabelaItensEncaminhamento implements OnChanges{
   }
 
   onFluxoChange(item: any, novoFluxoNome: string): void { 
-     console.log(`O item '${item.nome}' mudou para o fluxo:`, novoFluxoNome);
+     //console.log(`O item '${item.nome}' mudou para o fluxo:`, novoFluxoNome);
 
     if (novoFluxoNome) {
       // 1. Encontra o objeto do fluxo selecionado.
-      console.log("Fluxos disponíveis: ", item.fluxos_disponiveis);
+      //console.log("Fluxos disponíveis: ", item.fluxos_disponiveis);
       const novoFluxo = item.fluxos_disponiveis?.find((f: Fluxo) => f.nome === novoFluxoNome);
       // 2. VERIFICAÇÃO DE SEGURANÇA: Prossiga apenas se o fluxo foi encontrado.
-      console.log(item)
+      //console.log(item)
       if (novoFluxo) {
         this.itemService.atualizarFluxoDoItem(item.id, novoFluxo.id).subscribe({
           next: (itemAtualizadoDoServidor) => {
             // 3. Formatação corrigida e lógica de sucesso.
-            console.log('Fluxo atualizado com sucesso no backend!', itemAtualizadoDoServidor);
+            //console.log('Fluxo atualizado com sucesso no backend!', itemAtualizadoDoServidor);
             //Object.assign(item, itemAtualizadoDoServidor);
           },
           error: (err) => {
