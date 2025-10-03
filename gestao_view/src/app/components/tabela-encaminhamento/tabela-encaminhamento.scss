@@ -90,6 +90,19 @@ $colors: (
   }
 }
 
+.itens-row > td {
+  padding: 0; // Remove o padding padrão da célula
+  background-color: #f8f9fa; // Cor de fundo para a área expandida
+}
+
+// 2. Estilos para o container que empilha os componentes
+.details-wrapper {
+  display: flex;
+  flex-direction: column; // Empilha os itens verticalmente
+  gap: 20px; // Cria um espaçamento de 20px entre cada componente
+  padding: 20px; // Adiciona um espaçamento interno em toda a área
+}
+
 // --- Estilos para as Tags (Status, Fase, Prioridade) ---
 .tag {
   display: block;

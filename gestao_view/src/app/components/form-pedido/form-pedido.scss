@@ -1,91 +1,73 @@
 :host {
   display: block;
-  width: 100%;
-  max-width: 1000px;
-  margin: 1.5rem auto 0 auto;
+  // Variáveis para consistência com o painel
+  --primary-color: #3A7CA5;
+  --border-color: #e9ecef;
+  --card-bg: #ffffff;
+  --page-bg: #f8f9fa;
 }
 
-.observacoes-container {
+// O próprio formulário se torna o card principal
+form {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  padding: 1rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+  gap: 1.5rem; // Espaçamento entre as seções do formulário
 }
 
+.prioridade-title,
 .observacoes-title {
-  margin: 0;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  color: #333;
+  color: #343a40;
+  margin: 0 0 10px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
 }
 
+.prioridade-select,
 .observacoes-textarea {
   width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
+  padding: 0.75rem;
+  border: 1px solid #ced4da; // Borda um pouco mais visível para inputs
   border-radius: 4px;
-  font-family: inherit;
+  background-color: white;
   font-size: 0.95rem;
-  resize: vertical;
   box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
 
   &:focus {
     outline: none;
-    border-color: #3A7CA5; /* Azul para o estado de foco */
-    box-shadow: 0 0 0 2px rgba(58, 124, 165, 0.3); /* Sombra suave azul */
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(58, 124, 165, 0.25);
   }
 }
 
 .form-button {
-  margin: 1rem auto 0 auto; 
   width: 100%;
   padding: 0.75rem;
   margin-top: 1rem;
   font-size: 1rem;
-  font-weight: 500;
-  background-color: #68b04d; /* Sua cor principal */
+  font-weight: 600;
+  // Usando a cor primária para consistência
+  background-color: var(--primary-color);
   color: white;
   border: none;
-  border-radius: 4px;
-  display: block;
+  border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
+
   &:hover:not(:disabled) {
-    background-color: #579641; /* Tom mais escuro para hover */
+    background-color: #2a5a77; // Tom mais escuro da cor primária
   }
+
   &:disabled {
     background-color: #E0E0E0; 
     color: #A0A0A0;
     cursor: not-allowed;
-  }
-}
-
-.prioridade-container {
-  margin-bottom: 1rem;
-}
-
-.prioridade-title {
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #333;
-}
-
-// Estilo para o novo select
-.prioridade-select {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: white;
-  font-size: 0.95rem;
-
-  &:focus {
-    outline: none;
-    border-color: #3A7CA5; /* Azul para o estado de foco */
-    box-shadow: 0 0 0 2px rgba(58, 124, 165, 0.3); /* Sombra suave azul */
   }
 }

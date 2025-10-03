@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
 import { Subscription, finalize, forkJoin, map, tap } from 'rxjs';
 import { ArquivoService } from '../../services/arquivo';
+import { Arquivo } from '../../interfaces/arquivo';
 
 // Interface para gerenciar o estado de cada arquivo
 export interface FileUploadState {
@@ -26,7 +27,7 @@ export class PedidoFileUpload {
   // Emite um evento quando todos os uploads terminam
   @Output() uploadCompleto = new EventEmitter<void>();
 
-  arquivos: any[] = [];
+  arquivos: Arquivo[] = [];
   files: FileUploadState[] = [];
   isDragging = false;
   isUploading = false;
@@ -37,6 +38,7 @@ export class PedidoFileUpload {
 
   ngOnInit() {
     this.getArquivos();
+    console.log(this.arquivos);
   }
 
   // --- Manipuladores de Eventos de UI ---
@@ -129,6 +131,7 @@ export class PedidoFileUpload {
       this.arquivoService.getArquivosDoPedido(this.pedidoId).subscribe({
         next: (arquivos) => {
           this.arquivos = arquivos;
+          console.log('Arquivos carregados:', this.arquivos);
         },
         error: (err) => {
           console.error('Erro ao buscar arquivos:', err);

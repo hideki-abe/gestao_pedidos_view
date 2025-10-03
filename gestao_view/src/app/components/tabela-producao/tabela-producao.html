@@ -48,8 +48,10 @@
         <!-- Linha 2: Tabela de Itens (agora está DENTRO do loop e no escopo correto) -->
         <tr *ngIf="pedidoSelecionadoId === pedido.id" class="itens-row">
           <td colspan="8">
-            <app-tabela-itens [pedido]="pedido" ></app-tabela-itens>
-            <app-painel-pedido-producao [pedido]="pedido"></app-painel-pedido-producao>
+            <div class="details-wrapper">
+              <app-tabela-itens [pedido]="pedido" ></app-tabela-itens>
+              <app-painel-pedido-producao [pedido]="pedido"></app-painel-pedido-producao>
+            </div>
           </td>
         </tr>
       </ng-container>
