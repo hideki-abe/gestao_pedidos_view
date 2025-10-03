@@ -8,7 +8,7 @@ import { FluxoService } from '../../services/fluxo';
 import { Fluxo } from '../../interfaces/fluxo';
 import { Fase } from '../../interfaces/fase';
 import { FaseService } from '../../services/fase';
-import { forkJoin } from 'rxjs';
+import { forkJoin, switchMap, of } from 'rxjs';
 
 @Component({
   selector: 'app-tabela-itens-encaminhamento',
@@ -122,30 +122,48 @@ export class TabelaItensEncaminhamento implements OnChanges{
     }
   }
 
-  onFluxoChange(item: any, novoFluxoNome: string): void { 
-     //console.log(`O item '${item.nome}' mudou para o fluxo:`, novoFluxoNome);
+  onFluxoChange(item: Item, novoFluxoNome: string): void { 
+    if (!novoFluxoNome) return;
 
-    if (novoFluxoNome) {
-      // 1. Encontra o objeto do fluxo selecionado.
-      //console.log("Fluxos disponíveis: ", item.fluxos_disponiveis);
-      const novoFluxo = item.fluxos_disponiveis?.find((f: Fluxo) => f.nome === novoFluxoNome);
-      // 2. VERIFICAÇÃO DE SEGURANÇA: Prossiga apenas se o fluxo foi encontrado.
-      //console.log(item)
-      if (novoFluxo) {
-        this.itemService.atualizarFluxoDoItem(item.id, novoFluxo.id).subscribe({
-          next: (itemAtualizadoDoServidor) => {
-            // 3. Formatação corrigida e lógica de sucesso.
-            //console.log('Fluxo atualizado com sucesso no backend!', itemAtualizadoDoServidor);
-            //Object.assign(item, itemAtualizadoDoServidor);
-          },
-          error: (err) => {
-            console.error('Ocorreu um erro ao tentar atualizar o fluxo:', err);
-            // TODO: Adicionar lógica para reverter a mudança na UI em caso de erro.
+    const novoFluxo = item.fluxos_disponiveis?.find((f: Fluxo) => f.nome === novoFluxoNome);
+
+    if (novoFluxo) {
+      // Guarda o estado antigo para reverter em caso de erro
+      const estadoAntigo = { fluxo: item.fluxo_nome, fase_atual: item.fase_atual };
+
+      // 1. Primeira chamada: Atualiza o fluxo do item
+      this.itemService.atualizarFluxoDoItem(item.id, novoFluxo.id).pipe(
+        // 2. Encadeia a próxima operação usando switchMap
+        switchMap(itemComFluxoAtualizado => {
+          // Lógica para encontrar a fase inicial
+          const faseInicial = this.fases.find(fase => fase.fluxo_nome === novoFluxo.nome && fase.ordem === 1);
+
+          if (faseInicial) {
+            // Se encontrou uma fase inicial, faz a SEGUNDA chamada para atualizar a fase
+            console.log(`Fase inicial encontrada (ID: ${faseInicial.id}). Atualizando no banco de dados...`);
+            return this.itemService.updateItem(item.id, { fase_atual: faseInicial.id });
+          } else {
+            // Se não encontrou, apenas continua o fluxo com o item já atualizado (sem fase)
+            console.warn(`Nenhuma fase inicial (ordem 1) encontrada para o fluxo ID: ${novoFluxo.id}`);
+            return of(itemComFluxoAtualizado); // 'of' cria um Observable a partir de um valor
           }
-        });
-      } else {
-        console.error(`Fluxo com nome '${novoFluxoNome}' não foi encontrado na lista de fluxos disponíveis do item.`);
-      }
-    } // 4. CHAVE DE FECHAMENTO ADICIONADA.
+        })
+      ).subscribe({
+        next: (itemFinalAtualizado) => {
+          // 3. Sucesso! Ambas as requisições (ou apenas a primeira) foram concluídas.
+          console.log('Processo de atualização concluído. Item final:', itemFinalAtualizado);
+          // Atualiza a UI com o estado final e correto do servidor.
+          Object.assign(item, itemFinalAtualizado);
+        },
+        error: (err) => {
+          console.error('Ocorreu um erro durante a atualização:', err);
+          // Reverte a UI para o estado anterior em caso de falha em qualquer uma das etapas.
+          Object.assign(item, estadoAntigo);
+          // TODO: Adicionar um toast de erro para o usuário.
+        }
+      });
+    } else {
+      console.error(`Fluxo com nome '${novoFluxoNome}' não foi encontrado.`);
+    }
   }
 }

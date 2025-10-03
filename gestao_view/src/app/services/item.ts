@@ -52,6 +52,11 @@ export class ItemService {
     );
   }
 
+  updateItem(itemId: number, dados: Partial<Item>): Observable<Item> {
+    const url = `${this.apiUrlItens}${itemId}/`;
+    return this.http.patch<Item>(url, dados);
+  }
+
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Ocorreu um erro desconhecido!';
     if (error.error instanceof ErrorEvent) {
