@@ -136,7 +136,12 @@ export class TabelaItensEncaminhamento implements OnChanges{
         // 2. Encadeia a próxima operação usando switchMap
         switchMap(itemComFluxoAtualizado => {
           // Lógica para encontrar a fase inicial
-          const faseInicial = this.fases.find(fase => fase.fluxo_nome === novoFluxo.nome && fase.ordem === 1);
+          let faseInicial = this.fases.find(fase => fase.fluxo_nome === novoFluxo.nome && fase.ordem === 1);
+
+          if(faseInicial?.nome == 'Projeto') {
+            console.log('Fase inicial é projeto, buscando fase 2...');
+            faseInicial = this.fases.find(fase => fase.fluxo_nome === novoFluxo.nome && fase.ordem === 2);
+          }
 
           if (faseInicial) {
             // Se encontrou uma fase inicial, faz a SEGUNDA chamada para atualizar a fase

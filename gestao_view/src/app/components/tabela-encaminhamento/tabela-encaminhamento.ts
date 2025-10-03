@@ -10,12 +10,13 @@ import { FormPedido } from "../form-pedido/form-pedido";
 import { PrioridadePedido } from '../form-pedido/form-pedido';
 import { switchMap } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { Pagination } from '../pagination/pagination';
 
 
 @Component({
   selector: 'app-tabela-encaminhamento',
   standalone: true,
-  imports: [CommonModule, TabelaItensEncaminhamento, PedidoFileUpload, FormPedido], 
+  imports: [CommonModule, TabelaItensEncaminhamento, PedidoFileUpload, FormPedido, Pagination], 
   templateUrl: './tabela-encaminhamento.html',
   styleUrl: './tabela-encaminhamento.scss'
 })
@@ -27,6 +28,10 @@ export class TabelaEncaminhamento implements OnInit {
   isShown = signal(false);
   enterClass = signal('enter-animation');
 
+  public paginaAtual: number = 1;
+  public itensPorPagina: number = 20;
+  public totalDePedidos: number = 0;
+
   constructor(
     private pedidoService: PedidoService, 
     private clienteService: ClienteService, 
@@ -36,7 +41,7 @@ export class TabelaEncaminhamento implements OnInit {
 
   ngOnInit(): void {
     console.log('Componente TabelaProdução inicializado');
-    this.carregarPedidos();
+    this.uploadPedidos();
   }
 
   private carregarPedidos(): void {
@@ -54,6 +59,31 @@ export class TabelaEncaminhamento implements OnInit {
         this.erroAoCarregar = true;
       }
     });
+  }
+
+  private uploadPedidos(): void {
+    this.erroAoCarregar = false;
+    this.pedidoService.getPedidosPaginated(this.paginaAtual, this.itensPorPagina, ['encaminhar', 'aguardando'])
+    .subscribe({
+      next: (response) => {
+        this.pedidos = response.results;
+        this.totalDePedidos = response.count;
+        this.erroAoCarregar = false;
+
+        this.relacionaCliente();
+        this.relacionaVendedor();
+        this.formataStatusEPrioridade();
+      },
+      error: (err) => {
+        console.error('Falha ao carregar pedidos da API:', err);
+        this.erroAoCarregar = true;
+      }
+    });
+  }
+
+  onPageChange(novaPagina: number): void {
+    this.paginaAtual = novaPagina;
+    this.uploadPedidos(); 
   }
 
   private relacionaCliente(): void {
@@ -132,10 +162,6 @@ export class TabelaEncaminhamento implements OnInit {
     pedido.observacoes = dados.texto;
     pedido.prioridade = dados.prioridade;
     console.log('Dados do formulário atualizados:', pedido);
-  }
-
-  click(pedido: Pedido): void{
-    console.log(pedido)
   }
 
   salvarForm(pedido: Pedido): void {

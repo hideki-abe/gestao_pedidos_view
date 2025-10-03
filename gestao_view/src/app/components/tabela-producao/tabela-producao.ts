@@ -6,11 +6,13 @@ import { ClienteService } from '../../services/cliente';
 import { VendedorService } from '../../services/vendedor';
 import { TabelaItens } from "../tabela-itens/tabela-itens";
 import { ToastrService } from 'ngx-toastr';
+import { Pagination } from '../pagination/pagination';
+import { PainelPedidoProducao } from "../painel-pedido-producao/painel-pedido-producao";
 
 @Component({
   selector: 'app-tabela-producao',
   standalone: true,
-  imports: [CommonModule, TabelaItens], 
+  imports: [CommonModule, TabelaItens, Pagination, PainelPedidoProducao], 
   templateUrl: './tabela-producao.html',
   styleUrl: './tabela-producao.scss'
 })
@@ -19,6 +21,10 @@ export class TabelaProducao implements OnInit {
   public pedidos: Pedido[] = [];
   public erroAoCarregar: boolean = false;
   public pedidoSelecionadoId: number | null = null;
+
+  public paginaAtual: number = 1;
+  public itensPorPagina: number = 20;
+  public totalDePedidos: number = 0;
 
   constructor(
     private pedidoService: PedidoService, 
@@ -29,7 +35,7 @@ export class TabelaProducao implements OnInit {
 
   ngOnInit(): void {
     console.log('Componente TabelaProdução inicializado');
-    this.carregarPedidos();
+    this.uploadPedidos();
   }
 
   private carregarPedidos(): void {
@@ -47,6 +53,31 @@ export class TabelaProducao implements OnInit {
         this.erroAoCarregar = true;
       }
     });
+  }
+
+  private uploadPedidos(): void {
+    this.erroAoCarregar = false;
+    this.pedidoService.getPedidosPaginated(this.paginaAtual, this.itensPorPagina, ['producao'])
+    .subscribe({
+      next: (response) => {
+        this.pedidos = response.results;
+        this.totalDePedidos = response.count;
+        this.erroAoCarregar = false;
+
+        this.relacionaCliente();
+        this.relacionaVendedor();
+        this.formataStatusEPrioridade();
+      },
+      error: (err) => {
+        console.error('Falha ao carregar pedidos da API:', err);
+        this.erroAoCarregar = true;
+      }
+    });
+  }
+
+  onPageChange(novaPagina: number): void {
+    this.paginaAtual = novaPagina;
+    this.uploadPedidos(); 
   }
 
   private relacionaCliente(): void {

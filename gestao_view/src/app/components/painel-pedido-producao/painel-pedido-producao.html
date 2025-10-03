@@ -1,0 +1,50 @@
+<div class="painel-container" *ngIf="pedido">
+  
+  <!-- Seção de Detalhes do Pedido -->
+  <div class="section-card">
+    <h3 class="section-title">Detalhes do Pedido</h3>
+    <div class="details-grid">
+      <div class="detail-item">
+        <span class="detail-label">Nº Pedido:</span>
+        <span class="detail-value">{{ pedido.numero_do_pedido }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Cliente:</span>
+        <span class="detail-value">{{ pedido.clienteObj?.nome }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Vendedor:</span>
+        <span class="detail-value">{{ pedido.usuario_responsavelObj?.nome }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Prioridade:</span>
+        <span class="detail-value tag" [ngClass]="'prioridade-' + pedido.prioridade">{{ pedido.prioridadeDisplay }}</span>
+      </div>
+      <div class="detail-item detail-item-full">
+        <span class="detail-label">Observações:</span>
+        <p class="detail-value observacoes">{{ pedido.observacoes || 'Nenhuma observação.' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seção de Arquivos Anexados -->
+  <div class="section-card">
+    <h3 class="section-title">Arquivos Anexados</h3>
+    @if (arquivos && arquivos.length > 0) {
+      <ul class="file-list">
+        <!-- 2. O loop foi atualizado para a nova sintaxe @for -->
+        @for (arquivo of arquivos; track arquivo.id) {
+          <li class="file-item">
+            <span class="file-name">{{ arquivo.file_name }}</span>
+            <button class="btn-download" (click)="abrirArquivo(arquivo.file)">
+              Ver / Baixar
+            </button>
+          </li>
+        }
+      </ul>
+    } @else {
+      <!-- 3. O conteúdo do 'else' vai diretamente aqui, sem <ng-template> -->
+      <p class="no-files-message">Nenhum arquivo anexado a este pedido.</p>
+    }
+  </div>
+</div>

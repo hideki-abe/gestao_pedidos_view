@@ -58,4 +58,14 @@
       </tr>
     </tbody>
   </table>
+
+  @if(!erroAoCarregar && totalDePedidos > itensPorPagina){
+    <app-pagination
+      [paginaAtual]="paginaAtual"
+      [totalDeItens]="totalDePedidos"
+      [itensPorPagina]="itensPorPagina"
+      (pageChange)="onPageChange($event)">
+    </app-pagination>
+  }
+
 </div>

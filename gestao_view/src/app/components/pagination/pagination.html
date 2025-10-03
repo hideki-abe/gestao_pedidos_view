@@ -1,0 +1,27 @@
+<nav class="pagination-container" aria-label="Navegação de páginas">
+  <ul class="pagination-list">
+    <li class="page-item" [class.disabled]="paginaAtual === 1">
+      <button class="page-link" (click)="paginaAnterior()" [disabled]="paginaAtual === 1" aria-label="Página anterior">
+        &laquo;
+      </button>
+    </li>
+    <li 
+      *ngFor="let page of listaDePaginas"
+      class="page-item"
+      [class.active]="page === paginaAtual"
+      [class.disabled]="page === '...'">
+      <button 
+        *ngIf="page !== '...'" 
+        class="page-link" 
+        (click)="mudarPagina(+page)">
+        {{ page }}
+      </button>
+      <span *ngIf="page === '...'" class="page-link ellipsis">...</span>
+    </li>
+    <li class="page-item" [class.disabled]="paginaAtual === getTotalPages()">
+      <button class="page-link" (click)="proximaPagina()" [disabled]="paginaAtual === getTotalPages()" aria-label="Próxima página">
+        &raquo;
+      </button>
+    </li>
+  </ul>
+</nav>

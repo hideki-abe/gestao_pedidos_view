@@ -47,8 +47,9 @@
 
         <!-- Linha 2: Tabela de Itens (agora está DENTRO do loop e no escopo correto) -->
         <tr *ngIf="pedidoSelecionadoId === pedido.id" class="itens-row">
-          <td colspan="7">
+          <td colspan="8">
             <app-tabela-itens [pedido]="pedido" ></app-tabela-itens>
+            <app-painel-pedido-producao [pedido]="pedido"></app-painel-pedido-producao>
           </td>
         </tr>
       </ng-container>
@@ -64,4 +65,13 @@
       </tr>
     </tbody>
   </table>
+
+  @if(!erroAoCarregar && totalDePedidos > itensPorPagina){
+    <app-pagination
+      [paginaAtual]="paginaAtual"
+      [totalDeItens]="totalDePedidos"
+      [itensPorPagina]="itensPorPagina"
+      (pageChange)="onPageChange($event)">
+    </app-pagination>
+  }
 </div>
