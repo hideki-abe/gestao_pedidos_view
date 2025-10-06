@@ -13,6 +13,36 @@
       <option value="urgente">Urgente</option>
     </select>
   </div>
+  <div class="prazo-container">
+    <h4 class="prazo-title">Prazo de Entrega</h4>
+    <div class="prazo-inputs-group">
+      <div class="prazo-input-wrapper">
+        <label class="prazo-label">Data:</label>
+        <input 
+          type="text"
+          class="prazo-input prazo-date"
+          name="prazoData"
+          [(ngModel)]="prazoData"
+          (ngModelChange)="onPrazoMudou()"
+          (input)="formatarData($event)"
+          placeholder="dd/mm/aaaa"
+          maxlength="10">
+      </div>
+
+      <div class="prazo-input-wrapper">
+        <label class="prazo-label">Hora:</label>
+        <input 
+          type="text"
+          class="prazo-input prazo-time"
+          name="prazoHora"
+          [(ngModel)]="prazoHora"
+          (ngModelChange)="onPrazoMudou()"
+          (input)="formatarHora($event)"
+          placeholder="hh:mm"
+          maxlength="5">
+      </div>
+    </div>
+  </div>
   <div class="observacoes-container">
     <h4 class="observacoes-title">Observações</h4>
     <textarea 

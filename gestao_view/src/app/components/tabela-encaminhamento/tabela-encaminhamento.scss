@@ -99,8 +99,9 @@ $colors: (
 .details-wrapper {
   display: flex;
   flex-direction: column; // Empilha os itens verticalmente
-  gap: 20px; // Cria um espaçamento de 20px entre cada componente
-  padding: 20px; // Adiciona um espaçamento interno em toda a área
+  gap: 0px;
+  padding: 0 20px 20px 20px; // Adiciona um espaçamento interno em toda a área
+
 }
 
 // --- Estilos para as Tags (Status, Fase, Prioridade) ---
