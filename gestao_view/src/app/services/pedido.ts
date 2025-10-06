@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Pedido } from '../interfaces/pedido';
 import { PrioridadePedido } from '../components/form-pedido/form-pedido';
+import { PaginatedResponse } from '../interfaces/api';
 
 @Injectable({
   providedIn: 'root' 
@@ -59,6 +60,31 @@ export class PedidoService {
           throw new Error('A resposta da API não é um JSON válido.');
         }
       }),
+      catchError(this.handleError)
+    );
+  }
+
+  getPedidosPaginated(page: number, pageSize: number, status?: string | string[]): Observable<PaginatedResponse<Pedido>> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('page_size', pageSize.toString());
+
+    // Lógica para adicionar o(s) status ao query params
+    if (status) {
+      if (Array.isArray(status)) {
+        // Se for um array, usa .append() para cada status.
+        // Isso cria a URL: ?status=encaminhar&status=aguardando
+        status.forEach(s => {
+          params = params.append('status', s);
+        });
+      } else {
+        // Se for uma única string, usa .set()
+        params = params.set('status', status);
+      }
+    }
+
+    // Deixa o HttpClient fazer o parse do JSON automaticamente
+    return this.http.get<PaginatedResponse<Pedido>>(this.apiUrl, { params }).pipe(
       catchError(this.handleError)
     );
   }
