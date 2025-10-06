@@ -43,7 +43,7 @@ $colors: (
   background-color: $table-bg;
 
   th, td {
-    padding: 12px 15px;
+    padding: 6px 15px;
     //border: 1px solid $border-color;
     text-align: left;
   }
@@ -91,7 +91,7 @@ $colors: (
 .details-wrapper {
   display: flex;
   flex-direction: column; // Empilha os itens verticalmente
-  gap: 20px; // Cria um espaçamento de 20px entre cada componente
+  gap: 0; // Cria um espaçamento de 20px entre cada componente
   padding: 20px; // Adiciona um espaçamento interno em toda a área
 }
 
