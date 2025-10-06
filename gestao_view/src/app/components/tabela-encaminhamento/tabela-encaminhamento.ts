@@ -158,16 +158,27 @@ export class TabelaEncaminhamento implements OnInit {
     });
   }
 
-  onFormChange(dados: { texto: string; prioridade: PrioridadePedido }, pedido: Pedido): void {
+  onFormChange(dados: { texto: string; prioridade: PrioridadePedido; prazo: Date | null }, pedido: Pedido): void {
     pedido.observacoes = dados.texto;
     pedido.prioridade = dados.prioridade;
     console.log('Dados do formulário atualizados:', pedido);
+
+    if (dados.prazo) {
+    // Aqui você tem um objeto Date completo, pronto para usar
+    pedido.prazo = dados.prazo.toISOString(); // Para salvar no backend
+    // Ou qualquer outra formatação que você precise
+    console.log("Prazo atualizado para:", pedido.prazo);
+  } else {
+    pedido.prazo = null; // Limpa se o prazo estiver incompleto/inválido
+  }
+
   }
 
   salvarForm(pedido: Pedido): void {
     const dadosParaSalvar = {
       observacoes: pedido.observacoes,
-      prioridade: pedido.prioridade
+      prioridade: pedido.prioridade,
+      prazo: pedido.prazo,
     };
 
     console.log(`Iniciando processo de salvamento para o pedido ${pedido.id}:`, dadosParaSalvar);
@@ -183,6 +194,7 @@ export class TabelaEncaminhamento implements OnInit {
         this.toastr.success(`Pedido ${pedido.numero_do_pedido} enviado para produção!`, 'Sucesso!');
         this.pedidoSelecionadoId = null;
         this.pedidos = this.pedidos.filter(p => p.id !== pedido.id);
+        this.totalDePedidos--; // Atualiza a contagem para a paginação
       },
       error: (err) => {
         console.error('Ocorreu um erro durante o processo de salvamento:', err);

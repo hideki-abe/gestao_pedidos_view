@@ -13,20 +13,28 @@ export type PrioridadePedido = 'baixa' | 'normal' | 'alta' | 'urgente';
   styleUrl: './form-pedido.scss'
 })
 export class FormPedido implements OnChanges {
-onPrazoMudou() {
-throw new Error('Method not implemented.');
-}
 
   @Input() textoInicial: string = '';
   @Input() prioridadeInicial: PrioridadePedido = 'normal';
-  @Input() prazoHora: string = '';
-  @Input() prazoData: string = '';
+  @Input() prazoHoraInicial: string = '';
+  @Input() prazoDataInicial: string = '';
 
-  @Output() formChange = new EventEmitter<{ texto: string; prioridade: PrioridadePedido; }>();
-  @Output() formSubmit = new EventEmitter<{ texto: string; prioridade: PrioridadePedido; }>();
+  @Output() formChange = new EventEmitter<{ 
+    texto: string; 
+    prioridade: PrioridadePedido; 
+    prazo: Date | null; 
+  }>();
+
+  @Output() formSubmit = new EventEmitter<{ 
+    texto: string; 
+    prioridade: PrioridadePedido; 
+    prazo: Date | null; 
+  }>();
 
   texto: string = '';
   prioridade: PrioridadePedido = 'normal';
+  prazoData: string = '';
+  prazoHora: string = '';
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['textoInicial'] && changes['textoInicial'].currentValue !== this.texto) {
@@ -34,6 +42,12 @@ throw new Error('Method not implemented.');
     }
     if (changes['prioridadeInicial'] && changes['prioridadeInicial'].currentValue !== this.prioridade) {
       this.prioridade = this.prioridadeInicial || 'normal';
+    }
+    if (changes['prazoHoraInicial'] && changes['prazoHoraInicial'].currentValue !== this.prazoHora) {
+      this.prazoHora = this.prazoHoraInicial || '';
+    }
+    if (changes['prazoDataInicial'] && changes['prazoDataInicial'].currentValue !== this.prazoData) {
+      this.prazoData = this.prazoDataInicial || '';
     }
   }
 
@@ -48,12 +62,69 @@ throw new Error('Method not implemented.');
     this.emitFormChanges();
   }
 
+  private criarDataPrazo(): Date | null {
+    if (!this.prazoData || !this.prazoHora) {
+      return null; // Retorna null se data ou hora estiverem vazios
+    }
+
+    // Parse da data (formato: dd/mm/aaaa)
+    const partesData = this.prazoData.split('/');
+    if (partesData.length !== 3) {
+      return null; // Data inválida
+    }
+
+    const dia = parseInt(partesData[0], 10);
+    const mes = parseInt(partesData[1], 10) - 1; // Mês é 0-indexed no JavaScript
+    const ano = parseInt(partesData[2], 10);
+
+    // Parse da hora (formato: hh:mm)
+    const partesHora = this.prazoHora.split(':');
+    if (partesHora.length !== 2) {
+      return null; // Hora inválida
+    }
+
+    const hora = parseInt(partesHora[0], 10);
+    const minuto = parseInt(partesHora[1], 10);
+
+    // Validação básica
+    if (isNaN(dia) || isNaN(mes) || isNaN(ano) || isNaN(hora) || isNaN(minuto)) {
+      return null;
+    }
+
+    if (dia < 1 || dia > 31 || mes < 0 || mes > 11 || hora < 0 || hora > 23 || minuto < 0 || minuto > 59) {
+      return null;
+    }
+
+    // Criar o objeto Date
+    const dataCompleta = new Date(ano, mes, dia, hora, minuto, 0, 0);
+    
+    // Verifica se a data criada é válida
+    if (isNaN(dataCompleta.getTime())) {
+      return null;
+    }
+
+    console.log("Data completa criada:", dataCompleta);
+    return dataCompleta;
+  }
+
   private emitFormChanges(): void {
-    this.formChange.emit({ texto: this.texto, prioridade: this.prioridade });
+    const prazoFormatado = this.criarDataPrazo();
+
+    this.formChange.emit({ 
+      texto: this.texto, 
+      prioridade: this.prioridade,
+      prazo: prazoFormatado
+      });
   }
 
   salvarForm(): void {
-    this.formSubmit.emit({ texto: this.texto, prioridade: this.prioridade });
+    const prazoFormatado = this.criarDataPrazo();
+    
+    this.formSubmit.emit({ 
+      texto: this.texto, 
+      prioridade: this.prioridade,
+      prazo: prazoFormatado
+    });
   }
 
   formatarData(event: any): void {
@@ -79,6 +150,7 @@ throw new Error('Method not implemented.');
     // Atualiza o valor do input e a propriedade
     input.value = valorFormatado;
     this.prazoData = valorFormatado;
+    console.log(this.prazoData);
   }
 
   // FUNÇÃO CORRIGIDA: formatarHora que permite backspace
@@ -102,5 +174,10 @@ throw new Error('Method not implemented.');
     // Atualiza o valor do input e a propriedade
     input.value = valorFormatado;
     this.prazoHora = valorFormatado;
+    console.log(this.prazoHora);
+  }
+
+  onPrazoMudou(): void {
+    this.emitFormChanges();
   }
 }
