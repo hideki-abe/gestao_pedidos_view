@@ -1,0 +1,305 @@
+:host {
+  display: block;
+  // Mesmas variáveis do form-pedido para consistência
+  --primary-color: #3A7CA5;
+  --border-color: #e9ecef;
+  --card-bg: #ffffff;
+  --page-bg: #f8f9fa;
+}
+
+form {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 1500px; // Aumentado para acomodar a tabela
+  margin: 0 auto;
+}
+
+.section-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #343a40;
+  margin: 0 0 10px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #6c757d;
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(58, 124, 165, 0.25);
+  }
+}
+
+// Prazo (mesmo estilo do form-pedido)
+.prazo-inputs-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.prazo-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+// NOVA: Estilos para a tabela de itens
+.table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.itens-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  font-size: 0.9rem;
+
+  th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    padding: 12px 8px;
+    text-align: left;
+    border-bottom: 2px solid var(--border-color);
+    white-space: nowrap;
+    font-size: 0.85rem;
+  }
+
+  td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #f1f3f4;
+    vertical-align: top;
+  }
+
+  .item-row {
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #f8f9fa;
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+
+  // Estilos específicos para cada coluna
+  .item-nome {
+    font-weight: 500;
+    color: var(--primary-color);
+    min-width: 120px;
+  }
+
+  .item-tipo {
+    color: #6c757d;
+    min-width: 80px;
+  }
+
+  .item-quantidade {
+    text-align: center;
+    font-weight: 500;
+    min-width: 50px;
+  }
+
+  .item-medidas {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    color: #495057;
+    min-width: 100px;
+
+    .furo-info {
+      font-size: 0.8rem;
+      color: #6c757d;
+      margin-top: 2px;
+    }
+  }
+
+  .item-fluxo {
+    color: #6c757d;
+    min-width: 80px;
+  }
+
+  .item-descricao {
+    max-width: 200px;
+    min-width: 120px;
+
+    .descricao-texto {
+      color: #495057;
+      font-style: italic;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sem-descricao {
+      color: #adb5bd;
+    }
+  }
+
+  .item-actions {
+    white-space: nowrap;
+    text-align: center;
+    width: 80px;
+  }
+}
+
+// Botões de ação da tabela
+.btn-edit, .btn-remove {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  margin: 0 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.btn-edit {
+  background-color: #ffc107;
+  color: #212529;
+
+  &:hover {
+    background-color: #e0a800;
+  }
+}
+
+.btn-remove {
+  background-color: #dc3545;
+  color: white;
+
+  &:hover {
+    background-color: #c82333;
+  }
+}
+
+// Outros botões
+.form-button, .btn-secondary {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border: none;
+}
+
+.form-button {
+  background-color: var(--primary-color);
+  color: white;
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+
+  &:hover:not(:disabled) {
+    background-color: #2a5a77;
+  }
+
+  &:disabled {
+    background-color: #E0E0E0;
+    color: #A0A0A0;
+    cursor: not-allowed;
+  }
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+
+  &:hover {
+    background-color: #5a6268;
+  }
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  .prazo-inputs-group {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  form {
+    max-width: 100%;
+    margin: 0;
+    padding: 15px;
+  }
+
+  .itens-table {
+    font-size: 0.8rem;
+    
+    th, td {
+      padding: 8px 6px;
+    }
+
+    .item-descricao {
+      max-width: 150px;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  // Em telas muito pequenas, mostra apenas as colunas essenciais
+  .itens-table {
+    .item-medidas,
+    .item-fluxo,
+    .item-descricao {
+      display: none;
+    }
+  }
+}

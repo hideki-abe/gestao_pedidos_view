@@ -20,6 +20,12 @@ export class VendedorService {
         );
     }
 
+    getVendedores(): Observable<Vendedor[]> {
+        return this.http.get<Vendedor[]>(this.apiUrl).pipe(
+            catchError(this.handleError)
+        );
+    }
+
     private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Ocorreu um erro desconhecido!';
     if (error.error instanceof ErrorEvent) {

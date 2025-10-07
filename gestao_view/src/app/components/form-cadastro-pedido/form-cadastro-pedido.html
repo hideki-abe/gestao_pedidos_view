@@ -1,0 +1,208 @@
+<form (ngSubmit)="salvarPedido()">
+  
+  <!-- Dados Básicos do Pedido -->
+  <div class="section-container">
+    <h4 class="section-title">Dados do Pedido</h4>
+    
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Cliente:</label>
+        <select class="form-select" [(ngModel)]="clienteSelecionado" name="cliente" required>
+          <option [ngValue]="null">Selecione um cliente</option>
+          <option *ngFor="let cliente of clientes && clientes.length ? clientes : []" [ngValue]="cliente.id">
+            {{ cliente.nome }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Vendedor:</label>
+        <select class="form-select" [(ngModel)]="vendedorSelecionado" name="vendedor" required>
+          <option [ngValue]="null">Selecione um vendedor</option>
+          <option *ngFor="let vendedor of vendedores && vendedores.length ? vendedores : []" [ngValue]="vendedor.id">
+            {{ vendedor.nome }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Número do Pedido:</label>
+        <input type="text" class="form-input" [(ngModel)]="numeroPedido" name="numeroPedido" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Contato:</label>
+        <input type="text" class="form-input" [(ngModel)]="contato" name="contato" required>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prioridade -->
+  <div class="section-container">
+    <h4 class="section-title">Prioridade</h4>
+    <select class="form-select" [(ngModel)]="prioridade" name="prioridade">
+      <option value="baixa">Baixa</option>
+      <option value="normal">Normal</option>
+      <option value="alta">Alta</option>
+      <option value="urgente">Urgente</option>
+    </select>
+  </div>
+
+  <!-- Prazo de Entrega -->
+  <div class="section-container">
+    <h4 class="section-title">Prazo de Entrega</h4>
+    <div class="prazo-inputs-group">
+      <div class="prazo-input-wrapper">
+        <label class="form-label">Data:</label>
+        <input 
+          type="text"
+          class="form-input prazo-date"
+          name="prazoData"
+          [(ngModel)]="prazoData"
+          (input)="formatarData($event)"
+          placeholder="dd/mm/aaaa"
+          maxlength="10">
+      </div>
+      
+      <div class="prazo-input-wrapper">
+        <label class="form-label">Hora:</label>
+        <input 
+          type="text"
+          class="form-input prazo-time"
+          name="prazoHora"
+          [(ngModel)]="prazoHora"
+          (input)="formatarHora($event)"
+          placeholder="hh:mm"
+          maxlength="5">
+      </div>
+    </div>
+  </div>
+
+  <!-- Observações -->
+  <div class="section-container">
+    <h4 class="section-title">Observações</h4>
+    <textarea 
+      class="form-textarea"
+      [(ngModel)]="observacoes"
+      name="observacoes"
+      placeholder="Digite observações sobre o pedido..."
+      rows="4">
+    </textarea>
+  </div>
+
+  <!-- Adicionar Itens -->
+  <div class="section-container">
+    <h4 class="section-title">Adicionar Item</h4>
+    
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Nome:</label>
+        <input type="text" class="form-input" [(ngModel)]="itemAtual.nome" name="itemNome">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tipo:</label>
+        <input type="text" class="form-input" [(ngModel)]="itemAtual.tipo" name="itemTipo">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Descrição:</label>
+        <input type="text" class="form-input" [(ngModel)]="itemAtual.descricao" name="itemDescricao">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Fluxo:</label>
+        <input type="text" class="form-input" [(ngModel)]="itemAtual.fluxo_nome" name="itemFluxo">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Quantidade:</label>
+        <input type="number" class="form-input" [(ngModel)]="itemAtual.quantidade" name="itemQuantidade" min="1">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Medida 1:</label>
+        <input type="text" class="form-input" [(ngModel)]="itemAtual.medida_1" name="itemMedida1">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Medida 2:</label>
+        <input type="text" class="form-input" [(ngModel)]="itemAtual.medida_2" name="itemMedida2">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Furo:</label>
+        <input type="text" class="form-input" [(ngModel)]="itemAtual.furo" name="itemFuro">
+      </div>
+    </div>
+
+    <button type="button" class="btn-secondary" (click)="adicionarItem()">
+      Adicionar Item
+    </button>
+  </div>
+
+  <div class="section-container" *ngIf="itens.length > 0">
+    <h4 class="section-title">Itens Adicionados ({{ itens.length }})</h4>
+    
+    <div class="table-container">
+      <table class="itens-table">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Tipo</th>
+            <th>Qtd</th>
+            <th>Medidas</th>
+            <th>Fluxo</th>
+            <th>Descrição</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of itens; let i = index" class="item-row">
+            <td class="item-nome">{{ item.nome }}</td>
+            <td class="item-tipo">{{ item.tipo }}</td>
+            <td class="item-quantidade">{{ item.quantidade }}</td>
+            <td class="item-medidas">
+              <span *ngIf="item.medida_1">{{ item.medida_1 }}</span>
+              <span *ngIf="item.medida_2"> × {{ item.medida_2 }}</span>
+              <div *ngIf="item.furo" class="furo-info">Furo: {{ item.furo }}</div>
+            </td>
+            <td class="item-fluxo">{{ item.fluxo_nome || '-' }}</td>
+            <td class="item-descricao">
+              <span *ngIf="item.descricao; else semDescricao" class="descricao-texto">
+                {{ item.descricao }}
+              </span>
+              <ng-template #semDescricao>
+                <span class="sem-descricao">-</span>
+              </ng-template>
+            </td>
+            <td class="item-actions">
+              <button 
+                type="button" 
+                class="btn-edit" 
+                (click)="editarItem(i)" 
+                title="Editar item">
+                ✏️
+              </button>
+              <button 
+                type="button" 
+                class="btn-remove" 
+                (click)="removerItem(i)" 
+                title="Remover item">
+                🗑️
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Botão de Salvar -->
+  <button 
+    type="submit"
+    class="form-button"
+    [disabled]="!formularioValido()">
+    Criar Pedido
+  </button>
+</form>

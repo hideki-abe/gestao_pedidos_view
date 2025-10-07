@@ -20,6 +20,12 @@ export class ClienteService {
         );
     }
 
+    getClientes(): Observable<Cliente[]> {
+        return this.http.get<Cliente[]>(this.apiUrl).pipe(
+            catchError(this.handleError)
+        );
+    }
+
     private handleError(error: HttpErrorResponse) {
         let errorMessage = 'Ocorreu um erro desconhecido!';
         if (error.error instanceof ErrorEvent) {
