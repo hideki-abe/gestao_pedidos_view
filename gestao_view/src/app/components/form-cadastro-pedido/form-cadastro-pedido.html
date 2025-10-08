@@ -7,12 +7,7 @@
     <div class="form-grid">
       <div class="form-group">
         <label class="form-label">Cliente:</label>
-        <select class="form-select" [(ngModel)]="clienteSelecionado" name="cliente" required>
-          <option [ngValue]="null">Selecione um cliente</option>
-          <option *ngFor="let cliente of clientes && clientes.length ? clientes : []" [ngValue]="cliente.id">
-            {{ cliente.nome }}
-          </option>
-        </select>
+        <input type="text" class="form-input" [(ngModel)]="clienteNome" name="cliente" required>
       </div>
 
       <div class="form-group">
@@ -33,6 +28,11 @@
       <div class="form-group">
         <label class="form-label">Contato:</label>
         <input type="text" class="form-input" [(ngModel)]="contato" name="contato" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Documento:</label>
+        <input type="text" class="form-input" [(ngModel)]="documento" name="documento" required>
       </div>
     </div>
   </div>

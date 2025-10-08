@@ -30,10 +30,12 @@ export class FormCadastroPedido implements OnInit {
   }>();
 
   // Dados do pedido
+  clienteNome: string = '';
   clienteSelecionado: Cliente | null = null;
   vendedorSelecionado: Vendedor | null = null;
   numeroPedido: string = '';
   contato: string = '';
+  documento: string = '';
   prioridade: PrioridadePedido = 'normal';
   observacoes: string = '';
   
