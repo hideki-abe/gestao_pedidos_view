@@ -71,12 +71,21 @@ form {
 }
 
 .input-locked {
-  background-color: #e9ecef; /* Um cinza claro, padrão para campos desabilitados */
-  cursor: not-allowed;      /* Muda o cursor para indicar que não é editável */
-  color: #495057;           /* Garante que o texto ainda seja legível */
+  background-color: #e9ecef;
+  cursor: not-allowed;     
+  color: #495057;         
 }
 
-// Prazo (mesmo estilo do form-pedido)
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 .prazo-inputs-group {
   display: grid;
   grid-template-columns: 1fr 1fr;

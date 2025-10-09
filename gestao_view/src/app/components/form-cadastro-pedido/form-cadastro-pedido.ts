@@ -88,7 +88,8 @@ export class FormCadastroPedido implements OnInit {
   }
 
   buscarClientePorDocumento(): void {
-    const documentoLimpo = this.documento.replace(/\D/g, '');
+
+    const documentoLimpo = String(this.documento || '').replace(/\D/g, '');
     console.log('Buscando cliente com documento:', documentoLimpo);
 
     if (!documentoLimpo) {
@@ -98,7 +99,7 @@ export class FormCadastroPedido implements OnInit {
     }
 
     const clienteEncontrado = this.clientes.find(
-      cliente => (cliente.documento || '').replace(/\D/g, '') === documentoLimpo
+      cliente => (cliente.documento || '').replace(/\D/g, '').replace(/[^\w\s]/g, '') === documentoLimpo
     );
 
     if (clienteEncontrado) {
@@ -116,11 +117,11 @@ export class FormCadastroPedido implements OnInit {
   onClienteChange(cliente: Cliente | null): void {
     this.clienteSelecionado = cliente;
     if (cliente) {
-      this.documento = cliente.documento;
-      this.isDocumentoLocked = true; // Bloqueia o campo ao selecionar
+      this.documento = cliente.documento || ''; 
+      this.isDocumentoLocked = true; 
     } else {
       this.documento = '';
-      this.isDocumentoLocked = false; // Desbloqueia se a seleção for limpa
+      this.isDocumentoLocked = false; 
     }
   }
 
