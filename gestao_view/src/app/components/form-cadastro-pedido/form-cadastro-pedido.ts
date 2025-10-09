@@ -94,6 +94,8 @@ export class FormCadastroPedido implements OnInit {
 
     if (!documentoLimpo) {
       this.clienteSelecionado = null;
+      this.clienteNome = '';
+      this.contato = ''; 
       this.isDocumentoLocked = false;
       return;
     }
@@ -105,6 +107,8 @@ export class FormCadastroPedido implements OnInit {
     if (clienteEncontrado) {
       this.clienteSelecionado = clienteEncontrado;
       this.clienteNome = clienteEncontrado.nome;
+      this.contato = clienteEncontrado.contato || '';
+
       this.isDocumentoLocked = true;
       console.log('Cliente encontrado:', clienteEncontrado);
     } else {
@@ -117,12 +121,15 @@ export class FormCadastroPedido implements OnInit {
   onClienteChange(cliente: Cliente | null): void {
     this.clienteSelecionado = cliente;
     if (cliente) {
-      this.documento = cliente.documento || ''; 
+      this.documento = cliente.documento || '';
+      this.contato = cliente.contato || ''; 
       this.isDocumentoLocked = true; 
     } else {
       this.documento = '';
+      this.contato = '';
       this.isDocumentoLocked = false; 
     }
+
   }
 
   private criarItemVazio(): ItemCadastro {
@@ -227,6 +234,19 @@ export class FormCadastroPedido implements OnInit {
       this.contato &&
       this.itens.length > 0
     );
+  }
+
+  imprimePedido(): void {
+    console.log('Pedido a ser salvo:', {
+      cliente: this.clienteSelecionado,
+      vendedor: this.vendedorSelecionado,
+      numero_do_pedido: this.numeroPedido,
+      contato: this.contato,
+      prioridade: this.prioridade,
+      observacoes: this.observacoes,
+      prazo: this.criarDataPrazo(),
+      itens: this.itens
+    });
   }
 
   salvarPedido(): void {
