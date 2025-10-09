@@ -3,13 +3,14 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Vendedor } from '../interfaces/vendedor';
+import { PaginatedResponse } from '../interfaces/api';
 
 @Injectable({
   providedIn: 'root' 
 })
 export class VendedorService {
 
-  private apiUrl = '/accounts/users';
+  private apiUrl = '/accounts/users/vendedores';
 
   constructor(private http: HttpClient) { }
 

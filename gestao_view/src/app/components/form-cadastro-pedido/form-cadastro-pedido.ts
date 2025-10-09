@@ -53,6 +53,8 @@ export class FormCadastroPedido implements OnInit {
   // Item sendo editado
   itemAtual: ItemCadastro = this.criarItemVazio();
 
+  isDocumentoLocked = false;
+
   constructor(
     private clienteService: ClienteService,
     private vendedorService: VendedorService
@@ -61,13 +63,14 @@ export class FormCadastroPedido implements OnInit {
   ngOnInit(): void {
     this.carregarClientes();
     this.carregarVendedores();
-    console.log('Clientes carregados:', this.clientes);
-    console.log('Vendedores carregados:', this.vendedores);
   }
 
   private carregarClientes(): void {
     this.clienteService.getClientes().subscribe({
-      next: (clientes) => this.clientes = clientes,
+      next: (clientes) => {this.clientes = clientes
+        this.clientes = clientes;
+        console.log('Clientes carregados:', this.clientes);
+      },
       error: (err) => console.error('Erro ao carregar clientes:', err)
     });
     
@@ -75,9 +78,50 @@ export class FormCadastroPedido implements OnInit {
 
   private carregarVendedores(): void {
     this.vendedorService.getVendedores().subscribe({
-      next: (vendedores) => this.vendedores = vendedores,
+      next: (vendedores) => {
+        this.vendedores = vendedores;
+        console.log('Vendedores carregados:', this.vendedores);
+      },
       error: (err) => console.error('Erro ao carregar vendedores:', err)
+      
     });
+  }
+
+  buscarClientePorDocumento(): void {
+    const documentoLimpo = this.documento.replace(/\D/g, '');
+    console.log('Buscando cliente com documento:', documentoLimpo);
+
+    if (!documentoLimpo) {
+      this.clienteSelecionado = null;
+      this.isDocumentoLocked = false;
+      return;
+    }
+
+    const clienteEncontrado = this.clientes.find(
+      cliente => (cliente.documento || '').replace(/\D/g, '') === documentoLimpo
+    );
+
+    if (clienteEncontrado) {
+      this.clienteSelecionado = clienteEncontrado;
+      this.clienteNome = clienteEncontrado.nome;
+      this.isDocumentoLocked = true;
+      console.log('Cliente encontrado:', clienteEncontrado);
+    } else {
+      this.clienteSelecionado = null;
+      this.isDocumentoLocked = false;
+    }
+
+  }
+  
+  onClienteChange(cliente: Cliente | null): void {
+    this.clienteSelecionado = cliente;
+    if (cliente) {
+      this.documento = cliente.documento;
+      this.isDocumentoLocked = true; // Bloqueia o campo ao selecionar
+    } else {
+      this.documento = '';
+      this.isDocumentoLocked = false; // Desbloqueia se a seleção for limpa
+    }
   }
 
   private criarItemVazio(): ItemCadastro {
@@ -93,7 +137,6 @@ export class FormCadastroPedido implements OnInit {
     };
   }
 
-  // Formatação de data e hora (mesmo código do form-pedido)
   formatarData(event: any): void {
     const input = event.target;
     let valor = input.value;

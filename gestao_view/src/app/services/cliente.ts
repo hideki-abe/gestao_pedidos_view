@@ -4,6 +4,13 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Cliente } from '../interfaces/cliente';
 
+export interface PaginatedResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
+
 @Injectable({
   providedIn: 'root' 
 })
@@ -21,7 +28,10 @@ export class ClienteService {
     }
 
     getClientes(): Observable<Cliente[]> {
-        return this.http.get<Cliente[]>(this.apiUrl).pipe(
+        // 1. Defina o tipo de retorno esperado como a resposta paginada
+        return this.http.get<PaginatedResponse<Cliente>>(this.apiUrl).pipe(
+            // 2. Use o operador 'map' para extrair e retornar apenas o array 'results'
+            map(response => response.results),
             catchError(this.handleError)
         );
     }

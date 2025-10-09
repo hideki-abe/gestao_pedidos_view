@@ -70,6 +70,12 @@ form {
   }
 }
 
+.input-locked {
+  background-color: #e9ecef; /* Um cinza claro, padrão para campos desabilitados */
+  cursor: not-allowed;      /* Muda o cursor para indicar que não é editável */
+  color: #495057;           /* Garante que o texto ainda seja legível */
+}
+
 // Prazo (mesmo estilo do form-pedido)
 .prazo-inputs-group {
   display: grid;

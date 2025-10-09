@@ -5,9 +5,28 @@
     <h4 class="section-title">Dados do Pedido</h4>
     
     <div class="form-grid">
+
+      <div class="form-group">
+        <label class="form-label">Documento:</label>
+        <input 
+          type="text" 
+          class="form-input" 
+          [(ngModel)]="documento"
+          (ngModelChange)="buscarClientePorDocumento()"
+          name="documento" 
+          placeholder="Digite o documento para buscar">
+      </div>
+
       <div class="form-group">
         <label class="form-label">Cliente:</label>
-        <input type="text" class="form-input" [(ngModel)]="clienteNome" name="cliente" required>
+        <input 
+          type="text" 
+          class="form-input" 
+          [class.input-locked]="isDocumentoLocked"
+          [(ngModel)]="clienteNome" 
+          name="cliente" 
+          [readonly]="isDocumentoLocked"
+          required>
       </div>
 
       <div class="form-group">
@@ -30,10 +49,6 @@
         <input type="text" class="form-input" [(ngModel)]="contato" name="contato" required>
       </div>
 
-      <div class="form-group">
-        <label class="form-label">Documento:</label>
-        <input type="text" class="form-input" [(ngModel)]="documento" name="documento" required>
-      </div>
     </div>
   </div>
 
