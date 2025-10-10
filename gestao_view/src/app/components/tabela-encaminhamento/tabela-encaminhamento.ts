@@ -11,12 +11,21 @@ import { PrioridadePedido } from '../form-pedido/form-pedido';
 import { switchMap } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { Pagination } from '../pagination/pagination';
+import { FiltrosPedido, PedidoFilter } from '../pedido-filter/pedido-filter';
+import { Vendedor } from '../../interfaces/vendedor';
 
 
 @Component({
   selector: 'app-tabela-encaminhamento',
   standalone: true,
-  imports: [CommonModule, TabelaItensEncaminhamento, PedidoFileUpload, FormPedido, Pagination], 
+  imports: [
+    CommonModule, 
+    TabelaItensEncaminhamento, 
+    PedidoFileUpload, 
+    FormPedido, 
+    Pagination, 
+    PedidoFilter
+  ], 
   templateUrl: './tabela-encaminhamento.html',
   styleUrl: './tabela-encaminhamento.scss'
 })
@@ -32,6 +41,9 @@ export class TabelaEncaminhamento implements OnInit {
   public itensPorPagina: number = 20;
   public totalDePedidos: number = 0;
 
+  public listaDeVendedores: Vendedor[] = [];
+  private filtrosAtuais: FiltrosPedido = {};
+
   constructor(
     private pedidoService: PedidoService, 
     private clienteService: ClienteService, 
@@ -41,6 +53,7 @@ export class TabelaEncaminhamento implements OnInit {
 
   ngOnInit(): void {
     console.log('Componente TabelaProdução inicializado');
+    this.carregarVendedores();
     this.uploadPedidos();
   }
 
@@ -60,10 +73,26 @@ export class TabelaEncaminhamento implements OnInit {
       }
     });
   }
+  
+  private carregarVendedores(): void {
+    this.vendedorService.getVendedores().subscribe({
+      next: (vendedores) => {
+        this.listaDeVendedores = vendedores;
+      },
+      error: (err) => {
+        console.error('Falha ao carregar a lista de vendedores:', err);
+      }
+    });
+  }
 
   private uploadPedidos(): void {
     this.erroAoCarregar = false;
-    this.pedidoService.getPedidosPaginated(this.paginaAtual, this.itensPorPagina, ['encaminhar', 'aguardando'])
+    this.pedidoService.getPedidosPaginated(
+      this.paginaAtual, 
+      this.itensPorPagina, 
+      ['encaminhar', 'aguardando'],
+      this.filtrosAtuais
+    )
     .subscribe({
       next: (response) => {
         this.pedidos = response.results;
@@ -83,6 +112,12 @@ export class TabelaEncaminhamento implements OnInit {
 
   onPageChange(novaPagina: number): void {
     this.paginaAtual = novaPagina;
+    this.uploadPedidos(); 
+  }
+
+  onFiltrosMudaram(filtros: FiltrosPedido): void {
+    this.filtrosAtuais = filtros;
+    this.paginaAtual = 1;
     this.uploadPedidos(); 
   }
 
@@ -164,13 +199,13 @@ export class TabelaEncaminhamento implements OnInit {
     console.log('Dados do formulário atualizados:', pedido);
 
     if (dados.prazo) {
-    // Aqui você tem um objeto Date completo, pronto para usar
-    pedido.prazo = dados.prazo.toISOString(); // Para salvar no backend
-    // Ou qualquer outra formatação que você precise
-    console.log("Prazo atualizado para:", pedido.prazo);
-  } else {
-    pedido.prazo = null; // Limpa se o prazo estiver incompleto/inválido
-  }
+
+    pedido.prazo = dados.prazo.toISOString(); 
+    //console.log("Prazo atualizado para:", pedido.prazo);
+
+    } else {
+      pedido.prazo = null; // Limpa se o prazo estiver incompleto/inválido
+    }
 
   }
 

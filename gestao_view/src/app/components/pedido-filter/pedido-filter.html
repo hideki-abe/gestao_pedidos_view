@@ -1,0 +1,59 @@
+<div class="filter-container">
+  <div class="filter-grid">
+    <!-- Filtro por Número do Pedido -->
+    <div class="filter-group">
+      <label for="filtro-numero-pedido">Nº Pedido</label>
+      <input 
+        type="text" 
+        id="filtro-numero-pedido" 
+        class="filter-input" 
+        placeholder="Buscar por número..."
+        [(ngModel)]="filtros.numeroPedido"
+        (ngModelChange)="onFiltroChange()">
+    </div>
+
+    <!-- Filtro por Nome do Cliente -->
+    <div class="filter-group">
+      <label for="filtro-nome-cliente">Cliente</label>
+      <input 
+        type="text" 
+        id="filtro-nome-cliente" 
+        class="filter-input" 
+        placeholder="Buscar por cliente..."
+        [(ngModel)]="filtros.nomeCliente"
+        (ngModelChange)="onFiltroChange()">
+    </div>
+
+    <!-- Filtro por Vendedor -->
+    <div class="filter-group">
+      <label for="filtro-vendedor">Vendedor</label>
+      <select 
+        id="filtro-vendedor" 
+        class="filter-select"
+        [(ngModel)]="filtros.vendedorId"
+        (ngModelChange)="onFiltroChange()">
+        <option [ngValue]="null">Todos</option>
+        <option *ngFor="let vendedor of vendedores" [ngValue]="vendedor.id">
+          {{ vendedor.nome }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Filtro por Data do Pedido -->
+    <div class="filter-group">
+      <label for="filtro-data-pedido">Data do Pedido</label>
+      <input 
+        type="date" 
+        id="filtro-data-pedido" 
+        class="filter-input"
+        [(ngModel)]="filtros.dataPedido"
+        (ngModelChange)="onFiltroChange()">
+    </div>
+  </div>
+
+  <div class="filter-actions">
+    <button type="button" class="btn-limpar" (click)="limparFiltros()">
+      Limpar Filtros
+    </button>
+  </div>
+</div>
