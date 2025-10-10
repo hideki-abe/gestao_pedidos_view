@@ -30,10 +30,10 @@
       <select 
         id="filtro-vendedor" 
         class="filter-select"
-        [(ngModel)]="filtros.vendedorId"
+        [(ngModel)]="filtros.vendedorNome"
         (ngModelChange)="onFiltroChange()">
         <option [ngValue]="null">Todos</option>
-        <option *ngFor="let vendedor of vendedores" [ngValue]="vendedor.id">
+        <option *ngFor="let vendedor of vendedores" [ngValue]="vendedor.nome">
           {{ vendedor.nome }}
         </option>
       </select>

@@ -5,6 +5,7 @@ import { catchError, map } from 'rxjs/operators';
 import { Pedido } from '../interfaces/pedido';
 import { PrioridadePedido } from '../components/form-pedido/form-pedido';
 import { PaginatedResponse } from '../interfaces/api';
+import { FiltrosPedido } from '../components/pedido-filter/pedido-filter';
 
 @Injectable({
   providedIn: 'root' 
@@ -16,16 +17,12 @@ export class PedidoService {
   constructor(private http: HttpClient) { }
 
   getPedidos(): Observable<Pedido[]> {
-    // 1. Pedimos a resposta como texto para poder inspecioná-la
     return this.http.get(this.apiUrl, { responseType: 'text' }).pipe(
       map(responseText => {
-        // 2. Exibimos a resposta bruta no console do navegador
         try {
-          // 3. Tentamos converter o texto em JSON
           const responseObject = JSON.parse(responseText);
           return responseObject.results;
         } catch (e) {
-          // 4. Se a conversão falhar, lançamos um erro claro
           console.error('Falha ao converter a resposta para JSON.', e);
           throw new Error('A resposta da API não é um JSON válido.');
         }
@@ -64,26 +61,41 @@ export class PedidoService {
     );
   }
 
-  getPedidosPaginated(page: number, pageSize: number, status?: string | string[]): Observable<PaginatedResponse<Pedido>> {
+  getPedidosPaginated(
+    page: number, 
+    pageSize: number, 
+    status?: string | string[],
+    filtros: FiltrosPedido = {}
+  ): Observable<PaginatedResponse<Pedido>> {
+    
     let params = new HttpParams()
       .set('page', page.toString())
       .set('page_size', pageSize.toString());
 
-    // Lógica para adicionar o(s) status ao query params
+    // Adiciona status, se houver
     if (status) {
       if (Array.isArray(status)) {
-        // Se for um array, usa .append() para cada status.
-        // Isso cria a URL: ?status=encaminhar&status=aguardando
-        status.forEach(s => {
-          params = params.append('status', s);
-        });
+        status.forEach(s => { params = params.append('status', s); });
       } else {
-        // Se for uma única string, usa .set()
         params = params.set('status', status);
       }
     }
 
-    // Deixa o HttpClient fazer o parse do JSON automaticamente
+    // Adiciona filtros, se houver valor
+    if (filtros.numeroPedido) {
+      params = params.append('numero_pedido', filtros.numeroPedido);
+    }
+    if (filtros.nomeCliente) {
+      params = params.append('cliente_nome', filtros.nomeCliente);
+    }
+    if (filtros.vendedorNome) {
+      params = params.append('usuario_responsavel', filtros.vendedorNome);
+    }
+    if (filtros.dataPedido) {
+      params = params.append('data_pedido', filtros.dataPedido);
+    }
+
+    // A chamada GET agora é limpa e padronizada
     return this.http.get<PaginatedResponse<Pedido>>(this.apiUrl, { params }).pipe(
       catchError(this.handleError)
     );

@@ -10,7 +10,7 @@ import { PaginatedResponse } from '../interfaces/api';
 })
 export class VendedorService {
 
-  private apiUrl = '/accounts/users/vendedores';
+  private apiUrl = '/accounts/users';
 
   constructor(private http: HttpClient) { }
 
@@ -22,7 +22,7 @@ export class VendedorService {
     }
 
     getVendedores(): Observable<Vendedor[]> {
-        return this.http.get<Vendedor[]>(this.apiUrl).pipe(
+        return this.http.get<Vendedor[]>(this.apiUrl + '/vendedores').pipe(
             catchError(this.handleError)
         );
     }

@@ -8,7 +8,7 @@ import { Vendedor } from '../../interfaces/vendedor';
 // Define uma interface para a estrutura dos filtros
 export interface FiltrosPedido {
   nomeCliente?: string | null;
-  vendedorId?: number | null;
+  vendedorNome?: string | null;
   numeroPedido?: string | null;
   dataPedido?: string | null;
 }
@@ -29,7 +29,7 @@ export class PedidoFilter implements OnInit, OnDestroy {
   // Objeto para armazenar os valores atuais dos filtros
   filtros: FiltrosPedido = {
     nomeCliente: null,
-    vendedorId: null,
+    vendedorNome: null,
     numeroPedido: null,
     dataPedido: null
   };
@@ -62,7 +62,7 @@ export class PedidoFilter implements OnInit, OnDestroy {
   limparFiltros(): void {
     this.filtros = {
       nomeCliente: null,
-      vendedorId: null,
+      vendedorNome: null,
       numeroPedido: null,
       dataPedido: null
     };
