@@ -64,7 +64,7 @@ export class FormCadastroPedido implements OnInit {
 
   private carregarClientes(): void {
     this.clienteService.getClientes().subscribe({
-      next: (clientes) => {this.clientes = clientes
+      next: (clientes) => {
         this.clientes = clientes;
         console.log('Clientes carregados:', this.clientes);
       },
@@ -114,6 +114,50 @@ export class FormCadastroPedido implements OnInit {
     }
 
   }
+
+  cadastrarNovoCliente(): void {
+  // Validações
+  if (!this.clienteNome.trim()) {
+    alert('Por favor, preencha o nome do cliente.');
+    return;
+  }
+
+  const documentoLimpo = String(this.documento || '').replace(/\D/g, '');
+  if (!documentoLimpo) {
+    alert('Por favor, preencha o documento do cliente.');
+    return;
+  }
+
+  // Cria o objeto do novo cliente
+  const novoCliente = {
+    nome: this.clienteNome.trim(),
+    documento: documentoLimpo,
+    contato: this.contato.trim() || ''
+  };
+
+  console.log(novoCliente);
+
+  this.clienteService.addCliente(novoCliente).subscribe({
+    next: (clienteCriado) => {
+      console.log('Cliente cadastrado com sucesso:', clienteCriado);
+      
+      // Adiciona à lista local
+      this.clientes.push(clienteCriado);
+      
+      // Seleciona automaticamente o cliente recém-criado
+      this.clienteSelecionado = clienteCriado;
+      this.clienteNome = clienteCriado.nome;
+      this.contato = clienteCriado.contato || '';
+      this.isDocumentoLocked = true;
+      
+      alert(`Cliente "${clienteCriado.nome}" cadastrado com sucesso!`);
+    },
+    error: (err) => {
+      console.error('Erro ao cadastrar novo cliente:', err);
+      alert('Erro ao cadastrar cliente. Verifique os dados e tente novamente.');
+    }
+  });
+}
   
   onClienteChange(cliente: Cliente | null): void {
     this.clienteSelecionado = cliente;
@@ -231,40 +275,9 @@ export class FormCadastroPedido implements OnInit {
     );
   }
 
-  validaCampos (): boolean {
-    const pedidoExistente = this.verificarPedidoExistente();
-    if (pedidoExistente) {
-      alert('Pedido já existe com esse número. Por favor, verifique.');
-      return false;
-    }
-    return true;
-  }
-
-  private verificarPedidoExistente(): boolean {
-    let pedidoExistenteCount = 0;
-
-    if (this.numeroPedido) {
-      this.pedidoService.getPedidoByNumero(this.numeroPedido).subscribe({
-        next: (pedido) => {
-          if (pedido && pedido.length > 0) {
-            pedidoExistenteCount = pedido.length;
-          }
-        },
-        error: (err) => {
-          console.log('Pedido não existe, pode criar novo');
-        }
-      });
-    }
-    if(pedidoExistenteCount > 0) {
-      return true;
-    } else {
-      return false
-    }
-  }
-
   imprimePedido(): void {
     console.log('Pedido a ser salvo:', {
-      cliente: this.clienteSelecionado,
+      cliente: this.clienteNome,
       vendedor: this.vendedorSelecionado,
       numero_do_pedido: this.numeroPedido,
       contato: this.contato,

@@ -11,6 +11,12 @@ export interface PaginatedResponse<T> {
   results: T[];
 }
 
+export interface CreateClienteRequest {
+  nome: string;
+  documento: string;
+  contato?: string;
+}
+
 @Injectable({
   providedIn: 'root' 
 })
@@ -33,6 +39,13 @@ export class ClienteService {
             // 2. Use o operador 'map' para extrair e retornar apenas o array 'results'
             map(response => response.results),
             catchError(this.handleError)
+        );
+    }
+
+    addCliente(cliente: CreateClienteRequest): Observable<Cliente> {
+        // IMPORTANTE: O retorno deve ser Observable<Cliente>, não Partial<Cliente>
+        return this.http.post<Cliente>(this.apiUrl + '/', cliente).pipe(
+        catchError(this.handleError)
         );
     }
 
