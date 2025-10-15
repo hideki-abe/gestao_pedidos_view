@@ -43,7 +43,7 @@
       <div class="form-group">
         <label class="form-label">Número do Pedido:</label>
         <input 
-          type="number" 
+          type="text" 
           class="form-input" 
           [(ngModel)]="numeroPedido" 
           name="numeroPedido" 
@@ -117,21 +117,29 @@
 
   <div class="section-container">
     <h4 class="section-title">Adicionar Item</h4>
-    
     <div class="form-grid">
       <div class="form-group">
-        <label class="form-label">Nome:</label>
-        <input type="text" class="form-input" [(ngModel)]="itemAtual.nome" name="itemNome">
+        <label class="form-label">Descrição:</label>
+        <select class="form-select" [(ngModel)]="itemAtual.descricao" name="descricao">
+          <option value="1.5mm">1.5mm</option>
+          <option value="14">14</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="3/16">3/16</option>
+          <option value="1/4">1/4</option>
+          <option value="12.7mm">12.7mm</option>
+          <option value="25.4mm">25.4mm</option>
+          <option value="38.1mm">38.1mm</option>
+          <option value="50.8mm">50.8mm</option>
+          <option value="TB">TB</option>
+          <option value="TREF">TREF</option>
+          <option value="BR">BR</option>
+        </select>
       </div>
 
       <div class="form-group">
         <label class="form-label">Tipo:</label>
         <input type="text" class="form-input" [(ngModel)]="itemAtual.tipo" name="itemTipo">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Descrição:</label>
-        <input type="text" class="form-input" [(ngModel)]="itemAtual.descricao" name="itemDescricao">
       </div>
 
       <div class="form-group">
@@ -183,7 +191,6 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of itens; let i = index" class="item-row">
-            <td class="item-nome">{{ item.nome }}</td>
             <td class="item-tipo">{{ item.tipo }}</td>
             <td class="item-quantidade">{{ item.quantidade }}</td>
             <td class="item-medidas">
@@ -225,8 +232,7 @@
   <button 
     type="submit"
     class="form-button"
-    (click)="imprimePedido()"
-    (click)="cadastrarNovoCliente()">
+    (click)="imprimePedido()">
     Criar Pedido
   </button>
 </form>

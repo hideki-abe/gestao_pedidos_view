@@ -20,7 +20,6 @@ export interface Item {
 }
 
 export interface ItemCadastro {
-  nome: string;
   tipo: string;
   descricao: string;
   fluxo_nome: string;

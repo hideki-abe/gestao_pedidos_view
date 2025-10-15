@@ -7,8 +7,18 @@ import { ItemCadastro } from '../../interfaces/item';
 import { ClienteService } from '../../services/cliente';
 import { VendedorService } from '../../services/vendedor';
 import { PedidoService } from '../../services/pedido';
+import { Pedido } from '../../interfaces/pedido';
 
 export type PrioridadePedido = 'baixa' | 'normal' | 'alta' | 'urgente';
+
+export type Descricao = '1.5mm' | '14' | '12' | '13' | '3/16' | '1/4' |'12.7mm' | '25.4mm' | '38.1mm' | '50.8mm' | 'TB' | 'TREF' | 'BR';
+
+const tipos = [
+  'BR', 'CH', 'CT', 'CR', 'CR-F', 'DI', 'CP', 'AN', 'MD', 'DS',
+  'CL-G', 'CL-L', 'CL-LE', 'EN', 'DN-G', 'DN-F', 'DE-G', 'DE',
+  'CN', 'PA', 'PA-D', 'LR', 'LD', 'LM', 'DL', 'LC', 'LC-E',
+  'LE', 'LN', 'LA', 'LCO', 'LDE'
+];
 
 @Component({
   selector: 'app-form-cadastro-pedido',
@@ -115,49 +125,81 @@ export class FormCadastroPedido implements OnInit {
 
   }
 
-  cadastrarNovoCliente(): void {
-  // Validações
-  if (!this.clienteNome.trim()) {
-    alert('Por favor, preencha o nome do cliente.');
-    return;
-  }
+  private buscarPedidoPorNumero(): Boolean {
+    const numero = String(this.numeroPedido || '').replace(/\D/g, '');
+    console.log('Buscando pedido com numero:', numero);
+    let pedidoEncontrado: Pedido | null = null;
 
-  const documentoLimpo = String(this.documento || '').replace(/\D/g, '');
-  if (!documentoLimpo) {
-    alert('Por favor, preencha o documento do cliente.');
-    return;
-  }
-
-  // Cria o objeto do novo cliente
-  const novoCliente = {
-    nome: this.clienteNome.trim(),
-    documento: documentoLimpo,
-    contato: this.contato.trim() || ''
-  };
-
-  console.log(novoCliente);
-
-  this.clienteService.addCliente(novoCliente).subscribe({
-    next: (clienteCriado) => {
-      console.log('Cliente cadastrado com sucesso:', clienteCriado);
-      
-      // Adiciona à lista local
-      this.clientes.push(clienteCriado);
-      
-      // Seleciona automaticamente o cliente recém-criado
-      this.clienteSelecionado = clienteCriado;
-      this.clienteNome = clienteCriado.nome;
-      this.contato = clienteCriado.contato || '';
-      this.isDocumentoLocked = true;
-      
-      alert(`Cliente "${clienteCriado.nome}" cadastrado com sucesso!`);
-    },
-    error: (err) => {
-      console.error('Erro ao cadastrar novo cliente:', err);
-      alert('Erro ao cadastrar cliente. Verifique os dados e tente novamente.');
+    if (!numero) {
+      console.warn('Número do pedido vazio.');
+      return false;
     }
-  });
-}
+
+    this.pedidoService.getPedidoByNumero(numero).subscribe({
+      next: (pedido) => {
+        pedidoEncontrado = pedido.length > 0 ? pedido[0] : null;
+        if (!pedidoEncontrado) {
+          console.warn('Nenhum pedido encontrado com o número:', numero);
+          return false;
+        }
+        console.log('Pedido encontrado:', pedido);
+        return true;
+      },
+      error: (err) => {
+        console.error('Erro ao buscar pedido:', err);
+      }
+    });
+    console.log("Busca concluída para o número do pedido:", numero);
+    return false;
+  }
+
+  private cadastrarNovoCliente(): void {
+    if(this.isDocumentoLocked) {
+      alert('O documento já está associado a um cliente existente.');
+      return;
+    }
+
+    if (!this.clienteNome.trim()) {
+      alert('Por favor, preencha o nome do cliente.');
+      return;
+    }
+
+    const documentoLimpo = String(this.documento || '').replace(/\D/g, '');
+    if (!documentoLimpo) {
+      alert('Por favor, preencha o documento do cliente.');
+      return;
+    }
+
+    // Cria o objeto do novo cliente
+    const novoCliente = {
+      nome: this.clienteNome.trim(),
+      documento: documentoLimpo,
+      contato: this.contato.trim() || ''
+    };
+
+    console.log(novoCliente);
+
+    this.clienteService.addCliente(novoCliente).subscribe({
+      next: (clienteCriado) => {
+        console.log('Cliente cadastrado com sucesso:', clienteCriado);
+        
+        // Adiciona à lista local
+        this.clientes.push(clienteCriado);
+        
+        // Seleciona automaticamente o cliente recém-criado
+        this.clienteSelecionado = clienteCriado;
+        this.clienteNome = clienteCriado.nome;
+        this.contato = clienteCriado.contato || '';
+        this.isDocumentoLocked = true;
+        
+        alert(`Cliente "${clienteCriado.nome}" cadastrado com sucesso!`);
+      },
+      error: (err) => {
+        console.error('Erro ao cadastrar novo cliente:', err);
+        alert('Erro ao cadastrar cliente. Verifique os dados e tente novamente.');
+      }
+    });
+  }
   
   onClienteChange(cliente: Cliente | null): void {
     this.clienteSelecionado = cliente;
@@ -175,7 +217,6 @@ export class FormCadastroPedido implements OnInit {
 
   private criarItemVazio(): ItemCadastro {
     return {
-      nome: '',
       tipo: '',
       descricao: '',
       fluxo_nome: '',
@@ -250,7 +291,7 @@ export class FormCadastroPedido implements OnInit {
   }
 
   adicionarItem(): void {
-    if (this.itemAtual.nome && this.itemAtual.tipo && this.itemAtual.quantidade > 0) {
+    if (this.itemAtual.descricao && this.itemAtual.tipo && this.itemAtual.quantidade > 0) {
       this.itens.push({ ...this.itemAtual });
       this.itemAtual = this.criarItemVazio();
     }
@@ -290,8 +331,16 @@ export class FormCadastroPedido implements OnInit {
 
   salvarPedido(): void {
     if (!this.formularioValido()) {
+      alert('Por favor, preencha todos os campos obrigatórios e adicione pelo menos um item ao pedido.');
       return;
     }
+
+    if(this.buscarPedidoPorNumero()) {
+      alert('Já existe um pedido com esse número. Por favor, utilize outro número.');
+      return;
+    }
+
+    this.cadastrarNovoCliente();
 
     const prazoFormatado = this.criarDataPrazo();
 
