@@ -1,6 +1,5 @@
 <form (ngSubmit)="salvarPedido()">
   
-  <!-- Dados Básicos do Pedido -->
   <div class="section-container">
     <h4 class="section-title">Dados do Pedido</h4>
     
@@ -15,7 +14,7 @@
           [(ngModel)]="documento"
           (ngModelChange)="buscarClientePorDocumento()"
           name="documento" 
-          placeholder="Digite o documento para buscar">
+          placeholder="CPF ou CNPJ">
       </div>
 
       <div class="form-group">
@@ -27,7 +26,8 @@
           [(ngModel)]="clienteNome" 
           name="cliente" 
           [readonly]="isDocumentoLocked"
-          required>
+          required
+          placeholder="Nome ou Razão Social">
       </div>
 
       <div class="form-group">
@@ -42,7 +42,12 @@
 
       <div class="form-group">
         <label class="form-label">Número do Pedido:</label>
-        <input type="text" class="form-input" [(ngModel)]="numeroPedido" name="numeroPedido" required>
+        <input 
+          type="number" 
+          class="form-input" 
+          [(ngModel)]="numeroPedido" 
+          name="numeroPedido" 
+          required>
       </div>
 
       <div class="form-group">
@@ -60,7 +65,6 @@
     </div>
   </div>
 
-  <!-- Prioridade -->
   <div class="section-container">
     <h4 class="section-title">Prioridade</h4>
     <select class="form-select" [(ngModel)]="prioridade" name="prioridade">
@@ -71,7 +75,6 @@
     </select>
   </div>
 
-  <!-- Prazo de Entrega -->
   <div class="section-container">
     <h4 class="section-title">Prazo de Entrega</h4>
     <div class="prazo-inputs-group">
@@ -101,7 +104,6 @@
     </div>
   </div>
 
-  <!-- Observações -->
   <div class="section-container">
     <h4 class="section-title">Observações</h4>
     <textarea 
@@ -113,7 +115,6 @@
     </textarea>
   </div>
 
-  <!-- Adicionar Itens -->
   <div class="section-container">
     <h4 class="section-title">Adicionar Item</h4>
     
@@ -221,12 +222,12 @@
     </div>
   </div>
 
-  <!-- Botão de Salvar -->
   <button 
     type="submit"
     class="form-button"
     (click)="imprimePedido()"
-    [disabled]="!formularioValido()">
+    (click)="validaCampos()"
+    >
     Criar Pedido
   </button>
 </form>

@@ -6,6 +6,7 @@ import { Vendedor } from '../../interfaces/vendedor';
 import { ItemCadastro } from '../../interfaces/item';
 import { ClienteService } from '../../services/cliente';
 import { VendedorService } from '../../services/vendedor';
+import { PedidoService } from '../../services/pedido';
 
 export type PrioridadePedido = 'baixa' | 'normal' | 'alta' | 'urgente';
 
@@ -29,7 +30,6 @@ export class FormCadastroPedido implements OnInit {
     itens: ItemCadastro[];
   }>();
 
-  // Dados do pedido
   clienteNome: string = '';
   clienteSelecionado: Cliente | null = null;
   vendedorSelecionado: Vendedor | null = null;
@@ -39,25 +39,22 @@ export class FormCadastroPedido implements OnInit {
   prioridade: PrioridadePedido = 'normal';
   observacoes: string = '';
   
-  // Prazo
   prazoData: string = '';
   prazoHora: string = '';
 
-  // Listas para os selects
   clientes: Cliente[] = [];
   vendedores: Vendedor[] = [];
   
-  // Itens do pedido
   itens: ItemCadastro[] = [];
   
-  // Item sendo editado
   itemAtual: ItemCadastro = this.criarItemVazio();
 
   isDocumentoLocked = false;
 
   constructor(
     private clienteService: ClienteService,
-    private vendedorService: VendedorService
+    private vendedorService: VendedorService,
+    private pedidoService: PedidoService
   ) {}
 
   ngOnInit(): void {
@@ -208,7 +205,6 @@ export class FormCadastroPedido implements OnInit {
     return isNaN(dataCompleta.getTime()) ? null : dataCompleta;
   }
 
-  // Gerenciamento de itens
   adicionarItem(): void {
     if (this.itemAtual.nome && this.itemAtual.tipo && this.itemAtual.quantidade > 0) {
       this.itens.push({ ...this.itemAtual });
@@ -225,7 +221,6 @@ export class FormCadastroPedido implements OnInit {
     this.removerItem(index);
   }
 
-  // Validação e submissão
   formularioValido(): boolean {
     return !!(
       this.clienteSelecionado &&
@@ -234,6 +229,37 @@ export class FormCadastroPedido implements OnInit {
       this.contato &&
       this.itens.length > 0
     );
+  }
+
+  validaCampos (): boolean {
+    const pedidoExistente = this.verificarPedidoExistente();
+    if (pedidoExistente) {
+      alert('Pedido já existe com esse número. Por favor, verifique.');
+      return false;
+    }
+    return true;
+  }
+
+  private verificarPedidoExistente(): boolean {
+    let pedidoExistenteCount = 0;
+
+    if (this.numeroPedido) {
+      this.pedidoService.getPedidoByNumero(this.numeroPedido).subscribe({
+        next: (pedido) => {
+          if (pedido && pedido.length > 0) {
+            pedidoExistenteCount = pedido.length;
+          }
+        },
+        error: (err) => {
+          console.log('Pedido não existe, pode criar novo');
+        }
+      });
+    }
+    if(pedidoExistenteCount > 0) {
+      return true;
+    } else {
+      return false
+    }
   }
 
   imprimePedido(): void {

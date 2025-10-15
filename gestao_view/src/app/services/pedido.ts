@@ -61,6 +61,21 @@ export class PedidoService {
     );
   }
 
+  getPedidoByNumero(numero: string): Observable<Pedido[]> {
+    return this.http.get(this.apiUrl + '?numero_pedido=' + numero, { responseType: 'text' }).pipe(
+      map(responseText => {
+        try {
+          const responseObject = JSON.parse(responseText);
+          return responseObject.results;
+        } catch (e) {
+          console.error('Falha ao converter a resposta para JSON.', e);
+          throw new Error('A resposta da API não é um JSON válido.');
+        }
+      }),
+      catchError(this.handleError)
+    );
+  }
+
   getPedidosPaginated(
     page: number, 
     pageSize: number, 
