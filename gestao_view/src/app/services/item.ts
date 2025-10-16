@@ -67,30 +67,62 @@ export class ItemService {
     return this.http.patch<Item>(url, dados);
   }
 
-  private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'Ocorreu um erro desconhecido!';
-    if (error.error instanceof ErrorEvent) {
-      // Erro do lado do cliente
-      errorMessage = `Erro: ${error.error.message}`;
-    } else {
-      // O backend retornou um código de erro
-      errorMessage = `Código do erro: ${error.status}, ` + `mensagem: ${error.message}`;
-    }
-    console.error(errorMessage);
-    return throwError(() => new Error(errorMessage));
-  }
-
+  
   createItem(item: CreateItemRequest): Observable<any> {
-    console.log('Criando item:', item);
-    return this.http.post<any>(this.apiUrlItens, item).pipe(
-      catchError(this.handleError)
-    );
+    console.log('=== CREATEITEM ===');
+    console.log('Item recebido:', item);
+    console.log('pedido_id presente?', !!item.pedido_id);
+    
+    // ✅ VALIDAÇÃO: Se não tem pedido_id, é erro
+    if (!item.pedido_id) {
+      console.error('❌ ERRO: pedido_id não fornecido no item:', item);
+      return throwError(() => new Error('pedido_id é obrigatório para criar item'));
+    }
+    
+    // ✅ SEMPRE use o novo endpoint
+    console.log('✅ Usando novo endpoint do pedido');
+    const itemSemPedidoId = { ...item };
+    delete itemSemPedidoId.pedido_id;
+    
+    return this.createItemParaPedido(item.pedido_id, itemSemPedidoId);
   }
-
+  
   createItens(itens: CreateItemRequest[]): Observable<any> {
-    const url = `${this.apiUrlItens}bulk`;
+    const url = `${this.apiUrlItens}bulk/`;
     return this.http.post<any>(url, { itens }).pipe(
       catchError(this.handleError)
     );
+  }
+  
+  createItemParaPedido(pedidoId: number, item: Omit<CreateItemRequest, 'pedido_id'>): Observable<any> {
+    const url = `${this.apiUrl}${pedidoId}/criar_item/`;
+    
+    console.log('=== CRIANDO ITEM VIA ENDPOINT DO PEDIDO ===');
+    console.log('URL:', url);
+    console.log('Pedido ID:', pedidoId);
+    console.log('Dados do item:', item);
+    
+    return this.http.post<any>(url, item).pipe(
+      catchError(this.handleError)
+    );
+  }
+  
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'Ocorreu um erro desconhecido!';
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `Erro: ${error.error.message}`;
+    } else {
+      errorMessage = `Código do erro: ${error.status}, mensagem: ${error.message}`;
+      
+      // ✅ Log mais detalhado para debug
+      console.error('Detalhes do erro:', {
+        status: error.status,
+        statusText: error.statusText,
+        url: error.url,
+        error: error.error
+      });
+    }
+    console.error(errorMessage);
+    return throwError(() => new Error(errorMessage));
   }
 }

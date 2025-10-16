@@ -34,7 +34,6 @@ export class FormCadastroPedido implements OnInit {
     status: 'encaminhar' | 'producao' | 'finalizado' | 'cancelado' | 'aguardando';
     prioridade: PrioridadePedido;
     observacoes: string;
-    prazo: Date | null;
     itens: ItemCadastro[];
   }>();
 
@@ -46,9 +45,6 @@ export class FormCadastroPedido implements OnInit {
   documento: string = '';
   prioridade: PrioridadePedido = 'normal';
   observacoes: string = '';
-  
-  prazoData: string = '';
-  prazoHora: string = '';
 
   clientes: Cliente[] = [];
   vendedores: Vendedor[] = [];
@@ -230,69 +226,6 @@ export class FormCadastroPedido implements OnInit {
     };
   }
 
-  formatarData(event: any): void {
-    const input = event.target;
-    let valor = input.value;
-    let numerosSo = valor.replace(/[^0-9]/g, '');
-    
-    let valorFormatado = '';
-    if (numerosSo.length > 0) {
-      valorFormatado = numerosSo.substring(0, 2);
-    }
-    if (numerosSo.length > 2) {
-      valorFormatado += '/' + numerosSo.substring(2, 4);
-    }
-    if (numerosSo.length > 4) {
-      valorFormatado += '/' + numerosSo.substring(4, 8);
-    }
-    
-    input.value = valorFormatado;
-    this.prazoData = valorFormatado;
-  }
-
-  formatarHora(event: any): void {
-    const input = event.target;
-    let valor = input.value;
-    let numerosSo = valor.replace(/[^0-9]/g, '');
-    
-    let valorFormatado = '';
-    if (numerosSo.length > 0) {
-      valorFormatado = numerosSo.substring(0, 2);
-    }
-    if (numerosSo.length > 2) {
-      valorFormatado += ':' + numerosSo.substring(2, 4);
-    }
-    
-    input.value = valorFormatado;
-    this.prazoHora = valorFormatado;
-  }
-
-  private criarDataPrazo(): Date | null {
-    if (!this.prazoData || !this.prazoHora) {
-      return null;
-    }
-
-    const partesData = this.prazoData.split('/');
-    if (partesData.length !== 3) return null;
-
-    const dia = parseInt(partesData[0], 10);
-    const mes = parseInt(partesData[1], 10) - 1;
-    const ano = parseInt(partesData[2], 10);
-
-    const partesHora = this.prazoHora.split(':');
-    if (partesHora.length !== 2) return null;
-
-    const hora = parseInt(partesHora[0], 10);
-    const minuto = parseInt(partesHora[1], 10);
-
-    if (isNaN(dia) || isNaN(mes) || isNaN(ano) || isNaN(hora) || isNaN(minuto)) {
-      return null;
-    }
-
-    const dataCompleta = new Date(ano, mes, dia, hora, minuto, 0, 0);
-    return isNaN(dataCompleta.getTime()) ? null : dataCompleta;
-  }
-
   adicionarItem(): void {
     if (this.itemAtual.nome && this.itemAtual.tipo && this.itemAtual.quantidade > 0) {
       this.itens.push({ ...this.itemAtual });
@@ -327,7 +260,6 @@ export class FormCadastroPedido implements OnInit {
       contato: this.contato,
       prioridade: this.prioridade,
       observacoes: this.observacoes,
-      prazo: this.criarDataPrazo(),
       itens: this.itens
     });
   }
@@ -351,85 +283,117 @@ export class FormCadastroPedido implements OnInit {
 
   }
 
-  private enviarPedido(): void {
-    if (!this.clienteSelecionado || !this.vendedorSelecionado) {
-      alert('Cliente ou vendedor não selecionado. Tente novamente.');
-      return;
+private enviarPedido(): void {
+  if (!this.clienteSelecionado || !this.vendedorSelecionado) {
+    alert('Cliente ou vendedor não selecionado. Tente novamente.');
+    return;
+  }
+
+  const vendedorId = typeof this.vendedorSelecionado === 'number' 
+    ? this.vendedorSelecionado 
+    : this.vendedorSelecionado?.id || null;
+
+  if (!vendedorId) {
+    alert('Vendedor não selecionado corretamente. Tente novamente.');
+    return;
+  }
+
+  const pedidoData: any = {
+    cliente: this.clienteSelecionado.id,
+    usuario_responsavel: vendedorId,
+    numero_do_pedido: this.numeroPedido,
+    contato: this.contato,
+    prioridade: this.prioridade,
+    status: 'aguardando',
+    observacoes: this.observacoes || ''
+  };
+
+  console.log('Enviando pedido:', pedidoData);
+
+  this.pedidoService.createPedido(pedidoData).subscribe({
+    next: (pedidoCriado) => {
+      console.log('✅ Pedido criado com sucesso:', pedidoCriado);
+      
+      if (this.itens.length > 0) {
+        this.salvarItensDoPedido(pedidoCriado.id);
+      } else {
+        this.finalizarCriacaoPedido(pedidoCriado.id);
+      }
+    },
+    error: (err) => {
+      console.error('❌ Erro ao criar pedido:', err);
+      alert('Erro ao criar pedido. Verifique os dados e tente novamente.');
     }
+  });
+}
 
-    const prazoFormatado = this.criarDataPrazo();
+private salvarItensDoPedido(pedidoId: number): void {
+  console.log('=== SALVANDO ITENS COM NOVO ENDPOINT ===');
+  console.log('Pedido ID:', pedidoId);
+  console.log('Itens para salvar:', this.itens);
 
-    const pedidoData: any = {
-      cliente: this.clienteSelecionado.id,
-      usuario_responsavel: this.vendedorSelecionado, 
-      numero_do_pedido: this.numeroPedido,
-      contato: this.contato,
-      prioridade: this.prioridade,
-      status: 'aguardando',
-      observacoes: this.observacoes || '',
-      prazo: prazoFormatado ? prazoFormatado.toISOString() : null
+  const itensParaSalvar = this.itens.map((item, index) => {
+    const itemFormatado = {
+      tipo: item.tipo,
+      nome: item.nome || `Item ${index + 1}`,
+      descricao: item.nome || '',
+      quantidade: Number(item.quantidade),
+      medida_1: String(item.medida_1 || ''),
+      medida_2: String(item.medida_2 || ''),
+      furo: String(item.furo || '')
     };
 
-    console.log('Enviando pedido:', pedidoData);
+    console.log(`Item ${index + 1} formatado:`, itemFormatado);
+    return itemFormatado;
+  });
 
-    this.pedidoService.createPedido(pedidoData).subscribe({
-      next: (pedidoCriado) => {
-        console.log('Pedido criado com sucesso:', pedidoCriado);
-        
-        this.salvarItensDoPedido(pedidoCriado.id);
-      },
-      error: (err) => {
-        console.error('Erro ao criar pedido:', err);
-        alert('Erro ao criar pedido. Verifique os dados e tente novamente.');
-      }
-    });
-  }
+  this.salvarItensEmLote(itensParaSalvar, pedidoId);
+}
 
-  private salvarItensDoPedido(pedidoId: number): void {
-    const itensParaSalvar = this.itens.map(item => ({
-      pedido: Number(pedidoId), 
-      tipo: item.tipo,
-      nome: item.nome,
-      quantidade: item.quantidade,
-      medida_1: item.medida_1 || '',
-      medida_2: item.medida_2 || '',
-      furo: item.furo || ''
-    }));
-
-    console.log('Salvando itens:', itensParaSalvar);
-
-    // Salva cada item individualmente ou em lote
-    this.salvarItensEmLote(itensParaSalvar, pedidoId);
-  }
-
-  // NOVO: Salva todos os itens em lote
   private salvarItensEmLote(itens: any[], pedidoId: number): void {
     let itensSalvos = 0;
     const totalItens = itens.length;
+    let erros: string[] = [];
 
     if (totalItens === 0) {
+      console.log('Nenhum item para salvar');
       this.finalizarCriacaoPedido(pedidoId);
       return;
     }
 
-    itens.forEach(item => {
-      this.itemService.createItem(item).subscribe({
+    console.log(`Salvando ${totalItens} itens usando o endpoint /api/pedidos/${pedidoId}/criar_item/`);
+
+    itens.forEach((item, index) => {
+      console.log(`\n=== SALVANDO ITEM ${index + 1}/${totalItens} ===`);
+      console.log('Dados do item:', item);
+
+      const itemComPedido = {
+        ...item,
+        pedido_id: pedidoId
+      };
+
+      this.itemService.createItem(itemComPedido).subscribe({
         next: (itemCriado) => {
-          console.log('Item criado:', itemCriado);
+          console.log(`✅ Item ${index + 1} criado com sucesso:`, itemCriado);
           itensSalvos++;
           
-          // Quando todos os itens forem salvos
           if (itensSalvos === totalItens) {
+            console.log('🎉 Todos os itens foram salvos com sucesso!');
             this.finalizarCriacaoPedido(pedidoId);
           }
         },
         error: (err) => {
-          console.error('Erro ao criar item:', err);
-          alert(`Erro ao salvar item "${item.nome}". Alguns itens podem não ter sido salvos.`);
+          console.error(`❌ Erro ao criar item ${index + 1}:`, err);
+          console.error('Dados que causaram erro:', item);
+          
+          erros.push(`Item ${index + 1}: ${err.message}`);
           itensSalvos++;
           
-          // Continua mesmo com erro
           if (itensSalvos === totalItens) {
+            if (erros.length > 0) {
+              console.warn('Alguns itens falharam:', erros);
+              alert(`Pedido criado! ${totalItens - erros.length} itens salvos, ${erros.length} falharam.`);
+            }
             this.finalizarCriacaoPedido(pedidoId);
           }
         }
@@ -452,7 +416,6 @@ export class FormCadastroPedido implements OnInit {
         contato: this.contato,
         prioridade: this.prioridade,
         observacoes: this.observacoes,
-        prazo: this.criarDataPrazo(),
         itens: this.itens
       });
 
@@ -477,8 +440,6 @@ export class FormCadastroPedido implements OnInit {
     this.documento = '';
     this.prioridade = 'normal';
     this.observacoes = '';
-    this.prazoData = '';
-    this.prazoHora = '';
     this.itens = [];
     this.itemAtual = this.criarItemVazio();
     this.isDocumentoLocked = false;

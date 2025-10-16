@@ -76,35 +76,6 @@
   </div>
 
   <div class="section-container">
-    <h4 class="section-title">Prazo de Entrega</h4>
-    <div class="prazo-inputs-group">
-      <div class="prazo-input-wrapper">
-        <label class="form-label">Data:</label>
-        <input 
-          type="text"
-          class="form-input prazo-date"
-          name="prazoData"
-          [(ngModel)]="prazoData"
-          (input)="formatarData($event)"
-          placeholder="dd/mm/aaaa"
-          maxlength="10">
-      </div>
-      
-      <div class="prazo-input-wrapper">
-        <label class="form-label">Hora:</label>
-        <input 
-          type="text"
-          class="form-input prazo-time"
-          name="prazoHora"
-          [(ngModel)]="prazoHora"
-          (input)="formatarHora($event)"
-          placeholder="hh:mm"
-          maxlength="5">
-      </div>
-    </div>
-  </div>
-
-  <div class="section-container">
     <h4 class="section-title">Observações</h4>
     <textarea 
       class="form-textarea"
