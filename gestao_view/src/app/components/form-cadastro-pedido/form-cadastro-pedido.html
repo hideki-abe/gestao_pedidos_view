@@ -92,19 +92,9 @@
       <div class="form-group">
         <label class="form-label">Nome:</label>
         <select class="form-select" [(ngModel)]="itemAtual.nome" name="nome">
-          <option value="1.5mm">1.5mm</option>
-          <option value="14">14</option>
-          <option value="12">12</option>
-          <option value="13">13</option>
-          <option value="3/16">3/16</option>
-          <option value="1/4">1/4</option>
-          <option value="12.7mm">12.7mm</option>
-          <option value="25.4mm">25.4mm</option>
-          <option value="38.1mm">38.1mm</option>
-          <option value="50.8mm">50.8mm</option>
-          <option value="TB">TB</option>
-          <option value="TREF">TREF</option>
-          <option value="BR">BR</option>
+          @for (desc of DESCRICOES; track desc) {
+            <option value="{{ desc }}">{{ desc }}</option>
+          }
         </select>
       </div>
 

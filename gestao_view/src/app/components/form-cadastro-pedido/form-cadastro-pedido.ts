@@ -14,8 +14,6 @@ import { Tipo } from '../../interfaces/tipo';
 
 export type PrioridadePedido = 'baixa' | 'normal' | 'alta' | 'urgente';
 
-export type Descricao = '1.5mm' | '14' | '12' | '13' | '3/16' | '1/4' |'12.7mm' | '25.4mm' | '38.1mm' | '50.8mm' | 'TB' | 'TREF' | 'BR';
-
 @Component({
   selector: 'app-form-cadastro-pedido',
   standalone: true,
@@ -56,6 +54,20 @@ export class FormCadastroPedido implements OnInit {
   itemAtual: ItemCadastro = this.criarItemVazio();
 
   isDocumentoLocked = false;
+
+  readonly DESCRICOES = [
+  '#18', 
+  '#16', 
+  '#14', 
+  '#13', 
+  '#12', 
+  '#1/8', 
+  '#3/16', 
+  '#1/4', 
+  '#5/16', 
+  '#3/8', 
+  '#1/2'
+];
 
   constructor(
     private clienteService: ClienteService,
@@ -244,7 +256,7 @@ export class FormCadastroPedido implements OnInit {
 
   formularioValido(): boolean {
     return !!(
-      this.clienteSelecionado &&
+      this.clienteNome &&
       this.vendedorSelecionado &&
       this.numeroPedido &&
       this.contato &&
