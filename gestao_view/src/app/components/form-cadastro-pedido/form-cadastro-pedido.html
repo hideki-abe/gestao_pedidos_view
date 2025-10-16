@@ -119,8 +119,8 @@
     <h4 class="section-title">Adicionar Item</h4>
     <div class="form-grid">
       <div class="form-group">
-        <label class="form-label">Descrição:</label>
-        <select class="form-select" [(ngModel)]="itemAtual.descricao" name="descricao">
+        <label class="form-label">Nome:</label>
+        <select class="form-select" [(ngModel)]="itemAtual.nome" name="nome">
           <option value="1.5mm">1.5mm</option>
           <option value="14">14</option>
           <option value="12">12</option>
@@ -139,12 +139,11 @@
 
       <div class="form-group">
         <label class="form-label">Tipo:</label>
-        <input type="text" class="form-input" [(ngModel)]="itemAtual.tipo" name="itemTipo">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Fluxo:</label>
-        <input type="text" class="form-input" [(ngModel)]="itemAtual.fluxo_nome" name="itemFluxo">
+        <select class="form-select" [(ngModel)]="itemAtual.tipo" name="itemTipo">
+          @for (tipo of tipos; track tipo) {
+            <option value="{{ tipo.value }}">{{ tipo.value }}</option>
+          }
+        </select>
       </div>
 
       <div class="form-group">
@@ -154,17 +153,17 @@
 
       <div class="form-group">
         <label class="form-label">Medida 1:</label>
-        <input type="text" class="form-input" [(ngModel)]="itemAtual.medida_1" name="itemMedida1">
+        <input type="number" class="form-input" [(ngModel)]="itemAtual.medida_1" name="itemMedida1">
       </div>
 
       <div class="form-group">
         <label class="form-label">Medida 2:</label>
-        <input type="text" class="form-input" [(ngModel)]="itemAtual.medida_2" name="itemMedida2">
+        <input type="number" class="form-input" [(ngModel)]="itemAtual.medida_2" name="itemMedida2">
       </div>
 
       <div class="form-group">
         <label class="form-label">Furo:</label>
-        <input type="text" class="form-input" [(ngModel)]="itemAtual.furo" name="itemFuro">
+        <input type="number" class="form-input" [(ngModel)]="itemAtual.furo" name="itemFuro">
       </div>
     </div>
 
@@ -180,33 +179,23 @@
       <table class="itens-table">
         <thead>
           <tr>
-            <th>Nome</th>
+            <th>Descrição</th>
             <th>Tipo</th>
             <th>Qtd</th>
-            <th>Medidas</th>
-            <th>Fluxo</th>
-            <th>Descrição</th>
+            <th>Medida 1</th>
+            <th>Medida 2</th>
+            <th>Furo</th>
             <th>Ações</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let item of itens; let i = index" class="item-row">
+            <td class="item-nome">{{ item.nome }}</td>
             <td class="item-tipo">{{ item.tipo }}</td>
             <td class="item-quantidade">{{ item.quantidade }}</td>
-            <td class="item-medidas">
-              <span *ngIf="item.medida_1">{{ item.medida_1 }}</span>
-              <span *ngIf="item.medida_2"> × {{ item.medida_2 }}</span>
-              <div *ngIf="item.furo" class="furo-info">Furo: {{ item.furo }}</div>
-            </td>
-            <td class="item-fluxo">{{ item.fluxo_nome || '-' }}</td>
-            <td class="item-descricao">
-              <span *ngIf="item.descricao; else semDescricao" class="descricao-texto">
-                {{ item.descricao }}
-              </span>
-              <ng-template #semDescricao>
-                <span class="sem-descricao">-</span>
-              </ng-template>
-            </td>
+            <td class="item-medida1">{{ item.medida_1 }}</td>
+            <td class="item-medida2">{{ item.medida_2 }}</td>
+            <td class="item-furo">{{ item.furo }}</td>
             <td class="item-actions">
               <button 
                 type="button" 

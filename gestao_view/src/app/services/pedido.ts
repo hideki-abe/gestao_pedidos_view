@@ -6,6 +6,7 @@ import { Pedido } from '../interfaces/pedido';
 import { PrioridadePedido } from '../components/form-pedido/form-pedido';
 import { PaginatedResponse } from '../interfaces/api';
 import { FiltrosPedido } from '../components/pedido-filter/pedido-filter';
+import { CreatePedidoRequest } from '../interfaces/create-pedido-request';
 
 @Injectable({
   providedIn: 'root' 
@@ -117,7 +118,7 @@ export class PedidoService {
   }
 
   getPedidoById(id: number): Observable<Pedido> {
-    const url = `${this.apiUrl}/${id}`;
+    const url = `${this.apiUrl}${id}`;
     return this.http.get<Pedido>(url).pipe(
       catchError(this.handleError)
     );
@@ -149,13 +150,15 @@ export class PedidoService {
     );
   }
 
-  /*
-  createPedido(pedido: Omit<Pedido, 'id' | 'dataCriacao'>): Observable<Pedido> {
+
+  createPedido(pedido: CreatePedidoRequest): Observable<Pedido> {
     return this.http.post<Pedido>(this.apiUrl, pedido).pipe(
       catchError(this.handleError)
     );
   }
 
+
+ /*
   updatePedido(id: number, pedido: Partial<Pedido>): Observable<Pedido> {
     const url = `${this.apiUrl}/${id}`;
     return this.http.put<Pedido>(url, pedido).pipe(

@@ -8,17 +8,13 @@ import { ClienteService } from '../../services/cliente';
 import { VendedorService } from '../../services/vendedor';
 import { PedidoService } from '../../services/pedido';
 import { Pedido } from '../../interfaces/pedido';
+import { Fluxo } from '../../interfaces/fluxo';
+import { ItemService } from '../../services/item';
+import { Tipo } from '../../interfaces/tipo';
 
 export type PrioridadePedido = 'baixa' | 'normal' | 'alta' | 'urgente';
 
 export type Descricao = '1.5mm' | '14' | '12' | '13' | '3/16' | '1/4' |'12.7mm' | '25.4mm' | '38.1mm' | '50.8mm' | 'TB' | 'TREF' | 'BR';
-
-const tipos = [
-  'BR', 'CH', 'CT', 'CR', 'CR-F', 'DI', 'CP', 'AN', 'MD', 'DS',
-  'CL-G', 'CL-L', 'CL-LE', 'EN', 'DN-G', 'DN-F', 'DE-G', 'DE',
-  'CN', 'PA', 'PA-D', 'LR', 'LD', 'LM', 'DL', 'LC', 'LC-E',
-  'LE', 'LN', 'LA', 'LCO', 'LDE'
-];
 
 @Component({
   selector: 'app-form-cadastro-pedido',
@@ -30,10 +26,12 @@ const tipos = [
 export class FormCadastroPedido implements OnInit {
 
   @Output() pedidoCriado = new EventEmitter<{
+    nome: string;
     cliente: Cliente;
     vendedor: Vendedor;
     numero_do_pedido: string;
     contato: string;
+    status: 'encaminhar' | 'producao' | 'finalizado' | 'cancelado' | 'aguardando';
     prioridade: PrioridadePedido;
     observacoes: string;
     prazo: Date | null;
@@ -54,6 +52,8 @@ export class FormCadastroPedido implements OnInit {
 
   clientes: Cliente[] = [];
   vendedores: Vendedor[] = [];
+  fluxos: Fluxo[] = [];
+  tipos: Tipo[] = [];
   
   itens: ItemCadastro[] = [];
   
@@ -64,19 +64,20 @@ export class FormCadastroPedido implements OnInit {
   constructor(
     private clienteService: ClienteService,
     private vendedorService: VendedorService,
-    private pedidoService: PedidoService
+    private pedidoService: PedidoService,
+    private itemService: ItemService
   ) {}
 
   ngOnInit(): void {
     this.carregarClientes();
     this.carregarVendedores();
+    this.carregarTipos();
   }
 
   private carregarClientes(): void {
     this.clienteService.getClientes().subscribe({
       next: (clientes) => {
         this.clientes = clientes;
-        console.log('Clientes carregados:', this.clientes);
       },
       error: (err) => console.error('Erro ao carregar clientes:', err)
     });
@@ -87,17 +88,24 @@ export class FormCadastroPedido implements OnInit {
     this.vendedorService.getVendedores().subscribe({
       next: (vendedores) => {
         this.vendedores = vendedores;
-        console.log('Vendedores carregados:', this.vendedores);
       },
       error: (err) => console.error('Erro ao carregar vendedores:', err)
       
     });
   }
 
+  private carregarTipos(): void {
+    this.itemService.getTipos().subscribe({
+      next: (tipos) => {
+        this.tipos = tipos;
+      },
+      error: (err) => console.error('Erro ao carregar tipos:', err)
+    });
+  }
+
   buscarClientePorDocumento(): void {
 
     const documentoLimpo = String(this.documento || '').replace(/\D/g, '');
-    console.log('Buscando cliente com documento:', documentoLimpo);
 
     if (!documentoLimpo) {
       this.clienteSelecionado = null;
@@ -117,7 +125,6 @@ export class FormCadastroPedido implements OnInit {
       this.contato = clienteEncontrado.contato || '';
 
       this.isDocumentoLocked = true;
-      console.log('Cliente encontrado:', clienteEncontrado);
     } else {
       this.clienteSelecionado = null;
       this.isDocumentoLocked = false;
@@ -127,7 +134,7 @@ export class FormCadastroPedido implements OnInit {
 
   private buscarPedidoPorNumero(): Boolean {
     const numero = String(this.numeroPedido || '').replace(/\D/g, '');
-    console.log('Buscando pedido com numero:', numero);
+
     let pedidoEncontrado: Pedido | null = null;
 
     if (!numero) {
@@ -142,20 +149,17 @@ export class FormCadastroPedido implements OnInit {
           console.warn('Nenhum pedido encontrado com o número:', numero);
           return false;
         }
-        console.log('Pedido encontrado:', pedido);
         return true;
       },
       error: (err) => {
         console.error('Erro ao buscar pedido:', err);
       }
     });
-    console.log("Busca concluída para o número do pedido:", numero);
     return false;
   }
 
   private cadastrarNovoCliente(): void {
     if(this.isDocumentoLocked) {
-      alert('O documento já está associado a um cliente existente.');
       return;
     }
 
@@ -218,8 +222,7 @@ export class FormCadastroPedido implements OnInit {
   private criarItemVazio(): ItemCadastro {
     return {
       tipo: '',
-      descricao: '',
-      fluxo_nome: '',
+      nome: '',
       quantidade: 1,
       medida_1: '',
       medida_2: '',
@@ -291,7 +294,7 @@ export class FormCadastroPedido implements OnInit {
   }
 
   adicionarItem(): void {
-    if (this.itemAtual.descricao && this.itemAtual.tipo && this.itemAtual.quantidade > 0) {
+    if (this.itemAtual.nome && this.itemAtual.tipo && this.itemAtual.quantidade > 0) {
       this.itens.push({ ...this.itemAtual });
       this.itemAtual = this.criarItemVazio();
     }
@@ -342,17 +345,142 @@ export class FormCadastroPedido implements OnInit {
 
     this.cadastrarNovoCliente();
 
+    setTimeout(() => {
+      this.enviarPedido();
+    }, 500);
+
+  }
+
+  private enviarPedido(): void {
+    if (!this.clienteSelecionado || !this.vendedorSelecionado) {
+      alert('Cliente ou vendedor não selecionado. Tente novamente.');
+      return;
+    }
+
     const prazoFormatado = this.criarDataPrazo();
 
-    this.pedidoCriado.emit({
-      cliente: this.clienteSelecionado!,
-      vendedor: this.vendedorSelecionado!,
+    const pedidoData: any = {
+      cliente: this.clienteSelecionado.id,
+      usuario_responsavel: this.vendedorSelecionado, 
       numero_do_pedido: this.numeroPedido,
       contato: this.contato,
       prioridade: this.prioridade,
-      observacoes: this.observacoes,
-      prazo: prazoFormatado,
-      itens: this.itens
+      status: 'aguardando',
+      observacoes: this.observacoes || '',
+      prazo: prazoFormatado ? prazoFormatado.toISOString() : null
+    };
+
+    console.log('Enviando pedido:', pedidoData);
+
+    this.pedidoService.createPedido(pedidoData).subscribe({
+      next: (pedidoCriado) => {
+        console.log('Pedido criado com sucesso:', pedidoCriado);
+        
+        this.salvarItensDoPedido(pedidoCriado.id);
+      },
+      error: (err) => {
+        console.error('Erro ao criar pedido:', err);
+        alert('Erro ao criar pedido. Verifique os dados e tente novamente.');
+      }
     });
+  }
+
+  private salvarItensDoPedido(pedidoId: number): void {
+    const itensParaSalvar = this.itens.map(item => ({
+      pedido: Number(pedidoId), 
+      tipo: item.tipo,
+      nome: item.nome,
+      quantidade: item.quantidade,
+      medida_1: item.medida_1 || '',
+      medida_2: item.medida_2 || '',
+      furo: item.furo || ''
+    }));
+
+    console.log('Salvando itens:', itensParaSalvar);
+
+    // Salva cada item individualmente ou em lote
+    this.salvarItensEmLote(itensParaSalvar, pedidoId);
+  }
+
+  // NOVO: Salva todos os itens em lote
+  private salvarItensEmLote(itens: any[], pedidoId: number): void {
+    let itensSalvos = 0;
+    const totalItens = itens.length;
+
+    if (totalItens === 0) {
+      this.finalizarCriacaoPedido(pedidoId);
+      return;
+    }
+
+    itens.forEach(item => {
+      this.itemService.createItem(item).subscribe({
+        next: (itemCriado) => {
+          console.log('Item criado:', itemCriado);
+          itensSalvos++;
+          
+          // Quando todos os itens forem salvos
+          if (itensSalvos === totalItens) {
+            this.finalizarCriacaoPedido(pedidoId);
+          }
+        },
+        error: (err) => {
+          console.error('Erro ao criar item:', err);
+          alert(`Erro ao salvar item "${item.nome}". Alguns itens podem não ter sido salvos.`);
+          itensSalvos++;
+          
+          // Continua mesmo com erro
+          if (itensSalvos === totalItens) {
+            this.finalizarCriacaoPedido(pedidoId);
+          }
+        }
+      });
+    });
+  }
+
+  private finalizarCriacaoPedido(pedidoId: number): void {
+  // Busca o pedido completo com os itens
+  this.pedidoService.getPedidoById(pedidoId).subscribe({
+    next: (pedidoCompleto) => {
+      console.log('Pedido completo:', pedidoCompleto);
+      
+      this.pedidoCriado.emit({
+        nome: this.clienteNome,
+        cliente: this.clienteSelecionado!,
+        vendedor: this.vendedorSelecionado!,
+        numero_do_pedido: this.numeroPedido,
+        status: 'aguardando',
+        contato: this.contato,
+        prioridade: this.prioridade,
+        observacoes: this.observacoes,
+        prazo: this.criarDataPrazo(),
+        itens: this.itens
+      });
+
+      alert(`Pedido #${pedidoCompleto.numero_do_pedido} criado com sucesso com ${this.itens.length} itens!`);
+      this.limparFormulario();
+    },
+    error: (err) => {
+      console.error('Erro ao buscar pedido completo:', err);
+      // Mesmo com erro, mostra sucesso pois o pedido foi criado
+      alert(`Pedido #${this.numeroPedido} criado com sucesso!`);
+      this.limparFormulario();
+    }
+  });
+}
+
+  private limparFormulario(): void {
+    this.clienteNome = '';
+    this.clienteSelecionado = null;
+    this.vendedorSelecionado = null;
+    this.numeroPedido = '';
+    this.contato = '';
+    this.documento = '';
+    this.prioridade = 'normal';
+    this.observacoes = '';
+    this.prazoData = '';
+    this.prazoHora = '';
+    this.itens = [];
+    this.itemAtual = this.criarItemVazio();
+    this.isDocumentoLocked = false;
   }
 }

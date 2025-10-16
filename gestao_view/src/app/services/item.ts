@@ -3,6 +3,8 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Item } from '../interfaces/item';
+import { Tipo } from '../interfaces/tipo';
+import { CreateItemRequest } from '../interfaces/create-item-request';
 
 @Injectable({
   providedIn: 'root' 
@@ -33,6 +35,14 @@ export class ItemService {
     const url = `${this.apiUrl}${pedidoId}/itens/`;
 
     return this.http.get<Item[]>(url).pipe(
+      catchError(this.handleError)
+    );  
+  }
+
+  getTipos(): Observable<Tipo[]> {
+    const url = `${this.apiUrlItens}tipos_choices/`;
+
+    return this.http.get<Tipo[]>(url).pipe(
       catchError(this.handleError)
     );  
   }
@@ -68,5 +78,19 @@ export class ItemService {
     }
     console.error(errorMessage);
     return throwError(() => new Error(errorMessage));
+  }
+
+  createItem(item: CreateItemRequest): Observable<any> {
+    console.log('Criando item:', item);
+    return this.http.post<any>(this.apiUrlItens, item).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  createItens(itens: CreateItemRequest[]): Observable<any> {
+    const url = `${this.apiUrlItens}bulk`;
+    return this.http.post<any>(url, { itens }).pipe(
+      catchError(this.handleError)
+    );
   }
 }

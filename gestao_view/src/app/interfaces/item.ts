@@ -20,9 +20,8 @@ export interface Item {
 }
 
 export interface ItemCadastro {
+  nome: string
   tipo: string;
-  descricao: string;
-  fluxo_nome: string;
   quantidade: number;
   medida_1: string;
   medida_2: string;
