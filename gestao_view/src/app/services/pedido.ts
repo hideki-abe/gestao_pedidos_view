@@ -97,18 +97,34 @@ export class PedidoService {
       }
     }
 
-    // Adiciona filtros, se houver valor
-    if (filtros.numeroPedido) {
-      params = params.append('numero_pedido', filtros.numeroPedido);
+    if (filtros.numero_pedido) {
+      console.log('🔧 Adicionando filtro numero_pedido:', filtros.numero_pedido);
+      params = params.append('numero_pedido', filtros.numero_pedido);
     }
-    if (filtros.nomeCliente) {
-      params = params.append('cliente_nome', filtros.nomeCliente);
+    
+    if (filtros.cliente_nome) {
+      console.log('🔧 Adicionando filtro cliente_nome:', filtros.cliente_nome);
+      params = params.append('cliente_nome', filtros.cliente_nome);
     }
-    if (filtros.vendedorNome) {
-      params = params.append('usuario_responsavel', filtros.vendedorNome);
+    
+    if (filtros.vendedor_nome) {
+      console.log('🔧 Adicionando filtro vendedor_nome:', filtros.vendedor_nome);
+      params = params.append('vendedor_nome', filtros.vendedor_nome);
     }
-    if (filtros.dataPedido) {
-      params = params.append('data_pedido', filtros.dataPedido);
+    
+    if (filtros.data_inicio) {
+      console.log('🔧 Adicionando filtro data_inicio:', filtros.data_inicio);
+      params = params.append('data_inicio', filtros.data_inicio);
+    }
+    
+    if (filtros.data_fim) {
+      console.log('🔧 Adicionando filtro data_fim:', filtros.data_fim);
+      params = params.append('data_fim', filtros.data_fim);
+    }
+    
+    if (filtros.prioridade) {
+      console.log('🔧 Adicionando filtro prioridade:', filtros.prioridade);
+      params = params.append('prioridade', filtros.prioridade);
     }
 
     // A chamada GET agora é limpa e padronizada
@@ -166,12 +182,13 @@ export class PedidoService {
     );
   }
 
+  */
   deletePedido(id: number): Observable<void> {
-    const url = `${this.apiUrl}/${id}`;
+    const url = `${this.apiUrl}${id}/`;
     return this.http.delete<void>(url).pipe(
       catchError(this.handleError)
     );
-  } */
+  } 
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Ocorreu um erro desconhecido!';

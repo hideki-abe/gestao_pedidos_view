@@ -17,7 +17,7 @@ form {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
-  gap: 1.5rem; // Espaçamento entre as seções do formulário
+  gap: 1.0rem; 
 }
 
 .prioridade-title,
@@ -86,7 +86,6 @@ form {
 .form-button {
   width: 100%;
   padding: 0.75rem;
-  margin-top: 1rem;
   font-size: 1rem;
   font-weight: 600;
   // Usando a cor primária para consistência
@@ -105,6 +104,14 @@ form {
     background-color: #E0E0E0; 
     color: #A0A0A0;
     cursor: not-allowed;
+  }
+}
+
+.form-button.delete {
+  background-color: #dc3545; 
+
+  &:hover:not(:disabled) {
+    background-color: #b02a37; 
   }
 }
 

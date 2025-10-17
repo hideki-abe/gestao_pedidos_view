@@ -8,7 +8,7 @@
         id="filtro-numero-pedido" 
         class="filter-input" 
         placeholder="Buscar por número..."
-        [(ngModel)]="filtros.numeroPedido"
+        [(ngModel)]="filtros.numero_pedido"
         (ngModelChange)="onFiltroChange()">
     </div>
 
@@ -20,7 +20,7 @@
         id="filtro-nome-cliente" 
         class="filter-input" 
         placeholder="Buscar por cliente..."
-        [(ngModel)]="filtros.nomeCliente"
+        [(ngModel)]="filtros.cliente_nome"
         (ngModelChange)="onFiltroChange()">
     </div>
 
@@ -30,7 +30,7 @@
       <select 
         id="filtro-vendedor" 
         class="filter-select"
-        [(ngModel)]="filtros.vendedorNome"
+        [(ngModel)]="filtros.vendedor_nome"
         (ngModelChange)="onFiltroChange()">
         <option [ngValue]="null">Todos</option>
         <option *ngFor="let vendedor of vendedores" [ngValue]="vendedor.nome">
@@ -46,7 +46,7 @@
         type="date" 
         id="filtro-data-pedido" 
         class="filter-input"
-        [(ngModel)]="filtros.dataPedido"
+        [(ngModel)]="filtros.data_inicio"
         (ngModelChange)="onFiltroChange()">
     </div>
   </div>

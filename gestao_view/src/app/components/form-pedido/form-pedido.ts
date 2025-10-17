@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Pedido } from '../../interfaces/pedido';
+import { PedidoService } from '../../services/pedido';
 
 export type PrioridadePedido = 'baixa' | 'normal' | 'alta' | 'urgente';
 
@@ -18,6 +19,7 @@ export class FormPedido implements OnChanges {
   @Input() prioridadeInicial: PrioridadePedido = 'normal';
   @Input() prazoHoraInicial: string = '';
   @Input() prazoDataInicial: string = '';
+  @Input() pedidoId?: number;
 
   @Output() formChange = new EventEmitter<{ 
     texto: string; 
@@ -31,10 +33,16 @@ export class FormPedido implements OnChanges {
     prazo: Date | null; 
   }>();
 
+  @Output() pedidoDeletado = new EventEmitter<number>();
+
   texto: string = '';
   prioridade: PrioridadePedido = 'normal';
   prazoData: string = '';
   prazoHora: string = '';
+
+  constructor(private pedidoService: PedidoService) {
+    console.log("Id do pedido para ser excluido: ", this.pedidoId);
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['textoInicial'] && changes['textoInicial'].currentValue !== this.texto) {
@@ -179,5 +187,69 @@ export class FormPedido implements OnChanges {
 
   onPrazoMudou(): void {
     this.emitFormChanges();
+  }
+
+deletarPedido(): void {
+    // ✅ Verificar se tem ID do pedido
+    if (!this.pedidoId) {
+      console.error('❌ ID do pedido não fornecido para deletar');
+      alert('Erro: ID do pedido não encontrado');
+      return;
+    }
+
+    // ✅ Confirmar antes de deletar
+    const confirmacao = confirm(
+      `Tem certeza que deseja deletar o pedido #${this.pedidoId}?\n\nEsta ação não pode ser desfeita.`
+    );
+
+    if (!confirmacao) {
+      console.log('🚫 Deleção cancelada pelo usuário');
+      return;
+    }
+
+    console.log(`🗑️ Iniciando deleção do pedido ID: ${this.pedidoId}`);
+
+    // ✅ Chamar o serviço para deletar
+    this.pedidoService.deletePedido(this.pedidoId).subscribe({
+      next: (response) => {
+        console.log('✅ Pedido deletado com sucesso:', response);
+        
+        // ✅ Mostrar mensagem de sucesso
+        alert(`Pedido #${this.pedidoId} deletado com sucesso!`);
+        
+        // ✅ Emitir evento informando que foi deletado
+        this.pedidoDeletado.emit(this.pedidoId);
+        
+        // ✅ Limpar o formulário
+        this.limparFormulario();
+      },
+      error: (error) => {
+        console.error('❌ Erro ao deletar pedido:', error);
+        
+        // ✅ Tratar diferentes tipos de erro
+        let mensagemErro = 'Erro desconhecido ao deletar pedido';
+        
+        if (error.status === 404) {
+          mensagemErro = 'Pedido não encontrado';
+        } else if (error.status === 403) {
+          mensagemErro = 'Você não tem permissão para deletar este pedido';
+        } else if (error.status === 400) {
+          mensagemErro = 'Não é possível deletar este pedido (pode ter itens associados)';
+        } else if (error.error?.detail) {
+          mensagemErro = error.error.detail;
+        } else if (error.message) {
+          mensagemErro = error.message;
+        }
+        
+        alert(`Erro ao deletar pedido: ${mensagemErro}`);
+      }
+    });
+  }
+
+  private limparFormulario(): void {
+    this.texto = '';
+    this.prioridade = 'normal';
+    this.prazoData = '';
+    this.prazoHora = '';
   }
 }

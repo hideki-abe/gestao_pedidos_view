@@ -115,9 +115,10 @@ export class TabelaEncaminhamento implements OnInit {
     this.uploadPedidos(); 
   }
 
-  onFiltrosMudaram(filtros: FiltrosPedido): void {
+  onFiltroChange(filtros: FiltrosPedido): void {
     this.filtrosAtuais = filtros;
     this.paginaAtual = 1;
+    console.log("Filtros atualizados:", this.filtrosAtuais);
     this.uploadPedidos(); 
   }
 
@@ -249,5 +250,24 @@ export class TabelaEncaminhamento implements OnInit {
     this.isShown.update((isShown) => !isShown);
     console.log("estou funcionando")
   }
+
+onPedidoDeletado(pedidoId: number): void {
+  console.log(`Pedido ${pedidoId} foi deletado`);
+  
+  // ✅ Mostrar notificação de sucesso
+  this.toastr.success(`Pedido #${pedidoId} deletado com sucesso!`, 'Pedido Deletado');
+  
+  // ✅ Limpar seleção se o pedido deletado estava selecionado
+  if (this.pedidoSelecionadoId === pedidoId) {
+    this.pedidoSelecionadoId = null;
+  }
+  
+  // ✅ Recarregar a lista de pedidos para atualizar a tabela
+  this.uploadPedidos();
+  
+  // ✅ OU remover apenas o pedido específico da lista (mais eficiente)
+  // this.pedidos = this.pedidos.filter(p => p.id !== pedidoId);
+  // this.totalDePedidos--;
+}
 
 }

@@ -7,10 +7,13 @@ import { Vendedor } from '../../interfaces/vendedor';
 
 // Define uma interface para a estrutura dos filtros
 export interface FiltrosPedido {
-  nomeCliente?: string | null;
-  vendedorNome?: string | null;
-  numeroPedido?: string | null;
-  dataPedido?: string | null;
+  cliente_nome?: string;    // ✅ Alinhado com backend
+  numero_pedido?: string;   // ✅ Alinhado com backend  
+  data_inicio?: string;     // ✅ Alinhado com backend
+  data_fim?: string;        // ✅ Alinhado com backend
+  prioridade?: string;      // ✅ Para futuro uso
+  vendedor_id?: number | string;  // ✅ Para identificação interna
+  vendedor_nome?: string;   // ✅ Alinhado com backend
 }
 
 @Component({
@@ -21,17 +24,19 @@ export interface FiltrosPedido {
   styleUrl: './pedido-filter.scss'
 })
 export class PedidoFilter implements OnInit, OnDestroy {
-  // Recebe a lista de vendedores do componente pai
+
   @Input() vendedores: Vendedor[] = [];
-  // Emite um evento com os filtros sempre que houver uma mudança
+  
   @Output() filtroChange = new EventEmitter<FiltrosPedido>();
 
-  // Objeto para armazenar os valores atuais dos filtros
   filtros: FiltrosPedido = {
-    nomeCliente: null,
-    vendedorNome: null,
-    numeroPedido: null,
-    dataPedido: null
+    cliente_nome: '',
+    numero_pedido: '',
+    data_inicio: '',
+    data_fim: '',
+    prioridade: '',
+    vendedor_id: '',
+    vendedor_nome: ''
   };
 
   // Subject para controlar o debounce e evitar emissões excessivas
@@ -39,7 +44,6 @@ export class PedidoFilter implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   ngOnInit(): void {
-    // Escuta as mudanças com um debounce de 300ms
     this.filtroSubject.pipe(
       debounceTime(300),
       takeUntil(this.destroy$)
@@ -53,18 +57,19 @@ export class PedidoFilter implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // Chamado sempre que um filtro é alterado no template
   onFiltroChange(): void {
     this.filtroSubject.next();
   }
-
-  // Limpa todos os filtros e emite a mudança
   limparFiltros(): void {
+    console.log('🧹 Limpando todos os filtros');
     this.filtros = {
-      nomeCliente: null,
-      vendedorNome: null,
-      numeroPedido: null,
-      dataPedido: null
+      cliente_nome: '',
+      numero_pedido: '',
+      data_inicio: '',
+      data_fim: '',
+      prioridade: '',
+      vendedor_id: '',
+      vendedor_nome: ''
     };
     this.onFiltroChange();
   }
