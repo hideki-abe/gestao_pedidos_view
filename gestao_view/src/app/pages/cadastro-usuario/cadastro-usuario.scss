@@ -1,0 +1,80 @@
+@import '../cadastro.component/cadastro.component.scss';
+
+.usuario-form {
+  max-width: 480px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 16px #0001;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+  label {
+    font-weight: 500;
+    color: $secondary-color;
+  }
+  input, select {
+    padding: .6rem .8rem;
+    border: 1.5px solid $primary-color;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color .2s;
+    &:focus {
+      border-color: $secondary-color;
+      outline: none;
+    }
+  }
+}
+
+.form-group-inline {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  label {
+    font-weight: 500;
+    color: $secondary-color;
+    input[type="checkbox"] {
+      margin-right: .5rem;
+    }
+  }
+}
+
+.form-error {
+  background: #ffeaea;
+  color: #b00;
+  border: 1px solid #ffbdbd;
+  border-radius: 4px;
+  padding: .7rem 1rem;
+  text-align: center;
+  font-size: .98rem;
+}
+
+.form-success {
+  background: #eaffea;
+  color: #168c2b;
+  border: 1px solid #b6ffbd;
+  border-radius: 4px;
+  padding: .7rem 1rem;
+  text-align: center;
+  font-size: .98rem;
+}
+
+@media (max-width: 600px) {
+  .usuario-form {
+    padding: 1rem;
+    max-width: 98vw;
+  }
+}
+
+.password-tip {
+  font-size: 0.95rem;
+  color: #888;
+  margin-top: 2px;
+}

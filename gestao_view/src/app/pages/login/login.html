@@ -8,7 +8,7 @@
     <form (ngSubmit)="onSubmit()" autocomplete="off">
       <div *ngIf="error" class="login-error">{{ error }}</div>
       <div class="form-group">
-        <label for="username">Usuário</label>
+        <label for="username">Email</label>
         <input id="username" name="username" [(ngModel)]="username" type="text" required autocomplete="username" />
       </div>
       <div class="form-group">
