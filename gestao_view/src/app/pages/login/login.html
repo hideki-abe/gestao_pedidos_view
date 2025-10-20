@@ -1,0 +1,24 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-header">
+      <img src="assets/logomarca.svg" alt="Logo" class="login-logo" />
+      <h2>GRUPO YAMADA</h2>
+      <p class="login-subtitle">Acesse sua conta para continuar</p>
+    </div>
+    <form (ngSubmit)="onSubmit()" autocomplete="off">
+      <div *ngIf="error" class="login-error">{{ error }}</div>
+      <div class="form-group">
+        <label for="username">Usuário</label>
+        <input id="username" name="username" [(ngModel)]="username" type="text" required autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <input id="password" name="password" [(ngModel)]="password" type="password" required autocomplete="current-password" />
+      </div>
+      <button type="submit" [disabled]="loading">
+        <span *ngIf="!loading">Entrar</span>
+        <span *ngIf="loading" class="spinner"></span>
+      </button>
+    </form>
+  </div>
+</div>

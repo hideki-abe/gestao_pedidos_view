@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { TabelaProducao } from "../../components/tabela-producao/tabela-producao";
+import { TopbarComponent } from "../../components/topbar/topbar.component";
+import { Navbar } from "../../components/navbar/navbar";
 
 @Component({
-  selector: 'app-producao.component',
-  imports: [TabelaProducao],
+  selector: 'app-producao',
+  imports: [TabelaProducao, TopbarComponent, Navbar],
   templateUrl: './producao.component.html',
   styleUrl: './producao.component.scss'
 })

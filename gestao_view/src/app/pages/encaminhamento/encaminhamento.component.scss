@@ -6,11 +6,26 @@ $text-color: #333;
 $white: #fff;
 $border-radius: 5px;
 
-// --- Estilo Geral da Página ---
+app-navbar {
+  width: 240px; // ajuste conforme a largura real da sua navbar
+  height: 100vh;
+  z-index: 100;
+}
+
+app-topbar {
+  height: 64px; // ajuste conforme a altura real da sua topbar
+  z-index: 101;
+}
+
 .encaminhamento-page {
-  padding: 10px;
+  min-height: 100vh;
+  padding-left: 240px;
+  padding-top: 20px;
+  padding-right: 10px;
+  padding-bottom: 10px;
   background-color: $page-bg;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  box-sizing: border-box;
 }
 
 // --- Cabeçalho da Página ---

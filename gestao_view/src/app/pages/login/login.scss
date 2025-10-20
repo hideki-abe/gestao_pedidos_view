@@ -1,0 +1,133 @@
+// --- Variáveis de Cores (iguais ao navbar) ---
+$primary-bg-color: #68b04d;
+$secondary-bg-color: #2d3748;
+$text-color: #fff;
+$accent-color: #3A7CA5;
+$border-color: #4a5568;
+
+.login-page {
+  position: fixed;
+  inset: 0;
+  min-height: 100vh;
+  min-width: 100vw;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $primary-bg-color;
+  z-index: 9999; // garante que fique acima de qualquer coisa
+}
+
+.login-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px #0003;
+  padding: 2.5rem 2rem 2rem 2rem;
+  width: 100%;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  border: 2px solid $primary-bg-color;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  .login-logo {
+    width: 80px;
+    margin-bottom: 1rem;
+  }
+  h2 {
+    margin: 0 0 .5rem 0;
+    font-weight: 700;
+    color: $border-color;
+    letter-spacing: 1px;
+  }
+  .login-subtitle {
+    color: $secondary-bg-color;
+    font-size: 1rem;
+    margin: 0;
+  }
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+  label {
+    display: block;
+    margin-bottom: .4rem;
+    font-weight: 500;
+    color: $secondary-bg-color;
+  }
+  input {
+    width: 323px;
+    padding: 6px 12px;
+    border: 1.5px solid $primary-bg-color;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color .2s;
+    &:focus {
+      border-color: $accent-color;
+      outline: none;
+    }
+  }
+}
+
+.login-error {
+  background: #ffeaea;
+  color: #b00;
+  border: 1px solid #ffbdbd;
+  border-radius: 4px;
+  padding: .7rem 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: .98rem;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: .75rem;
+  background: $primary-bg-color;
+  color: $text-color;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1.08rem;
+  cursor: pointer;
+  transition: background .2s, box-shadow .2s;
+  margin-top: .5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px #0001;
+  letter-spacing: 1px;
+  &:hover:not(:disabled) {
+    background: $secondary-bg-color;
+    color: $accent-color;
+  }
+  &:disabled {
+    background: #b3d1fa;
+    cursor: not-allowed;
+  }
+  .spinner {
+    width: 22px;
+    height: 22px;
+    border: 3px solid #fff;
+    border-top: 3px solid $primary-bg-color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 500px) {
+  .login-card {
+    padding: 1.5rem .5rem 1rem .5rem;
+    max-width: 98vw;
+  }
+}
