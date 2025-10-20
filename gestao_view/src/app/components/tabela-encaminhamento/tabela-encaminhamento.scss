@@ -53,9 +53,6 @@ $colors: (
     //transition: opacity 0.3s ease-out, transform 0.3s ease-out;
   }
 
-  .enter-animation {
-  //animation: slide-fade-in 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  }
   @keyframes slide-fade {
     from {
       opacity: 0;

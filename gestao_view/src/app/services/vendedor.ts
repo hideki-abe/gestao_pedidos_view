@@ -10,7 +10,7 @@ import { PaginatedResponse } from '../interfaces/api';
 })
 export class VendedorService {
 
-  private apiUrl = '/accounts/users';
+  private apiUrl = '/api/auth/users';
 
   constructor(private http: HttpClient) { }
 

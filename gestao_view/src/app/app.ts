@@ -5,7 +5,7 @@ import { TopbarComponent } from './components/topbar/topbar.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Navbar, TopbarComponent],
+  imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

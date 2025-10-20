@@ -5,7 +5,7 @@ import { TopbarComponent } from "../../components/topbar/topbar.component";
 
 @Component({
   selector: 'app-encaminhamento',
-  imports: [TabelaEncaminhamento, Navbar, TopbarComponent],
+  imports: [TabelaEncaminhamento, Navbar],
   templateUrl: './encaminhamento.component.html',
   styleUrl: './encaminhamento.component.scss'
 })

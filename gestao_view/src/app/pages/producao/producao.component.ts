@@ -5,7 +5,7 @@ import { Navbar } from "../../components/navbar/navbar";
 
 @Component({
   selector: 'app-producao',
-  imports: [TabelaProducao, TopbarComponent, Navbar],
+  imports: [TabelaProducao, Navbar],
   templateUrl: './producao.component.html',
   styleUrl: './producao.component.scss'
 })

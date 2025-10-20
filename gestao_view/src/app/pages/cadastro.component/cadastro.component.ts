@@ -5,7 +5,7 @@ import { TopbarComponent } from "../../components/topbar/topbar.component";
 
 @Component({
   selector: 'app-cadastro',
-  imports: [FormCadastroPedido, Navbar, TopbarComponent],
+  imports: [FormCadastroPedido, Navbar],
   templateUrl: './cadastro.component.html',
   styleUrl: './cadastro.component.scss'
 })

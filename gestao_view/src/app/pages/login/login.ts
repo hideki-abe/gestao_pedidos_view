@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-login',
@@ -15,6 +17,9 @@ export class Login {
   error: string = '';
   loading: boolean = false;
 
+  constructor(private router: Router, private auth: AuthService) {}
+
+
   onSubmit() {
     this.error = '';
     if (!this.username || !this.password) {
@@ -22,15 +27,15 @@ export class Login {
       return;
     }
     this.loading = true;
-    // Simulação de autenticação (substitua pelo AuthService real)
-    setTimeout(() => {
-      this.loading = false;
-      if (this.username === 'admin' && this.password === 'admin') {
-        // Aqui você pode redirecionar ou salvar token
-        alert('Login realizado com sucesso!');
-      } else {
+    this.auth.login({ username: this.username, password: this.password }).subscribe({
+      next: () => {
+        this.loading = false;
+        this.router.navigate(['/producao']); 
+      },
+      error: () => {
+        this.loading = false;
         this.error = 'Usuário ou senha inválidos.';
       }
-    }, 1000);
+    });
   }
 }
