@@ -23,7 +23,7 @@ export class Login {
   onSubmit() {
     this.error = '';
     if (!this.username || !this.password) {
-      this.error = 'Preencha usuário e senha.';
+      this.error = 'Preencha e-mail e senha.';
       return;
     }
     this.loading = true;

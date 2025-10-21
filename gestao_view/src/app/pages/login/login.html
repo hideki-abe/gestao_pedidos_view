@@ -8,8 +8,8 @@
     <form (ngSubmit)="onSubmit()" autocomplete="off">
       <div *ngIf="error" class="login-error">{{ error }}</div>
       <div class="form-group">
-        <label for="username">Email</label>
-        <input id="username" name="username" [(ngModel)]="username" type="text" required autocomplete="username" />
+        <label for="username">Usuário</label>
+        <input id="username" name="username" [(ngModel)]="username" type="text" required autocomplete="email" />
       </div>
       <div class="form-group">
         <label for="password">Senha</label>
