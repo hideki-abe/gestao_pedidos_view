@@ -154,4 +154,24 @@ $transition-speed: 0.3s;
       gap: 15px;
     }
   }
+
+  .sidebar-footer .btn.btn-secondary {
+    background: #fff;
+    color: $primary-bg-color;
+    border: none;
+    border-radius: 6px;
+    padding: 5px 9px;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-left: 10px;
+    box-shadow: 0 2px 8px #0001;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+
+    &:hover {
+      background: $accent-color;
+      color: #fff;
+      box-shadow: 0 4px 16px #0002;
+    }
+  }
 }

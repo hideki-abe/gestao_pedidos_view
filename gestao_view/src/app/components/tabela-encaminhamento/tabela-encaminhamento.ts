@@ -77,10 +77,12 @@ export class TabelaEncaminhamento implements OnInit {
   private carregarVendedores(): void {
     this.vendedorService.getVendedores().subscribe({
       next: (vendedores) => {
-        this.listaDeVendedores = vendedores;
+        this.listaDeVendedores = Array.isArray(vendedores) ? vendedores : [];
       },
       error: (err) => {
         console.error('Falha ao carregar a lista de vendedores:', err);
+        this.listaDeVendedores = []; // Garante array mesmo em erro
+
       }
     });
   }
