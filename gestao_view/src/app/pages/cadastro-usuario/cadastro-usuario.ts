@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Navbar } from '../../components/navbar/navbar';
 import { UsuarioPayload, UsuarioService } from '../../services/usuario';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-cadastro-usuario',
@@ -41,7 +42,14 @@ export class CadastroUsuario {
   error: string = '';
   success: string = '';
 
-  constructor(private usuarioService: UsuarioService) {}
+  public podeCadastrar: boolean = false;
+
+  constructor(private usuarioService: UsuarioService, private authService: AuthService) {}
+
+  ngOnInit() {
+    const user = this.authService.getUser();
+    this.podeCadastrar = !!user && ['admin', 'gerente', 'vendedor'].includes(user.funcao);
+  }
 
   onSubmit() {
     this.error = '';

@@ -1,4 +1,5 @@
-<div class="cadastro-page">
+@if(podeCadastrar) {
+  <div class="cadastro-page">
   <app-navbar></app-navbar>
   <!--<app-topbar></app-topbar>-->
   <header class="page-header">
@@ -53,3 +54,9 @@
     </section>
   </main>
 </div>
+} @else {
+  <div class="cadastro-page">
+    <app-navbar></app-navbar>
+    Você não tem permissão para acessar esta página.
+  </div>
+}
