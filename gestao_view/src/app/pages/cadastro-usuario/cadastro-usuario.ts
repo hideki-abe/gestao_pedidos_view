@@ -48,6 +48,7 @@ export class CadastroUsuario {
 
   ngOnInit() {
     const user = this.authService.getUser();
+    console.log(user);
     this.podeCadastrar = !!user && ['admin', 'gerente', 'vendedor'].includes(user.funcao);
   }
 

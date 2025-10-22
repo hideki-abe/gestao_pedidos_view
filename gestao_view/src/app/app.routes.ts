@@ -11,6 +11,6 @@ export const routes: Routes = [
   { path: 'producao', component: ProducaoComponent, canActivate: [AuthGuard] },
   { path: 'encaminhamento', component: EncaminhamentoComponent, canActivate: [AuthGuard] },
   { path: 'cadastro', component: CadastroComponent, canActivate: [AuthGuard] },
-  { path: 'cadastro-usuario', component: CadastroUsuario, canActivate: [AuthGuard] },
+  { path: 'usuarios', component: CadastroUsuario, canActivate: [AuthGuard] },
   { path: 'login', component: Login }
 ];

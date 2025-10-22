@@ -35,5 +35,5 @@ export class UsuarioService {
     return this.http.post<UsuarioResponse>(this.apiUrl, payload);
   }
 
-  // Outros métodos (listar, editar, deletar) podem ser adicionados aqui
+  
 }

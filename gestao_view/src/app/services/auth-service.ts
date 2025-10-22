@@ -10,6 +10,7 @@ export interface LoginPayload {
 
 export interface AuthResponse {
   token: string;
+  user: any;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -23,9 +24,15 @@ export class AuthService {
     return this.http.post<AuthResponse>(this.apiUrl, payload).pipe(
       tap(response => {
         localStorage.setItem('auth_token', response.token);
+        localStorage.setItem('user', JSON.stringify(response.user));
         this.loggedIn$.next(true);
       })
     );
+  }
+
+  getUser(): any {
+  const user = localStorage.getItem('user');
+  return user ? JSON.parse(user) : null;
   }
 
   logout(): void {

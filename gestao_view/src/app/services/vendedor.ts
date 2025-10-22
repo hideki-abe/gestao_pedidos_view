@@ -21,11 +21,11 @@ export class VendedorService {
         );
     }
 
-    getVendedores(): Observable<Vendedor[]> {
-        return this.http.get<Vendedor[]>(this.apiUrl + '/vendedores').pipe(
-            catchError(this.handleError)
-        );
-    }
+  getVendedores(): Observable<Vendedor[]> {
+    return this.http.get<{ results: Vendedor[] }>(this.apiUrl + '/vendedores').pipe(
+      map(response => response.results)
+    );
+  }
 
     private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Ocorreu um erro desconhecido!';
