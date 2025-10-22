@@ -1,59 +1,91 @@
 @if(podeCadastrar) {
   <div class="cadastro-page">
-  <app-navbar></app-navbar>
-  <!--<app-topbar></app-topbar>-->
-  <header class="page-header">
-    <h1>Cadastro de Usuário</h1>
-    <div class="actions">
-      <button class="btn btn-primary" type="button">Novo Usuário</button>
-    </div>
-  </header>
+    <app-navbar></app-navbar>
+    <header class="page-header">
+      <h1>Cadastro de Usuário</h1>
+    </header>
 
-  <main class="page-content">
-    <section class="component-section">
-      <form class="usuario-form" (ngSubmit)="onSubmit()" autocomplete="off">
-        <div *ngIf="error" class="form-error">{{ error }}</div>
-        <div *ngIf="success" class="form-success">{{ success }}</div>
-        <div class="form-group">
-          <label for="nome">Nome</label>
-          <input id="nome" name="nome" [(ngModel)]="usuario.nome" required maxlength="100" />
-        </div>
-        <div class="form-group">
-          <label for="email">E-mail</label>
-          <input id="email" name="email" [(ngModel)]="usuario.email" required type="email" maxlength="100" />
-        </div>
-        <div class="form-group">
-          <label for="password">Senha</label>
-          <input id="password" name="password" [(ngModel)]="usuario.password" required type="password" minlength="8" autocomplete="new-password" />
-          <small class="password-tip">Mínimo 8 caracteres. Use letras, números e símbolos.</small>
-        </div>
-        <div class="form-group">
-          <label for="funcao">Função</label>
-          <select id="funcao" name="funcao" [(ngModel)]="usuario.funcao" required>
-            <option *ngFor="let f of FUNCAO_CHOICES" [value]="f.value">{{ f.label }}</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="nivel_acesso">Nível de Acesso</label>
-          <select id="nivel_acesso" name="nivel_acesso" [(ngModel)]="usuario.nivel_acesso" required>
-            <option *ngFor="let n of NIVEL_ACESSO_CHOICES" [value]="n.value">{{ n.label }}</option>
-          </select>
-        </div>
-        <div class="form-group-inline">
-          <label>
-            <input type="checkbox" [(ngModel)]="usuario.is_active" name="is_active" />
-            Usuário Ativo
-          </label>
-          <label>
-            <input type="checkbox" [(ngModel)]="usuario.is_staff" name="is_staff" />
-            Acesso ao Admin
-          </label>
-        </div>
-        <button class="btn btn-primary" type="submit">Cadastrar</button>
-      </form>
-    </section>
-  </main>
-</div>
+    <main class="page-content">
+      <section class="component-section">
+        <form class="usuario-form" (ngSubmit)="onSubmit()" autocomplete="off">
+          <div *ngIf="error" class="form-error">{{ error }}</div>
+          <div *ngIf="success" class="form-success">{{ success }}</div>
+          <div class="form-group">
+            <label for="nome">Nome</label>
+            <input id="nome" name="nome" [(ngModel)]="usuario.nome" required maxlength="100" />
+          </div>
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input id="email" name="email" [(ngModel)]="usuario.email" required type="email" maxlength="100" />
+          </div>
+          <div class="form-group" *ngIf="!editando">
+            <label for="password">Senha</label>
+            <input id="password" name="password" [(ngModel)]="usuario.password" required type="password" minlength="8" autocomplete="new-password" />
+            <small class="password-tip">Mínimo 8 caracteres. Use letras, números e símbolos.</small>
+          </div>
+          <div class="form-group">
+            <label for="funcao">Função</label>
+            <select id="funcao" name="funcao" [(ngModel)]="usuario.funcao" required>
+              <option *ngFor="let f of FUNCAO_CHOICES" [value]="f.value">{{ f.label }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="nivel_acesso">Nível de Acesso</label>
+            <select id="nivel_acesso" name="nivel_acesso" [(ngModel)]="usuario.nivel_acesso" required>
+              <option *ngFor="let n of NIVEL_ACESSO_CHOICES" [value]="n.value">{{ n.label }}</option>
+            </select>
+          </div>
+          <div class="form-group-inline">
+            <label>
+              <input type="checkbox" [(ngModel)]="usuario.is_active" name="is_active" />
+              Usuário Ativo
+            </label>
+            <label>
+              <input type="checkbox" [(ngModel)]="usuario.is_staff" name="is_staff" />
+              Acesso ao Admin
+            </label>
+          </div>
+          <button class="btn btn-primary" type="submit">{{ editando ? 'Salvar' : 'Cadastrar' }}</button>
+          <button *ngIf="editando" class="btn btn-secondary" type="button" (click)="cancelarEdicao()">Cancelar</button>
+        </form>
+      </section>
+
+      <section class="component-section">
+        <h2>Usuários Cadastrados</h2>
+        <table class="usuarios-table">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>E-mail</th>
+              <th>Função</th>
+              <th>Nível</th>
+              <th>Ativo</th>
+              <th>Admin</th>
+              @if (isAdmin) {
+                <th>Ações</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let u of usuarios">
+              <td>{{ u.nome }}</td>
+              <td>{{ u.email }}</td>
+              <td>{{ u.funcao }}</td>
+              <td>{{ u.nivel_acesso }}</td>
+              <td>{{ u.is_active ? 'Sim' : 'Não' }}</td>
+              <td>
+                {{ u.funcao === 'admin' ? 'Sim' : 'Não' }}
+              </td>
+              <td *ngIf="isAdmin">
+                <button class="btn btn-secondary" (click)="editar(u)">Editar</button>
+                <button class="btn btn-secondary" (click)="remover(u)">Remover</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
 } @else {
   <div class="cadastro-page">
     <app-navbar></app-navbar>

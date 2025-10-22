@@ -11,7 +11,16 @@ import { AuthService } from '../../services/auth-service';
 })
 export class Navbar {
 
+  usuario = {
+    nome: ''
+  };
+
   constructor(private auth: AuthService, private router: Router) {}
+
+  ngOnInit() {
+    const user = this.auth.getUser();
+    this.usuario.nome = user?.nome || '';
+  }
 
   logout() {
     this.auth.logout();

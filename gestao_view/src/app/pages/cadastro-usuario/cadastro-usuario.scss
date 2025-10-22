@@ -1,4 +1,7 @@
 @import '../cadastro.component/cadastro.component.scss';
+$primary-color: #3A7CA5;
+$secondary-color: #6c757d;
+$accent-color: #4299e1;
 
 .usuario-form {
   max-width: 480px;
@@ -64,6 +67,71 @@
   padding: .7rem 1rem;
   text-align: center;
   font-size: .98rem;
+}
+
+.usuarios-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px #0001;
+  overflow: hidden;
+  margin-top: 1.5rem;
+
+  th, td {
+    padding: 8px 18px;
+    text-align: left;
+    font-size: 1rem;
+    border-bottom: 1px solid #dee2e6;
+    color: #222;
+  }
+
+  th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #222;
+    letter-spacing: 0.5px;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr {
+    transition: background 0.2s;
+    &:nth-of-type(even) {
+      background-color: #f8f9fa;
+    }
+    &:hover {
+      background-color: #e6f4ea;
+    }
+  }
+
+  .btn.btn-secondary {
+    background: $primary-color;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 16px;
+    font-weight: 600;
+    font-size: 0.98rem;
+    margin-right: 8px;
+    box-shadow: 0 2px 8px #0001;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    &:hover {
+      background: #3A7CA5;
+      color: #fff;
+      box-shadow: 0 4px 16px #0002;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .usuarios-table th, .usuarios-table td {
+    padding: 0.7rem 0.5rem;
+    font-size: 0.97rem;
+  }
 }
 
 @media (max-width: 600px) {
