@@ -8,11 +8,13 @@ import { TabelaItens } from "../tabela-itens/tabela-itens";
 import { ToastrService } from 'ngx-toastr';
 import { Pagination } from '../pagination/pagination';
 import { PainelPedidoProducao } from "../painel-pedido-producao/painel-pedido-producao";
+import { FiltrosPedido, PedidoFilter } from '../pedido-filter/pedido-filter';
+import { Vendedor } from '../../interfaces/vendedor';
 
 @Component({
   selector: 'app-tabela-producao',
   standalone: true,
-  imports: [CommonModule, TabelaItens, Pagination, PainelPedidoProducao], 
+  imports: [CommonModule, TabelaItens, Pagination, PainelPedidoProducao, PedidoFilter], 
   templateUrl: './tabela-producao.html',
   styleUrl: './tabela-producao.scss'
 })
@@ -26,6 +28,9 @@ export class TabelaProducao implements OnInit {
   public itensPorPagina: number = 20;
   public totalDePedidos: number = 0;
 
+  private filtrosAtuais: FiltrosPedido = {};
+  public listaDeVendedores: Vendedor[] = [];
+
   constructor(
     private pedidoService: PedidoService, 
     private clienteService: ClienteService, 
@@ -34,30 +39,24 @@ export class TabelaProducao implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('Componente TabelaProdução inicializado');
+    this.carregarVendedores();
     this.uploadPedidos();
   }
 
-  private carregarPedidos(): void {
-    this.pedidoService.getPedidosEmProducao().subscribe({
-      next: (data) => {
-        this.pedidos = data;
-        this.erroAoCarregar = false;
-         this.relacionaCliente();
-         this.relacionaVendedor();
-         this.formataStatusEPrioridade();
-         //console.log("Carregando clientes: ", this.pedidos);
-      },
-      error: (err) => {
-        console.error('Falha ao carregar pedidos da API:', err);
-        this.erroAoCarregar = true;
-      }
-    });
+  onFiltroChange(filtros: FiltrosPedido): void {
+    this.filtrosAtuais = filtros;
+    this.paginaAtual = 1;
+    this.uploadPedidos(); 
   }
 
   private uploadPedidos(): void {
     this.erroAoCarregar = false;
-    this.pedidoService.getPedidosPaginated(this.paginaAtual, this.itensPorPagina, ['producao'])
+    this.pedidoService.getPedidosPaginated(
+      this.paginaAtual, 
+      this.itensPorPagina, 
+      ['producao'],
+      this.filtrosAtuais
+    )
     .subscribe({
       next: (response) => {
         this.pedidos = response.results;
@@ -82,12 +81,9 @@ export class TabelaProducao implements OnInit {
 
   private relacionaCliente(): void {
     this.pedidos.forEach(pedido => {
-      // Usamos o ID original para buscar o cliente
       this.clienteService.getClienteById(pedido.cliente).subscribe({
         next: (cliente) => {
-          // Atribuímos o objeto retornado à nova propriedade
           pedido.clienteObj = cliente;
-          //console.log(`Status do pedido: ${pedido.statusDisplay}`);
         },
         error: (err) => {
           console.error(`Falha ao carregar cliente para o pedido ${pedido.id}:`, err);
@@ -96,14 +92,24 @@ export class TabelaProducao implements OnInit {
     });
   }
 
+  private carregarVendedores(): void {
+    this.vendedorService.getVendedores().subscribe({
+      next: (vendedores) => {
+        this.listaDeVendedores = vendedores;
+        console.log('Vendedores carregados:', this.listaDeVendedores);
+      },
+      error: (err) => {
+        console.error('Falha ao carregar a lista de vendedores:', err);
+        this.listaDeVendedores = [];
+      }
+    });
+  }
+
   private relacionaVendedor(): void {
     this.pedidos.forEach(pedido => {
-      // Usamos o ID original para buscar o vendedor
       this.vendedorService.getVendedorById(pedido.usuario_responsavel).subscribe({
         next: (vendedor) => {
-          // Atribuímos o objeto retornado à nova propriedade
           pedido.usuario_responsavelObj = vendedor;
-          //console.log(`Vendedor ${vendedor.nome} relacionado ao pedido ${pedido.id}`);
         },
         error: (err) => {
           console.error(`Falha ao carregar vendedor para o pedido ${pedido.id}:`, err);
@@ -156,25 +162,20 @@ export class TabelaProducao implements OnInit {
   }
 
     public toggleItens(pedidoId: number): void {
-    // Se o mesmo pedido for clicado novamente, esconde a tabela de itens.
     if (this.pedidoSelecionadoId === pedidoId) {
       this.pedidoSelecionadoId = null;
     } else {
-      // Se for um novo pedido, mostra a tabela de itens para ele.
       this.pedidoSelecionadoId = pedidoId;
     }
   }
 
   public changeStatus(pedido: Pedido, novoStatus: 'encaminhar'): void {
-    // Fecha a linha de detalhes, se estiver aberta
     this.pedidoSelecionadoId = null;
 
     this.pedidoService.updateStatus(pedido.id, novoStatus).subscribe({
       next: () => {
         const mensagem = novoStatus === 'encaminhar' ? 'Pedido encaminhado com sucesso!' : 'Pedido cancelado.';
         this.toastr.success(mensagem, 'Status Atualizado!');
-        
-        // Remove o pedido da lista da UI para uma atualização otimista
         this.pedidos = this.pedidos.filter(p => p.id !== pedido.id);
       },
       error: (err) => {

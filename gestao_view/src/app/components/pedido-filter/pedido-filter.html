@@ -39,6 +39,21 @@
       </select>
     </div>
 
+    <!-- Filtro por Seções -->
+    <div class="filter-group">
+      <label for="filtro-secao">Seção</label>
+      <select 
+        id="filtro-secao" 
+        class="filter-select"
+        [(ngModel)]="filtros.vendedor_nome"
+        (ngModelChange)="onFiltroChange()">
+        <option [ngValue]="null">Todos</option>
+        <option *ngFor="let secao of secoes" [ngValue]="secao">
+          {{ secao }}
+        </option>
+      </select>
+    </div>
+
     <!-- Filtro por Data do Pedido -->
     <div class="filter-group">
       <label for="filtro-data-pedido">Data do Pedido</label>

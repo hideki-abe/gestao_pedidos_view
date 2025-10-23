@@ -29,6 +29,16 @@ export class PedidoFilter implements OnInit, OnDestroy {
   
   @Output() filtroChange = new EventEmitter<FiltrosPedido>();
 
+  secoes: string[] = 
+  [
+    'Guilhotina', 
+    'Dobra',
+    'Laser',
+    'Fogo',
+    'Calandra',
+    'Serra'
+  ];
+
   filtros: FiltrosPedido = {
     cliente_nome: '',
     numero_pedido: '',

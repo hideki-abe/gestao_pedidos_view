@@ -1,5 +1,9 @@
 <div class="table-container">
-  
+  <app-pedido-filter 
+    class="pedido-filter"
+    [vendedores]="listaDeVendedores" 
+    (filtroChange)="onFiltroChange($event)">
+  </app-pedido-filter>
   <table class="production-table">
     <thead>
       <tr>

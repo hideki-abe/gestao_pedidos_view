@@ -52,32 +52,14 @@ export class TabelaEncaminhamento implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('Componente TabelaProdução inicializado');
     this.carregarVendedores();
     this.uploadPedidos();
-  }
-
-  private carregarPedidos(): void {
-    this.pedidoService.getPedidosPendentes().subscribe({
-      next: (data) => {
-        this.pedidos = data;
-        this.erroAoCarregar = false;
-         this.relacionaCliente();
-         this.relacionaVendedor();
-         this.formataStatusEPrioridade();
-         //console.log("Carregando clientes: ", this.pedidos);
-      },
-      error: (err) => {
-        console.error('Falha ao carregar pedidos da API:', err);
-        this.erroAoCarregar = true;
-      }
-    });
   }
   
   private carregarVendedores(): void {
     this.vendedorService.getVendedores().subscribe({
       next: (vendedores) => {
-        this.listaDeVendedores = vendedores; // sempre será array
+        this.listaDeVendedores = vendedores;
         console.log('Vendedores carregados:', this.listaDeVendedores);
       },
       error: (err) => {
@@ -139,12 +121,9 @@ export class TabelaEncaminhamento implements OnInit {
 
   private relacionaVendedor(): void {
     this.pedidos.forEach(pedido => {
-      // Usamos o ID original para buscar o vendedor
       this.vendedorService.getVendedorById(pedido.usuario_responsavel).subscribe({
         next: (vendedor) => {
-          // Atribuímos o objeto retornado à nova propriedade
           pedido.usuario_responsavelObj = vendedor;
-          //console.log(`Vendedor ${vendedor.nome} relacionado ao pedido ${pedido.id}`);
         },
         error: (err) => {
           console.error(`Falha ao carregar vendedor para o pedido ${pedido.id}:`, err);
@@ -204,10 +183,9 @@ export class TabelaEncaminhamento implements OnInit {
     if (dados.prazo) {
 
     pedido.prazo = dados.prazo.toISOString(); 
-    //console.log("Prazo atualizado para:", pedido.prazo);
 
     } else {
-      pedido.prazo = null; // Limpa se o prazo estiver incompleto/inválido
+      pedido.prazo = null;
     }
 
   }
@@ -232,7 +210,7 @@ export class TabelaEncaminhamento implements OnInit {
         this.toastr.success(`Pedido ${pedido.numero_do_pedido} enviado para produção!`, 'Sucesso!');
         this.pedidoSelecionadoId = null;
         this.pedidos = this.pedidos.filter(p => p.id !== pedido.id);
-        this.totalDePedidos--; // Atualiza a contagem para a paginação
+        this.totalDePedidos--; 
       },
       error: (err) => {
         console.error('Ocorreu um erro durante o processo de salvamento:', err);
@@ -256,20 +234,12 @@ export class TabelaEncaminhamento implements OnInit {
 onPedidoDeletado(pedidoId: number): void {
   console.log(`Pedido ${pedidoId} foi deletado`);
   
-  // ✅ Mostrar notificação de sucesso
   this.toastr.success(`Pedido #${pedidoId} deletado com sucesso!`, 'Pedido Deletado');
   
-  // ✅ Limpar seleção se o pedido deletado estava selecionado
   if (this.pedidoSelecionadoId === pedidoId) {
     this.pedidoSelecionadoId = null;
   }
-  
-  // ✅ Recarregar a lista de pedidos para atualizar a tabela
   this.uploadPedidos();
-  
-  // ✅ OU remover apenas o pedido específico da lista (mais eficiente)
-  // this.pedidos = this.pedidos.filter(p => p.id !== pedidoId);
-  // this.totalDePedidos--;
 }
 
 }

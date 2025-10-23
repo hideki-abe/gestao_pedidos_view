@@ -14,7 +14,7 @@
 .filter-grid {
   flex-grow: 1;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(calc(100%/5), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(calc(100%/6), 1fr));
   flex-direction: row;
   gap: 1rem;
 }
