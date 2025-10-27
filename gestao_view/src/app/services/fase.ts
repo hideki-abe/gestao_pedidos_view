@@ -20,6 +20,13 @@ export class FaseService {
         );
     }
 
+    getFaseByNome(nome: string): Observable<Fase> {
+        const url = `${this.apiUrl + '/buscar-por-nome'}/?nome=${nome}`;
+        return this.http.get<Fase>(url).pipe(
+            catchError(this.handleError)
+        );
+    }
+
     getFases(): Observable<Fase[]> {
         return this.http.get<Fase[]>(this.apiUrl).pipe(
             catchError(this.handleError)

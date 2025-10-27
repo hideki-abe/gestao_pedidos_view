@@ -39,7 +39,7 @@
             <span [class]="'tag fase-' + item.fase_atual">{{ item.fase_atual_nome }}</span>
           </td>
           <td data-label="Concluir">
-            <button class="action-button">Concluir Fase</button>
+            <button class="action-button" (click)="getProximaFase(item)">Concluir Fase</button>
           </td>
         </tr>
         
