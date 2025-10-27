@@ -170,11 +170,20 @@ export class TabelaProducao implements OnInit {
   }
 
   public changeStatus(pedido: Pedido, novoStatus: 'encaminhar'): void {
+
+    const mensagem = novoStatus === 'encaminhar'
+    ? 'Tem certeza que deseja encaminhar este pedido?'
+    : 'Tem certeza que deseja cancelar este pedido?';
+
+    if (!window.confirm(mensagem)) {
+      return; 
+    }
+
     this.pedidoSelecionadoId = null;
 
     this.pedidoService.updateStatus(pedido.id, novoStatus).subscribe({
       next: () => {
-        const mensagem = novoStatus === 'encaminhar' ? 'Pedido encaminhado com sucesso!' : 'Pedido cancelado.';
+        const mensagem = novoStatus === 'encaminhar' ? 'Pedido retornado com sucesso!' : 'Pedido cancelado.';
         this.toastr.success(mensagem, 'Status Atualizado!');
         this.pedidos = this.pedidos.filter(p => p.id !== pedido.id);
       },

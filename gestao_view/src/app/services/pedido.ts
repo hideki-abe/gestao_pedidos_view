@@ -101,6 +101,11 @@ export class PedidoService {
       console.log('🔧 Adicionando filtro numero_pedido:', filtros.numero_pedido);
       params = params.append('numero_pedido', filtros.numero_pedido);
     }
+
+    if (filtros.fase) {
+      console.log('🔧 Adicionando filtro fase:', filtros.fase);
+      params = params.append('fase', filtros.fase);
+    }
     
     if (filtros.cliente_nome) {
       console.log('🔧 Adicionando filtro cliente_nome:', filtros.cliente_nome);
@@ -148,7 +153,6 @@ export class PedidoService {
     );
   } 
 
-  // Altera a prioridade, observações do pedido
   updatePedido(pedidoId: number, dados: Partial<{ observacoes: string; prioridade: PrioridadePedido }>): Observable<Pedido> {
     const url = `${this.apiUrl}${pedidoId}/`;
     return this.http.patch<Pedido>(url, dados).pipe(
@@ -156,7 +160,6 @@ export class PedidoService {
     );
   }
 
-  // Altera o status do pedido
   updateStatus(pedidoId: number, status: string): Observable<Pedido> {
     const url = `${this.apiUrl}${pedidoId}/`;
     const body = { status: status };
@@ -165,7 +168,6 @@ export class PedidoService {
       catchError(this.handleError)
     );
   }
-
 
   createPedido(pedido: CreatePedidoRequest): Observable<Pedido> {
     return this.http.post<Pedido>(this.apiUrl, pedido).pipe(

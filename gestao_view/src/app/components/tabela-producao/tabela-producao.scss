@@ -5,6 +5,7 @@ $header-bg: #f8f9fa;
 $border-color: #dee2e6;
 $text-color: #000000;
 $mobile-breakpoint: 768px;
+$primary-color: #3A7CA5;
 
 
 $colors: (
@@ -90,9 +91,19 @@ $colors: (
 // 2. Estilos para o container que empilha os componentes
 .details-wrapper {
   display: flex;
+  align-items: center;
   flex-direction: column; // Empilha os itens verticalmente
   gap: 0; // Cria um espaçamento de 20px entre cada componente
   padding: 20px; // Adiciona um espaçamento interno em toda a área
+  width: 97%;
+}
+
+.details-wrapper > * {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+
 }
 
 .tag[class*="prioridade-"] {
@@ -108,7 +119,6 @@ $colors: (
   }
 }
 
-// --- Estilo do Botão de Ação ---
 .action-button {
   background-color: #95a1ac;
   color: white;
@@ -121,6 +131,30 @@ $colors: (
 
   &:hover {
     background-color: color.adjust(#6c757d, $lightness: -10%);
+  }
+}
+
+.form-button {
+  justify-self: center;
+  max-width: 97%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: $primary-color;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover:not(:disabled) {
+    background-color: #2a5a77; // Tom mais escuro da cor primária
+  }
+
+  &:disabled {
+    background-color: #E0E0E0; 
+    color: #A0A0A0;
+    cursor: not-allowed;
   }
 }
 

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Pedido } from '../../interfaces/pedido';
 import { PedidoService } from '../../services/pedido';
+import { Router } from '@angular/router';
 
 export type PrioridadePedido = 'baixa' | 'normal' | 'alta' | 'urgente';
 
@@ -40,7 +41,7 @@ export class FormPedido implements OnChanges {
   prazoData: string = '';
   prazoHora: string = '';
 
-  constructor(private pedidoService: PedidoService) {
+  constructor(private pedidoService: PedidoService, private router: Router) {
     console.log("Id do pedido para ser excluido: ", this.pedidoId);
   }
 
@@ -244,6 +245,10 @@ deletarPedido(): void {
         alert(`Erro ao deletar pedido: ${mensagemErro}`);
       }
     });
+  }
+
+  editarPedido(): void {
+    this.router.navigate(['/cadastro'], { queryParams: { pedidoId: this.pedidoId } });
   }
 
   private limparFormulario(): void {

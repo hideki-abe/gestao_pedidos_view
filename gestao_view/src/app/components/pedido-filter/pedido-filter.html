@@ -45,7 +45,7 @@
       <select 
         id="filtro-secao" 
         class="filter-select"
-        [(ngModel)]="filtros.vendedor_nome"
+        [(ngModel)]="filtros.fase"
         (ngModelChange)="onFiltroChange()">
         <option [ngValue]="null">Todos</option>
         <option *ngFor="let secao of secoes" [ngValue]="secao">

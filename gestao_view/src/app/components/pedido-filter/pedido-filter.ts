@@ -5,15 +5,15 @@ import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { Vendedor } from '../../interfaces/vendedor';
 
-// Define uma interface para a estrutura dos filtros
 export interface FiltrosPedido {
-  cliente_nome?: string;    // ✅ Alinhado com backend
-  numero_pedido?: string;   // ✅ Alinhado com backend  
-  data_inicio?: string;     // ✅ Alinhado com backend
-  data_fim?: string;        // ✅ Alinhado com backend
-  prioridade?: string;      // ✅ Para futuro uso
-  vendedor_id?: number | string;  // ✅ Para identificação interna
-  vendedor_nome?: string;   // ✅ Alinhado com backend
+  cliente_nome?: string;  
+  numero_pedido?: string;     
+  data_inicio?: string;    
+  data_fim?: string;      
+  prioridade?: string;      
+  vendedor_id?: number | string;  
+  vendedor_nome?: string;   
+  fase?: string;            
 }
 
 @Component({
@@ -46,7 +46,8 @@ export class PedidoFilter implements OnInit, OnDestroy {
     data_fim: '',
     prioridade: '',
     vendedor_id: '',
-    vendedor_nome: ''
+    vendedor_nome: '',
+    fase: ''
   };
 
   // Subject para controlar o debounce e evitar emissões excessivas
@@ -71,7 +72,6 @@ export class PedidoFilter implements OnInit, OnDestroy {
     this.filtroSubject.next();
   }
   limparFiltros(): void {
-    console.log('🧹 Limpando todos os filtros');
     this.filtros = {
       cliente_nome: '',
       numero_pedido: '',
@@ -79,7 +79,8 @@ export class PedidoFilter implements OnInit, OnDestroy {
       data_fim: '',
       prioridade: '',
       vendedor_id: '',
-      vendedor_nome: ''
+      vendedor_nome: '',
+      fase: ''
     };
     this.onFiltroChange();
   }

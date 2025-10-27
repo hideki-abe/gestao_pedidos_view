@@ -14,7 +14,6 @@
         <th>Prioridade</th>
         <th>Prazo</th>
         <th></th>
-        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -35,9 +34,6 @@
           <td data-label="Ações">
             <button class="action-button" (click)="toggleItens(pedido.id)">+</button>
           </td>
-          <td data-label="Ações">
-            <button class="action-button" (click)="changeStatus(pedido, 'encaminhar')"><</button>
-          </td>
         </tr>
 
         <!-- Linha 2: Tabela de Itens (agora está DENTRO do loop e no escopo correto) -->
@@ -46,6 +42,12 @@
             <div class="details-wrapper">
               <app-tabela-itens [pedido]="pedido" ></app-tabela-itens>
               <app-painel-pedido-producao [pedido]="pedido"></app-painel-pedido-producao>
+              <button 
+                type="submit"
+                class="form-button"
+                (click)="changeStatus(pedido, 'encaminhar')">
+                Voltar o pedido para o Encaminhamento
+              </button>
             </div>
           </td>
         </tr>

@@ -19,4 +19,5 @@ export interface Pedido {
   data_inicial: string | Date;
   created_at: string | Date;
   updated_at: string | Date;
+  
 }

@@ -107,7 +107,17 @@ form {
   }
 }
 
+.form-button.edit {
+  padding: 6px;
+  background-color: #e4ab00b7; 
+
+  &:hover:not(:disabled) {
+    background-color: #b48803ea; 
+  }
+}
+
 .form-button.delete {
+  padding: 6px;
   background-color: #dc3545; 
 
   &:hover:not(:disabled) {
