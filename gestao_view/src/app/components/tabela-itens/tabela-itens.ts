@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { ItemService } from '../../services/item';
 import { Item } from '../../interfaces/item';
 import { Pedido } from '../../interfaces/pedido';
 import { FaseService } from '../../services/fase';
 import { FluxoService } from '../../services/fluxo';
 import { Fase } from '../../interfaces/fase';
+import { PedidoService } from '../../services/pedido';
 
 @Component({
   selector: 'app-tabela-itens',
@@ -17,6 +18,8 @@ import { Fase } from '../../interfaces/fase';
 export class TabelaItens implements OnChanges{
 
   @Input() public pedido!: Pedido;
+  @Output() pedidoAtualizado = new EventEmitter<Pedido>();
+
 
   public itens: Item[] = [];
   public erroAoCarregar: boolean = false;
@@ -24,15 +27,14 @@ export class TabelaItens implements OnChanges{
   constructor(
     private itemService: ItemService, 
     private faseService: FaseService,
-    private fluxoService: FluxoService
+    private pedidoService: PedidoService
   ) {
-    console.log("Componente TabelaItens carregado, fase atual: ");
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if(changes['pedido'] && changes['pedido'].currentValue) {
       this.carregarItensDoPedido(this.pedido.id); 
-      console.log("Pedido recebido no TabelaItens: ", this.pedido);
+      console.log(this.pedido);
     }
   }
 
@@ -41,10 +43,8 @@ export class TabelaItens implements OnChanges{
       next: (data) => {
         this.itens = data;
         this.erroAoCarregar = false;
-        console.log(this.itens[0]);
       },
       error: (err) => {
-        console.error('Falha ao carregar itens da API:', err);
         this.erroAoCarregar = true;
       }
     });
@@ -55,10 +55,8 @@ export class TabelaItens implements OnChanges{
       next: (itemAtualizado) => {
         const idx = this.itens.findIndex(i => i.id === item.id);
         if (idx > -1) this.itens[idx] = itemAtualizado;
-        console.log('Fase do item atualizada com sucesso:', itemAtualizado);
       },
       error: (err) => {
-        console.error('Erro ao concluir fase:', err);
         alert('Não foi possível concluir a fase do item.');
       }
     });
@@ -75,16 +73,27 @@ export class TabelaItens implements OnChanges{
       return; 
     }
 
+    const confirmar = window.confirm(
+      `Deseja realmente avançar o item para a próxima fase: "${proxima_fase_nome}"?`
+    );
+    if (!confirmar) return;
+
     this.faseService.getFaseByFluxo(item.fluxo).subscribe({
       next: (fases) => {
         const proximaFase = fases.find(
           f => f.nome.toLowerCase() === proxima_fase_nome.toLowerCase()
         );
         if (!proximaFase) return;
-        this.itemService.updateItem(item.id, { fase_atual: proximaFase.id }).subscribe({
+        if(proximaFase.nome.toLowerCase() == 'expedição') {
+          item.finalizado = true;
+        }
+        this.itemService.updateItem(item.id, { fase_atual: proximaFase.id, finalizado: item.finalizado }).subscribe({
           next: (itemAtualizado) => {
             const idx = this.itens.findIndex(i => i.id === item.id);
             if (idx > -1) this.itens[idx] = itemAtualizado;
+            if (this.verificaSePedidoConcluido()) {
+              this.atualizarStatusPedidoConcluido();
+            }
           },
           error: () => {
             alert('Não foi possível concluir a fase do item.');
@@ -94,4 +103,22 @@ export class TabelaItens implements OnChanges{
       error: () => {}
     });
   }
+
+  verificaSePedidoConcluido() {
+    return this.itens.every(item => item.finalizado);
+  }
+
+  private atualizarStatusPedidoConcluido(): void {
+  this.pedidoService.updateStatus(this.pedido.id, 'finalizado').subscribe({
+    next: (pedidoAtualizado) => {
+      this.pedido.status = pedidoAtualizado.status;
+      this.pedidoAtualizado.emit(pedidoAtualizado);
+
+    },
+    error: () => {
+      alert('Não foi possível atualizar o status do pedido.');
+    }
+  });
+}
+
 }

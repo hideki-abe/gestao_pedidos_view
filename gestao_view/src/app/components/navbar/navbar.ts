@@ -12,7 +12,8 @@ import { AuthService } from '../../services/auth-service';
 export class Navbar {
 
   usuario = {
-    nome: ''
+    nome: '',
+    funcao: ''
   };
 
   constructor(private auth: AuthService, private router: Router) {}
@@ -20,6 +21,12 @@ export class Navbar {
   ngOnInit() {
     const user = this.auth.getUser();
     this.usuario.nome = user?.nome || '';
+    this.usuario.funcao = user?.funcao || '';
+
+  }
+
+  get isAdminOrGerente(): boolean {
+    return this.usuario.funcao.toLowerCase() === 'admin' || this.usuario.funcao.toLowerCase() === 'gerente';
   }
 
   logout() {

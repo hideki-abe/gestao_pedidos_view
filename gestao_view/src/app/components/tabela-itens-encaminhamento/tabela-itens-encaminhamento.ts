@@ -51,14 +51,8 @@ export class TabelaItensEncaminhamento implements OnChanges{
         this.itens = resultados.itens || [];
         this.fluxos = resultados.fluxos || [];
         this.fases = resultados.fases || [];
-        
-     
-        //console.log("DADOS BRUTOS RECEBIDOS DA API:");
-        //console.log("Fluxos:", JSON.stringify(this.fluxos, null, 2));
-        //console.log("Fases:", JSON.stringify(this.fases, null, 2));
-        //console.log("---------------------------------");
-        //console.log("Itens do pedido: ", this.itens);
 
+        console.log(this.itens);
         this.relacionaFluxoComTipo();
         //this.atribuiFluxo();
       },
@@ -108,13 +102,13 @@ export class TabelaItensEncaminhamento implements OnChanges{
         const fluxosEncontrados = this.fluxos.filter(fluxo => regex.test(fluxo.nome));
         item.fluxos_disponiveis = fluxosEncontrados;
         
-        /*
+        
         if (fluxosEncontrados.length > 0) {
           console.log(`Para o item '${item.nome}' (tipo ${item.tipo}), foram encontrados ${fluxosEncontrados.length} fluxos.`);
         } else {
           console.warn(`Nenhum fluxo com o padrão para '${item.tipo}' foi encontrado na lista de fluxos.`);
         }
-        */
+        
       } else {
         item.fluxos_disponiveis = [];
         console.warn(`Nenhuma regra de regex definida para o tipo de item: '${item.tipo}'.`);

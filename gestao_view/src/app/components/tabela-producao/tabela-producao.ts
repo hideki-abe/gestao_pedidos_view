@@ -68,7 +68,6 @@ export class TabelaProducao implements OnInit {
         this.formataStatusEPrioridade();
       },
       error: (err) => {
-        console.error('Falha ao carregar pedidos da API:', err);
         this.erroAoCarregar = true;
       }
     });
@@ -86,7 +85,6 @@ export class TabelaProducao implements OnInit {
           pedido.clienteObj = cliente;
         },
         error: (err) => {
-          console.error(`Falha ao carregar cliente para o pedido ${pedido.id}:`, err);
         }
       });
     });
@@ -96,10 +94,8 @@ export class TabelaProducao implements OnInit {
     this.vendedorService.getVendedores().subscribe({
       next: (vendedores) => {
         this.listaDeVendedores = vendedores;
-        console.log('Vendedores carregados:', this.listaDeVendedores);
       },
       error: (err) => {
-        console.error('Falha ao carregar a lista de vendedores:', err);
         this.listaDeVendedores = [];
       }
     });
@@ -112,7 +108,6 @@ export class TabelaProducao implements OnInit {
           pedido.usuario_responsavelObj = vendedor;
         },
         error: (err) => {
-          console.error(`Falha ao carregar vendedor para o pedido ${pedido.id}:`, err);
         }
       });
     });
@@ -188,10 +183,18 @@ export class TabelaProducao implements OnInit {
         this.pedidos = this.pedidos.filter(p => p.id !== pedido.id);
       },
       error: (err) => {
-        console.error(`Falha ao mudar status para ${novoStatus}:`, err);
         this.toastr.error('Não foi possível atualizar o status do pedido.', 'Erro!');
       }
     });
+  }
+
+  public onPedidoStatusAlterado(pedidoAtualizado: Pedido) {
+    const idx = this.pedidos.findIndex(p => p.id === pedidoAtualizado.id);
+    if (idx > -1) {
+      this.pedidos[idx] = { ...this.pedidos[idx], ...pedidoAtualizado };
+      this.formataStatusEPrioridade(); 
+      alert('Pedido concluído! Mudando status do pedido!');
+    }
   }
 
 }

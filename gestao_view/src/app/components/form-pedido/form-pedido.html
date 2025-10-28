@@ -60,16 +60,18 @@
     class="form-button">
     Enviar para Produção
   </button>
-  <button 
-    type="submit"
-    class="form-button edit"
-    (click)="editarPedido()">
-    Editar Pedido
-  </button>
-  <button 
-    type="button"
-    class="form-button delete"
-    (click)="deletarPedido()">
-    Deletar Pedido
-  </button>
+  @if (isAdminOrGerente) {
+    <button 
+      type="submit"
+      class="form-button edit"
+      (click)="editarPedido()">
+      Editar Pedido
+    </button>
+    <button 
+      type="button"
+      class="form-button delete"
+      (click)="deletarPedido()">
+      Deletar Pedido
+    </button>
+  }
 </form>

@@ -12,7 +12,7 @@ import { Arquivo } from '../../interfaces/arquivo';
   styleUrl: './painel-pedido-producao.scss'
 })
 export class PainelPedidoProducao implements OnInit {
-  // Recebe o objeto Pedido completo do componente pai.
+  
   @Input() pedido!: Pedido;
   arquivos: Arquivo[] = [];
 
@@ -32,11 +32,9 @@ export class PainelPedidoProducao implements OnInit {
     if (this.pedido && this.pedido.id) {
       this.arquivoService.getArquivosDoPedido(this.pedido.id).subscribe({
         next: (arquivos) => {
-          console.log('Arquivos do pedido:', arquivos);
           this.arquivos = arquivos;
         },
         error: (err) => {
-          console.error('Erro ao carregar arquivos do pedido:', err);
         }
       });
     }
