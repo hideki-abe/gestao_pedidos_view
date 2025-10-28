@@ -27,6 +27,13 @@ export class FaseService {
         );
     }
 
+    getFaseByFluxo(fluxo: number): Observable<Fase[]> {
+        const url = `${this.apiUrl + '/buscar-por-fluxo'}/?fluxo=${fluxo}`;
+        return this.http.get<Fase[]>(url).pipe(
+            catchError(this.handleError)
+        );
+    }
+
     getFases(): Observable<Fase[]> {
         return this.http.get<Fase[]>(this.apiUrl).pipe(
             catchError(this.handleError)

@@ -5,6 +5,7 @@ export interface Item {
   nome: string;
   tipo: string; 
   descricao: string;
+  fluxo: number;
   fluxo_nome: string;
   fluxo_sequencia?: Fase[];
   fluxos_disponiveis?: Fluxo[];

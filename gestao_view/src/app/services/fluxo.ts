@@ -20,6 +20,13 @@ export class FluxoService {
         );
     }
 
+    getFluxoByNome(nome: string): Observable<Fluxo> {
+        const url = `${this.apiUrl + '/buscar-por-nome'}/?nome=${nome}`;
+        return this.http.get<Fluxo>(url).pipe(
+            catchError(this.handleError)
+        );
+    }
+
     getFluxos(): Observable<Fluxo[]> {
         return this.http.get<Fluxo[]>(this.apiUrl).pipe(
             catchError(this.handleError)
