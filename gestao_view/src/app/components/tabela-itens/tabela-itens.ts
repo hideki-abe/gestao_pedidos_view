@@ -65,55 +65,33 @@ export class TabelaItens implements OnChanges{
   }
 
   public getProximaFase(item: Item): void {
-
     const fases_do_fluxo = item.fluxo_descricao.split('>').map(f => f.trim());
     const fase_atual_index = fases_do_fluxo.findIndex(
       fase => fase.toLowerCase() === (item.fase_atual_nome || '').trim().toLowerCase()
     );
     const proxima_fase_nome = fases_do_fluxo[fase_atual_index + 1];
-    
-    console.log(fases_do_fluxo, fase_atual_index, proxima_fase_nome);
 
-    if(proxima_fase_nome) {
-
-      this.fluxoService.getFluxoById(item.fluxo).subscribe({
-            next: (fluxos) => {
-              console.log("Fluxos obtidos da API:", fluxos);
-
-            },
-            error: (err) => {
-              console.error('Erro ao obter a próxima fase:', err);
-            }
-          });
-
-          this.faseService.getFaseByFluxo(item.fluxo).subscribe({
-            next: (fases) => {
-              console.log("Fases obtidas da API:", fases);
-              console.log("Proxima fase:", fases[fase_atual_index + 1]);
-
-              this.itemService.updateItem(item.id, { fase_atual: fases[fase_atual_index + 1].id }).subscribe({
-                next: (itemAtualizado) => {
-                  const idx = this.itens.findIndex(i => i.id === item.id);
-                  if (idx > -1) this.itens[idx] = itemAtualizado;
-                  console.log('Fase do item atualizada com sucesso:', itemAtualizado);
-                },
-                error: (err) => {
-                  console.error('Erro ao concluir fase:', err);
-                  alert('Não foi possível concluir a fase do item.');
-                }
-              });
-            },
-            error: (err) => {
-              console.error('Erro ao obter a próxima fase:', err);
-            }
-          });
-
-    } else {
-      console.log("O item já está na última fase do fluxo.");
-      return;
+    if (!proxima_fase_nome) {
+      return; 
     }
 
-  
-
+    this.faseService.getFaseByFluxo(item.fluxo).subscribe({
+      next: (fases) => {
+        const proximaFase = fases.find(
+          f => f.nome.toLowerCase() === proxima_fase_nome.toLowerCase()
+        );
+        if (!proximaFase) return;
+        this.itemService.updateItem(item.id, { fase_atual: proximaFase.id }).subscribe({
+          next: (itemAtualizado) => {
+            const idx = this.itens.findIndex(i => i.id === item.id);
+            if (idx > -1) this.itens[idx] = itemAtualizado;
+          },
+          error: () => {
+            alert('Não foi possível concluir a fase do item.');
+          }
+        });
+      },
+      error: () => {}
+    });
   }
 }
