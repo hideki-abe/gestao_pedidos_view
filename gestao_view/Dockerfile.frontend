@@ -1,46 +1,15 @@
-# Estágio 1: Builder - Instala dependências
-FROM python:3.11-slim as builder
-
+# Etapa 1: Build do Angular
+FROM node:20-alpine AS build
 WORKDIR /app
-
-# Instala dependências do sistema para compilar psycopg2, etc.
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    libpq-dev
-
-# Instala dependências Python
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Estágio 2: Final - Imagem de produção enxuta
-FROM python:3.11-slim as final
-
-WORKDIR /app
-
-# Cria um usuário não-root para segurança
-RUN useradd --create-home --shell /bin/bash nonroot
-
-# Instala dependências de runtime (libpq5 para postgres, curl para healthchecks)
-RUN apt-get update && apt-get install -y --no-install-recommends libpq5 curl postgresql-client && rm -rf /var/lib/apt/lists/*
-
-# Copia as dependências Python instaladas do estágio builder
-COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
-COPY --from=builder /usr/local/bin /usr/local/bin
-
-# Copia o entrypoint e define permissões
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-# Copia o código da aplicação
+COPY package*.json ./
+RUN npm install -g @angular/cli
+RUN npm install
 COPY . .
+RUN ng build --configuration production
 
-# Define o usuário não-root como dono dos arquivos da aplicação
-RUN chown -R nonroot:nonroot /app
-
-USER nonroot
-
-EXPOSE 8000
-
-ENTRYPOINT ["/entrypoint.sh"]
-
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "pedidos.wsgi:application"]
+# Etapa 2: Servir com Nginx
+FROM nginx:alpine
+# Ajuste o caminho abaixo conforme o nome do seu projeto Angular gerado em dist/
+COPY --from=build /app/dist/ /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
