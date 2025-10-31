@@ -9,7 +9,6 @@ RUN ng build --configuration production
 
 # Etapa 2: Servir com Nginx
 FROM nginx:alpine
-# Corrija o caminho abaixo para o nome da sua aplicação Angular
 COPY --from=build /app/dist/gestao_view/ /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
