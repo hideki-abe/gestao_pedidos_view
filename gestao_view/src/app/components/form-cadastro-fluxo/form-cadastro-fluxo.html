@@ -1,0 +1,121 @@
+<form (ngSubmit)="salvarFluxo()">
+  <div class="section-container">
+    <h4 class="section-title">Cadastro de Fluxo</h4>
+    <div *ngIf="error" class="form-error">{{ error }}</div>
+    <div *ngIf="success" class="form-success">{{ success }}</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Nome do Fluxo:</label>
+        <input 
+          type="text" 
+          class="form-input" 
+          [(ngModel)]="nome" 
+          name="nome" 
+          required
+          placeholder="Nome do fluxo">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Descrição:</label>
+        <input 
+          type="text" 
+          class="form-input" 
+          [(ngModel)]="descricao" 
+          name="descricao" 
+          required
+          placeholder="Descrição do fluxo">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Total de Fases:</label>
+        <input 
+          type="number" 
+          class="form-input" 
+          [(ngModel)]="total_fases" 
+          name="total_fases" 
+          min="1"
+          required
+          placeholder="Ex: 5">
+      </div>
+    </div>
+  </div>
+  <button type="submit" class="form-button">Cadastrar Fluxo</button>
+</form>
+
+<section class="component-section" style="margin-top: 2rem;">
+  <h4 class="section-title">Fluxos Cadastrados</h4>
+  <div class="table-container">
+    <table class="itens-table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Descrição</th>
+          <th>Total de Fases</th>
+          <th></th>
+        </tr>
+      </thead>
+<tbody>
+  @for (fluxo of fluxos; track fluxo.id) {
+    <tr>
+      <td>
+        @if (!fluxoEditando || fluxoEditando.id !== fluxo.id) {
+            <span>{{ fluxo.nome }}</span>
+        }
+        @if (fluxoEditando && fluxoEditando.id === fluxo.id) {
+            <input
+                [(ngModel)]="fluxoEditando.nome"
+                class="form-input"
+                name="editNome{{fluxo.id}}" />
+        }
+      </td>
+      <td>
+        @if (!fluxoEditando || fluxoEditando.id !== fluxo.id) {
+            <span>{{ fluxo.descricao }}</span>
+        }
+        @if (fluxoEditando && fluxoEditando.id === fluxo.id) {
+            <input
+                [(ngModel)]="fluxoEditando.descricao"
+                class="form-input"
+                name="editDescricao{{fluxo.id}}" />
+        }
+      </td>
+      <td>
+        @if (!fluxoEditando || fluxoEditando.id !== fluxo.id) {
+            <span>{{ fluxo.total_fases }}</span>
+        }
+        @if (fluxoEditando && fluxoEditando.id === fluxo.id) {
+            <input
+                [(ngModel)]="fluxoEditando.total_fases"
+                class="form-input"
+                name="editTotalFases{{fluxo.id}}" />
+        }
+      </td>
+      <td class="item-actions">
+        <button *ngIf="fluxoEditando?.id !== fluxo.id"
+                type="button"
+                class="btn-edit"
+                (click)="editarFluxo(fluxo)">
+          ✏️
+        </button>
+        <button *ngIf="fluxoEditando?.id === fluxo.id"
+                type="button"
+                class="btn-edit"
+                (click)="salvarEdicaoFluxo()">
+          💾
+        </button>
+        <button *ngIf="fluxoEditando?.id === fluxo.id"
+                type="button"
+                class="btn-secondary"
+                (click)="cancelarEdicaoFluxo()">
+          ❌
+        </button>
+        <button type="button"
+                class="btn-remove"
+                (click)="removerFluxo(fluxo)">
+          🗑️
+        </button>
+      </td>
+    </tr>
+  }
+</tbody>
+    </table>
+  </div>
+</section>

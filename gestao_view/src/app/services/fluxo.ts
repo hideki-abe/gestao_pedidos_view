@@ -3,15 +3,22 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Fluxo } from '../interfaces/fluxo';
+import { environment } from '../enviroments/enviroment';
 
 @Injectable({
   providedIn: 'root' 
 })
 export class FluxoService {
 
-    private apiUrl = '/api/fluxos';
+    private apiUrl = environment.apiUrl + '/fluxos/';
 
     constructor(private http: HttpClient) { }
+
+    criarFluxo(fluxo: Omit<Fluxo, 'id'>): Observable<Fluxo> {
+        return this.http.post<Fluxo>(this.apiUrl, fluxo).pipe(
+            catchError(this.handleError)
+        );
+    }
 
     getFluxoById(id: number): Observable<Fluxo> {
         const url = `${this.apiUrl}/${id}`;
@@ -31,6 +38,14 @@ export class FluxoService {
         return this.http.get<Fluxo[]>(this.apiUrl).pipe(
             catchError(this.handleError)
         );
+    }
+
+    atualizarFluxo(id: number, fluxo: Partial<Fluxo>) {
+        return this.http.patch<Fluxo>(`${this.apiUrl}${id}/`, fluxo);
+    }
+
+    removerFluxo(id: number) {
+        return this.http.delete(`${this.apiUrl}${id}/`);
     }
 
     private handleError(error: HttpErrorResponse) {

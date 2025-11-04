@@ -5,6 +5,7 @@ import { CadastroComponent } from './pages/cadastro.component/cadastro.component
 import { Login } from './pages/login/login';
 import { CadastroUsuario } from './pages/cadastro-usuario/cadastro-usuario';
 import { AuthGuard } from './guards/auth-guard';
+import { CadastroFluxo } from './pages/cadastro-fluxo/cadastro-fluxo';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/producao', pathMatch: 'full' },
@@ -12,5 +13,6 @@ export const routes: Routes = [
   { path: 'encaminhamento', component: EncaminhamentoComponent, canActivate: [AuthGuard] },
   { path: 'cadastro', component: CadastroComponent, canActivate: [AuthGuard] },
   { path: 'usuarios', component: CadastroUsuario, canActivate: [AuthGuard] },
-  { path: 'login', component: Login }
+  { path: 'login', component: Login },
+  { path: 'cadastro-fluxo', component: CadastroFluxo, canActivate: [AuthGuard] }
 ];
