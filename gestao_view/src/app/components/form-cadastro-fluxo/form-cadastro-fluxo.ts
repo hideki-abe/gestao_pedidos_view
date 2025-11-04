@@ -58,14 +58,16 @@ export class FormCadastroFluxo {
       this.error = 'Preencha todos os campos obrigatórios e adicione pelo menos uma fase.';
       return;
     }
-
+    
     const novoFluxo: any = {
       nome: this.nome.trim(),
       descricao: this.descricao.trim(),
-      fases: this.fases.map(f => ({ nome: f.nome.trim(), ordem: f.ordem }))
+      fases: this.fases.map(f => ({ nome: f.nome.trim(), ordem: f.ordem})),
     };
 
-    this.fluxoService.criarFluxo(novoFluxo).subscribe({
+    console.log("Criando novo Fluxo: ", novoFluxo);
+
+    this.fluxoService.criarFluxoComFases(novoFluxo).subscribe({
       next: (fluxoCriado) => {
         this.success = `Fluxo "${fluxoCriado.nome}" cadastrado com sucesso!`;
         this.error = '';

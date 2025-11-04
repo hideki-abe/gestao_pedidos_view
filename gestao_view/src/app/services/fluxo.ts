@@ -11,13 +11,12 @@ import { environment } from '../enviroments/enviroment';
 export class FluxoService {
 
     private apiUrl = environment.apiUrl + '/fluxos/';
+    private apiUrlComFases = environment.apiUrl + '/fluxos-com-fases/';
 
     constructor(private http: HttpClient) { }
 
-    criarFluxo(fluxo: Omit<Fluxo, 'id'>): Observable<Fluxo> {
-        return this.http.post<Fluxo>(this.apiUrl, fluxo).pipe(
-            catchError(this.handleError)
-        );
+    criarFluxoComFases(fluxo: any): Observable<any> {
+        return this.http.post(this.apiUrlComFases, fluxo);
     }
 
     getFluxoById(id: number): Observable<Fluxo> {
