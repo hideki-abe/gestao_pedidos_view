@@ -68,6 +68,7 @@
     font-size: 0.9rem;
     padding: 0;
   }
+  
 }
 
 .file-list {
@@ -181,5 +182,20 @@
       font-weight: 500;
       &:hover { text-decoration: underline; }
     }
+  }
+}
+
+.btn-download {
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.85;
   }
 }
