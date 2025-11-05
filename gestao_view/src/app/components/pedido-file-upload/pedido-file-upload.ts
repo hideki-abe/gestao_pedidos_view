@@ -129,7 +129,7 @@ export class PedidoFileUpload {
 
   baixarArquivo(arquivo: any) {
     const link = document.createElement('a');
-    link.href = arquivo.file;
+    link.href = arquivo.file; // Adicione esta linha
     link.download = arquivo.file_name || 'arquivo';
     document.body.appendChild(link);
     link.click();
