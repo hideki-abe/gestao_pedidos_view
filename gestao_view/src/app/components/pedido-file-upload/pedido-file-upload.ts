@@ -127,6 +127,15 @@ export class PedidoFileUpload {
     );
   }
 
+  baixarArquivo(arquivo: any) {
+    const link = document.createElement('a');
+    link.href = arquivo.file;
+    link.download = arquivo.file_name || 'arquivo';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   getArquivos() {
       this.arquivoService.getArquivosDoPedido(this.pedidoId).subscribe({
         next: (arquivos) => {

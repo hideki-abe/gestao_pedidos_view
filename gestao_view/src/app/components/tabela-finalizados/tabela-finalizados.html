@@ -1,0 +1,81 @@
+<div class="table-container">
+  <app-pedido-filter 
+    class="pedido-filter"
+    [vendedores]="listaDeVendedores" 
+    (filtroChange)="onFiltroChange($event)">
+  </app-pedido-filter>
+  <table class="production-table">
+    <thead>
+      <tr>
+        <th>Cliente</th>
+        <th>Vendedor</th>
+        <th>N° do Pedido</th>
+        <th>Status</th>
+        <th>Prioridade</th>
+        <th>Prazo</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Loop para exibir cada pedido -->
+      <ng-container *ngFor="let pedido of pedidos">
+        <!-- Linha 1: Dados do Pedido (não tem mais o *ngFor) -->
+        <tr>
+          <td data-label="Cliente"> {{ pedido.clienteObj?.nome }}</td>
+          <td data-label="Vendedor"> {{ pedido.usuario_responsavelObj?.nome }}</td>
+          <td data-label="Nº Pedido">{{ pedido.numero_do_pedido }}</td>
+          <td data-label="Status">
+            <span class="tag" [class]="'status-' + pedido.status">{{ pedido.statusDisplay }}</span>
+          </td>
+          <td data-label="Prioridade">
+            <span class="tag" [class]="'prioridade-' + pedido.prioridade">{{ pedido.prioridadeDisplay }}</span>
+          </td>
+          <td data-label="Prazo">{{ pedido.prazo | date: 'dd/MM/yy HH:mm' }}</td>
+          <td data-label="Ações">
+            <button class="action-button" (click)="toggleItens(pedido.id)">+</button>
+          </td>
+        </tr>
+
+        <!-- Linha 2: Tabela de Itens (agora está DENTRO do loop e no escopo correto) -->
+        <tr *ngIf="pedidoSelecionadoId === pedido.id" class="itens-row">
+          <td colspan="8">
+            <div class="details-wrapper">
+              <app-tabela-itens 
+                [pedido]="pedido" 
+                (pedidoAtualizado)="onPedidoStatusAlterado($event)">
+              </app-tabela-itens>
+              <app-painel-pedido-producao [pedido]="pedido"></app-painel-pedido-producao>
+              <!---
+              <button 
+                type="submit"
+                class="form-button"
+                (click)="changeStatus(pedido, 'encaminhar')">
+                Voltar o pedido para o Encaminhamento
+              </button>
+              -->
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+
+      <!-- Mensagem se não houver pedidos -->
+      <tr *ngIf="pedidos.length === 0 && !erroAoCarregar">
+        <td colspan="7" style="text-align: center;">Nenhum pedido encontrado.</td>
+      </tr>
+
+      <!-- Mensagem de erro -->
+      <tr *ngIf="erroAoCarregar">
+        <td colspan="7" style="text-align: center; color: red;">Ocorreu um erro ao carregar os pedidos.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  @if(!erroAoCarregar && totalDePedidos > itensPorPagina){
+    <app-pagination
+      [paginaAtual]="paginaAtual"
+      [totalDeItens]="totalDePedidos"
+      [itensPorPagina]="itensPorPagina"
+      (pageChange)="onPageChange($event)">
+    </app-pagination>
+  }
+</div>

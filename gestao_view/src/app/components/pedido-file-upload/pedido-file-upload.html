@@ -52,17 +52,26 @@
     </button>
   </div>
 
-  <!-- Lista de Arquivos Existentes -->
-  @if (arquivos.length > 0) {
-    <div class="arquivos-existentes">
-      <h4 class="section-title">Arquivos já enviados</h4>
-      <ul class="arquivos-lista">
-        @for (arquivo of arquivos; track arquivo.id) {
-          <li>
-            <a [href]="arquivo.file" target="_blank" [title]="arquivo.file_name">{{ arquivo.file_name }}</a>
-          </li>
-        }
-      </ul>
-    </div>
-  }
+@if (arquivos.length > 0) {
+  <div class="arquivos-existentes">
+    <h4 class="section-title">Arquivos já enviados</h4>
+    <ul class="arquivos-lista">
+      @for (arquivo of arquivos; track arquivo.id) {
+        <li>
+          <!-- Link para download direto -->
+          <a [href]="arquivo.file" [attr.download]="arquivo.file_name" target="_blank" [title]="arquivo.file_name">
+            {{ arquivo.file_name }}
+          </a>
+          <!-- Botão de download explícito -->
+          <button type="button"
+                  (click)="baixarArquivo(arquivo)"
+                  title="Baixar arquivo"
+                  class="btn-download">
+            ⬇️
+          </button>
+        </li>
+      }
+    </ul>
+  </div>
+}
 </div>

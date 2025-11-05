@@ -1,0 +1,202 @@
+// --- Variáveis de Cores ---
+@use 'sass:color';
+$table-bg: #fff;
+$header-bg: #f8f9fa;
+$border-color: #dee2e6;
+$text-color: #000000;
+$mobile-breakpoint: 768px;
+$primary-color: #3A7CA5;
+
+
+$colors: (
+  // --- Status ---
+  "status-producao": #E3F2FD,      // Azul Céu
+  "status-finalizado": #E6F4EA,    // Verde Menta
+  "status-aguardando": #F1F3F4,    // Amarelo Pastel
+  "status-encaminhar": #FFF8E1,    // Ciano Suave
+  "status-cancelado": #FCE8E6,     // Rosa Claro
+
+  // --- Fases ---
+  "fase-inicial": #e9ecef,         // Cinza Claro
+  "fase-producao": #b2dfdb,         // Ciano Suave
+  "fase-finalizacao": #c1e1c1,     // Verde Menta
+
+  // --- Prioridades ---
+  "prioridade-baixa": #F1F3F4,      // Cinza Claro
+  "prioridade-normal": #E3F2FD,     // Azul Céu
+  "prioridade-alta": #FFF8E1,       // Pêssego
+  "prioridade-urgente": #FCE8E6      // Rosa Claro
+);
+
+// --- Estilos Base da Tabela ---
+.table-container {
+  width: 100%;
+  overflow-x: auto; // Garante que a tabela não quebre o layout em telas muito pequenas
+}
+
+.producao-page {
+  border-radius: 10px;
+}
+
+.production-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: $table-bg;
+
+  th, td {
+    padding: 6px 15px;
+    //border: 1px solid $border-color;
+    text-align: left;
+  }
+
+  thead tr {
+    background-color: $header-bg;
+    
+    th {
+      font-weight: 600;
+      color: $text-color;
+    }
+  }
+
+  tbody tr {
+    border-bottom: 1px solid $border-color; 
+
+    &:nth-of-type(even) {
+      background-color: #fff;
+    }
+    &:hover {
+      background-color: #f1f1f1;
+    }
+  }
+}
+
+// --- Estilos para as Tags (Status, Fase, Prioridade) ---
+.tag {
+  display: block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 0.85em;
+  font-weight: 600;
+  white-space: nowrap;
+  text-align: center;
+
+}
+
+.itens-row > td {
+  padding: 0; // Remove o padding padrão da célula
+  background-color: #f8f9fa; // Cor de fundo para a área expandida
+}
+
+// 2. Estilos para o container que empilha os componentes
+.details-wrapper {
+  display: flex;
+  align-items: center;
+  flex-direction: column; // Empilha os itens verticalmente
+  gap: 0; // Cria um espaçamento de 20px entre cada componente
+  padding: 20px; // Adiciona um espaçamento interno em toda a área
+  width: 97%;
+}
+
+.details-wrapper > * {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+
+}
+
+.tag[class*="prioridade-"] {
+  //padding: 4px 35px ; // Aumenta o padding horizontal para deixar a box mais larga
+  text-align: center;
+}
+
+// Gera as classes de cor dinamicamente a partir do mapa $colors
+@each $name, $color in $colors {
+  .#{$name} {
+    background-color: $color;
+    color: color.adjust($color, $lightness: -60%);
+  }
+}
+
+.action-button {
+  background-color: #95a1ac;
+  color: white;
+  font-size: 18px;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: color.adjust(#6c757d, $lightness: -10%);
+  }
+}
+
+.form-button {
+  justify-self: center;
+  max-width: 97%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: $primary-color;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover:not(:disabled) {
+    background-color: #2a5a77; // Tom mais escuro da cor primária
+  }
+
+  &:disabled {
+    background-color: #E0E0E0; 
+    color: #A0A0A0;
+    cursor: not-allowed;
+  }
+}
+
+// --- Estilos Responsivos ---
+@media screen and (max-width: $mobile-breakpoint) {
+  .production-table {
+    border: 0;
+
+    thead {
+      display: none; // Esconde o cabeçalho da tabela
+    }
+
+    tr {
+      display: block;
+      margin-bottom: 15px;
+      border: 1px solid $border-color;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    td {
+      display: block;
+      text-align: right; // Alinha o valor à direita
+      border: none;
+      border-bottom: 1px solid #eee;
+      position: relative;
+      padding-left: 50%; // Deixa espaço para o label
+
+      // Adiciona o label (do atributo data-label) antes do conteúdo da célula
+      &::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        width: calc(50% - 30px);
+        text-align: left;
+        font-weight: bold;
+        white-space: nowrap;
+      }
+
+      &:last-child {
+        border-bottom: 0;
+      }
+    }
+  }
+}
