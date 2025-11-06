@@ -90,7 +90,8 @@ export class TabelaItensEncaminhamento implements OnChanges{
       ['LN', /^LN.*/],
       ['LA', /^LA.*/],
       ['LDE', /^LDE.*/],
-      ['LCO', /^LCO.*/]
+      ['LCO', /^LCO.*/],
+      ['LS', /^LS.*/],
     ]);
 
     for (const item of this.itens) {
