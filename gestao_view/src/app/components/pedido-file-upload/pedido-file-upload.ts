@@ -22,9 +22,7 @@ export interface FileUploadState {
 })
 export class PedidoFileUpload {
 
-  // Recebe o ID do pedido ao qual os arquivos pertencem
   @Input() pedidoId!: number; 
-  // Emite um evento quando todos os uploads terminam
   @Output() uploadCompleto = new EventEmitter<void>();
 
   arquivos: Arquivo[] = [];
@@ -32,7 +30,9 @@ export class PedidoFileUpload {
   isDragging = false;
   isUploading = false;
 
-  // Injete o HttpClient para fazer as requisições
+  arquivoEmEdicaoId: number | null = null;
+  nomeEditado: string = '';
+
   constructor(private http: HttpClient, private arquivoService: ArquivoService) {
   }
 
@@ -40,8 +40,6 @@ export class PedidoFileUpload {
     this.getArquivos();
     console.log(this.arquivos);
   }
-
-  // --- Manipuladores de Eventos de UI ---
 
   onDragOver(event: DragEvent): void {
     event.preventDefault();
@@ -136,6 +134,21 @@ export class PedidoFileUpload {
     document.body.removeChild(link);
   }
 
+  removerArquivoSalvo(arquivo: Arquivo): void {
+    if (!window.confirm(`Tem certeza que deseja remover o arquivo "${arquivo.file_name}"?`)) {
+      return;
+    }
+
+    this.arquivoService.removerArquivo(arquivo.id).subscribe({
+      next: () => {
+        this.arquivos = this.arquivos.filter(a => a.id !== arquivo.id);
+      },
+      error: (err) => {
+        console.error('Erro ao remover arquivo:', err);
+      }
+    });
+  }
+
   getArquivos() {
       this.arquivoService.getArquivosDoPedido(this.pedidoId).subscribe({
         next: (arquivos) => {
@@ -151,4 +164,5 @@ export class PedidoFileUpload {
   cancelar() {
     this.files = [];
   }
+
 }

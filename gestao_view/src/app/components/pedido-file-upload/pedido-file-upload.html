@@ -58,17 +58,18 @@
     <ul class="arquivos-lista">
       @for (arquivo of arquivos; track arquivo.id) {
         <li>
-          <!-- Link para download direto -->
-          <a [href]="arquivo.file" [attr.download]="arquivo.file_name" target="_blank" [title]="arquivo.file_name">
-            {{ arquivo.file_name }}
-          </a>
-          <!-- Botão de download explícito -->
-          <button type="button"
-                  (click)="baixarArquivo(arquivo)"
-                  title="Baixar arquivo"
-                  class="btn-download">
-            Baixar
-          </button>
+          <!-- Se não estiver em modo de edição, mostra o nome -->
+          @if (arquivoEmEdicaoId !== arquivo.id) {
+            <a [href]="arquivo.file" target="_blank" [title]="arquivo.file_name" class="file-link">
+              {{ arquivo.file_name }}
+            </a>
+          }
+          <div class="file-actions">
+            @if (arquivoEmEdicaoId !== arquivo.id) {
+              <button type="button" (click)="baixarArquivo(arquivo)" title="Baixar arquivo" class="btn-action btn-download">Baixar</button>
+              <button type="button" (click)="removerArquivoSalvo(arquivo)" title="Remover arquivo" class="btn-action btn-remove-saved">Remover</button>
+            }
+          </div>
         </li>
       }
     </ul>

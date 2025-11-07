@@ -50,7 +50,14 @@ export class ArquivoService {
   }).pipe(
     catchError(this.handleError)
   );
-}
+  }
+
+  removerArquivo(arquivoId: number): Observable<void> {
+    const url = `${this.apiUrlPedido}${arquivoId}/`;
+    return this.http.delete<void>(url).pipe(
+      catchError(this.handleError)
+    );
+  }
 
   atualizarFluxoDoItem(itemId: number, fluxoId: number): Observable<Item> {
     console.log("Chamando função para atualizar o fluxo", itemId, fluxoId);

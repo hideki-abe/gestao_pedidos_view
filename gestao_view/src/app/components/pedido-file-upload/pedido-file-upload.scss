@@ -185,9 +185,10 @@
   }
 }
 
-.btn-download {
+.btn-download, .btn-remove-saved{
   padding: 6px 14px;
   font-size: 0.8rem;
+  margin-left: 8px;
   background-color: var(--primary-color);
   color: #fff;
   border: none;
@@ -199,3 +200,8 @@
     opacity: 0.85;
   }
 }
+
+.btn-remove-saved {
+  background-color: #dc3545;
+}
+
