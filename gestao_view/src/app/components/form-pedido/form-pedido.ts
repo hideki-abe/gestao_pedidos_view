@@ -135,6 +135,13 @@ export class FormPedido implements OnChanges {
   }
 
   salvarForm(): void {
+
+    const validacao = this.validarPrazo();
+    if (!validacao.valido) {
+      alert(validacao.mensagem);
+      return;
+    }
+
     const prazoFormatado = this.criarDataPrazo();
     
     this.formSubmit.emit({ 
@@ -189,7 +196,7 @@ export class FormPedido implements OnChanges {
     this.emitFormChanges();
   }
 
-deletarPedido(): void {
+  deletarPedido(): void {
     if (!this.pedidoId) {
       alert('Erro: ID do pedido não encontrado');
       return;
@@ -243,4 +250,90 @@ deletarPedido(): void {
     this.prazoData = '';
     this.prazoHora = '';
   }
+
+  private validarDataCalendario(): { valido: boolean; mensagem: string } {
+    const partesData = this.prazoData.split('/');
+    const dia = parseInt(partesData[0], 10);
+    const mes = parseInt(partesData[1], 10);
+    const ano = parseInt(partesData[2], 10);
+
+    if (mes < 1 || mes > 12) {
+      return { valido: false, mensagem: 'Mês inválido. Use um valor entre 01 e 12.' };
+    }
+
+    const diasPorMes = [31, this.isAnoBissexto(ano) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    const diasNoMes = diasPorMes[mes - 1];
+
+    if (dia < 1 || dia > diasNoMes) {
+      return { valido: false, mensagem: `Dia inválido para ${mes}/${ano}. Use um valor entre 01 e ${diasNoMes}.` };
+    }
+
+    if (ano < 2000 || ano > 2100) {
+      return { valido: false, mensagem: 'Ano inválido. Use um ano entre 2000 e 2100.' };
+    }
+
+    return { valido: true, mensagem: '' };
+  }
+
+  
+  private isAnoBissexto(ano: number): boolean {
+    return (ano % 4 === 0 && ano % 100 !== 0) || (ano % 400 === 0);
+  }
+
+  public validarPrazo(): { valido: boolean; mensagem: string } {
+    const validacaoFormato = this.validarFormatoDataHora();
+    if (!validacaoFormato.valido) {
+      return validacaoFormato;
+    }
+
+    const validacaoCalendario = this.validarDataCalendario();
+    if (!validacaoCalendario.valido) {
+      return validacaoCalendario;
+    }
+
+    const dataCompleta = this.criarDataPrazo();
+    if (!dataCompleta) {
+      return { valido: false, mensagem: 'Erro ao processar a data informada.' };
+    }
+
+    const validacaoPassado = this.validarDataNaoPassado(dataCompleta);
+    if (!validacaoPassado.valido) {
+      return validacaoPassado;
+    }
+
+    return { valido: true, mensagem: 'Prazo válido!' };
+  }
+
+  private validarDataNaoPassado(data: Date): { valido: boolean; mensagem: string } {
+    const agora = new Date();
+    
+    if (data < agora) {
+      return { valido: false, mensagem: 'A data do prazo não pode estar no passado.' };
+    }
+
+    return { valido: true, mensagem: '' };
+  }
+
+    private validarFormatoDataHora(): { valido: boolean; mensagem: string } {
+    if (!this.prazoData || this.prazoData.trim() === '') {
+      return { valido: false, mensagem: 'Por favor, informe a data do prazo.' };
+    }
+
+    const regexData = /^\d{2}\/\d{2}\/\d{4}$/;
+    if (!regexData.test(this.prazoData)) {
+      return { valido: false, mensagem: 'Data inválida. Use o formato dd/mm/yyyy.' };
+    }
+
+    if (!this.prazoHora || this.prazoHora.trim() === '') {
+      return { valido: false, mensagem: 'Por favor, informe a hora do prazo.' };
+    }
+
+    const regexHora = /^\d{2}:\d{2}$/;
+    if (!regexHora.test(this.prazoHora)) {
+      return { valido: false, mensagem: 'Hora inválida. Use o formato hh:mm.' };
+    }
+
+    return { valido: true, mensagem: '' };
+  }
+
 }

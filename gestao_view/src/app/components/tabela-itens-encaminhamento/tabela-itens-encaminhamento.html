@@ -45,7 +45,7 @@
                   (ngModelChange)="onFluxoChange(item, $event)">
                     @if (item.fluxo_nome == null) {
                       <option [ngValue]="item.fluxo_nome" disabled selected>
-                        Selecione um fluxo
+                        Fluxo
                       </option>
                     }
                     @for (fluxo of item.fluxos_disponiveis; track fluxo.id) {

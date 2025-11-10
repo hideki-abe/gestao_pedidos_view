@@ -73,7 +73,8 @@ export class FormCadastroPedido implements OnInit {
   '#3/4',
   '1045 #3/4',
   '#7/8',
-  '#1'
+  '#1',
+  '1045 #1' 
 ];
 
   constructor(
@@ -266,11 +267,11 @@ export class FormCadastroPedido implements OnInit {
       this.clienteNome &&
       this.vendedorSelecionado &&
       this.numeroPedido &&
-      this.contato &&
       this.itens.length > 0
     );
   }
 
+/*
   imprimePedido(): void {
     console.log('Pedido a ser salvo:', {
       cliente: this.clienteNome,
@@ -282,6 +283,7 @@ export class FormCadastroPedido implements OnInit {
       itens: this.itens
     });
   }
+*/
 
   salvarPedido(): void {
     if (!this.formularioValido()) {

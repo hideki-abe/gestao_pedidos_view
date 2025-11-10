@@ -176,11 +176,58 @@ $mobile-breakpoint: 768px;
   padding-right: 30px; // Espaço para a seta
   cursor: pointer;
   border: none; // Remove a borda padrão do select
-  width: 200px; // Ocupa todo o espaço da célula
+  width: 150px; // Ocupa todo o espaço da célula
 }
 
 
-// --- Responsividade ---
+@media (max-width: 1024px) {
+  .itens-container {
+    padding: 10px;
+  }
+
+  .itens-table {
+    font-size: 0.85rem;
+
+    th, td {
+      padding: 8px 10px;
+      font-size: 0.85rem;
+    }
+
+    // Aplica width na primeira coluna (Número)
+    th:first-child,
+    td:first-child {
+      width: 50px;
+      min-width: 50px;
+      text-align: center;
+    }
+
+    // Aplica width na última coluna (Ações/Botões)
+    th:last-child,
+    td:last-child {
+      width: 80px;
+      min-width: 80px;
+    }
+
+    // Reduz o tamanho do select de fluxo
+    .fluxo-select {
+      width: 120px;
+      font-size: 0.75rem;
+    }
+
+    // Reduz o tamanho dos botões de ação
+    .action-button {
+      padding: 4px 8px;
+      font-size: 0.75rem;
+    }
+  }
+
+  // Ajusta o título do cabeçalho
+  .header-title {
+    font-size: 20px;
+  }
+}
+
+
 @media (max-width: $mobile-breakpoint) {
   .itens-table {
     thead {

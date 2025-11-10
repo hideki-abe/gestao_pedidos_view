@@ -54,7 +54,7 @@ export class TabelaItensEncaminhamento implements OnChanges{
 
         console.log(this.itens);
         this.relacionaFluxoComTipo();
-        //this.atribuiFluxo();
+        this.atribuirFluxoAutomatico();
       },
       error: (err) => {
         console.error('Falha ao carregar dados iniciais:', err);
@@ -113,6 +113,18 @@ export class TabelaItensEncaminhamento implements OnChanges{
       } else {
         item.fluxos_disponiveis = [];
         console.warn(`Nenhuma regra de regex definida para o tipo de item: '${item.tipo}'.`);
+      }
+    }
+  }
+
+  private atribuirFluxoAutomatico(): void {
+    for (const item of this.itens) {
+      if (!item.fluxo_nome && item.fluxos_disponiveis?.length === 1) {
+        const fluxoUnico = item.fluxos_disponiveis[0];
+        console.log(`Atribuindo automaticamente o fluxo "${fluxoUnico.descricao}" ao item "${item.nome}"`);
+        
+
+        this.onFluxoChange(item, fluxoUnico.nome);
       }
     }
   }

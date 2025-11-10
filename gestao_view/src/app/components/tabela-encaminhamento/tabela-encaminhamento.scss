@@ -5,6 +5,7 @@ $header-bg: #f8f9fa;
 $border-color: #dee2e6;
 $text-color: #000000;
 $mobile-breakpoint: 768px;
+$tablet-breakpoint: 1024px;
 
 
 $colors: (
@@ -35,10 +36,6 @@ $colors: (
 
 .pedido-filter {
   margin-bottom: 0px;
-}
-
-.producao-page {
-  border-radius: 10px;
 }
 
 .production-table {
@@ -147,7 +144,52 @@ $colors: (
   }
 }
 
-// --- Estilos Responsivos ---
+@media screen and (max-width: 1024px) {
+  .table-container {
+    max-width: 100%;
+  }
+
+  .production-table {
+    max-width: 100%;
+  }
+}
+
+@media screen and (max-width: $tablet-breakpoint) {
+  .table-container {
+    padding: 0 10px; // Adiciona padding lateral
+  }
+
+  .production-table {
+    font-size: 0.9rem; // Reduz levemente o tamanho da fonte
+
+    th, td {
+      padding: 8px 10px; // Reduz o padding das células
+    }
+
+    // Reduz o tamanho das tags
+    .tag {
+      font-size: 0.75em;
+      padding: 3px 6px;
+    }
+
+    // Ajusta o botão de ação
+    .action-button {
+      font-size: 16px;
+      padding: 6px 10px;
+    }
+  }
+
+  .details-wrapper {
+    padding: 0 10px 15px 10px; // Reduz o padding interno
+  }
+
+  // Faz a tabela rolar horizontalmente se necessário
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; // Melhora a rolagem no iOS
+  }
+}
+
 @media screen and (max-width: $mobile-breakpoint) {
   .production-table {
     border: 0;
