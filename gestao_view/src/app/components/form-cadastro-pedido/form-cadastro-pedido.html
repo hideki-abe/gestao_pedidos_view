@@ -91,11 +91,14 @@
     <div class="form-grid">
       <div class="form-group">
         <label class="form-label">Nome:</label>
+        <input type="text" class="form-input" [(ngModel)]="itemAtual.nome" name="nome">
+        <!--
         <select class="form-select" [(ngModel)]="itemAtual.nome" name="nome">
           @for (desc of DESCRICOES; track desc) {
             <option value="{{ desc }}">{{ desc }}</option>
           }
         </select>
+        -->
       </div>
 
       <div class="form-group">
