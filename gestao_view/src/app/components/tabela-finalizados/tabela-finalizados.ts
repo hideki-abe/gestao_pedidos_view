@@ -4,7 +4,7 @@ import { PedidoService } from '../../services/pedido';
 import { Pedido } from '../../interfaces/pedido';
 import { ClienteService } from '../../services/cliente';
 import { VendedorService } from '../../services/vendedor';
-import { TabelaItens } from "../tabela-itens/tabela-itens";
+import { TabelaItensFinalizados } from "../tabela-itens-finalizados/tabela-itens-finalizados";
 import { ToastrService } from 'ngx-toastr';
 import { Pagination } from '../pagination/pagination';
 import { PainelPedidoProducao } from "../painel-pedido-producao/painel-pedido-producao";
@@ -14,7 +14,7 @@ import { Vendedor } from '../../interfaces/vendedor';
 @Component({
   selector: 'app-tabela-finalizados',
   standalone: true,
-  imports: [CommonModule, TabelaItens, Pagination, PainelPedidoProducao, PedidoFilter], 
+  imports: [CommonModule, TabelaItensFinalizados, Pagination, PainelPedidoProducao, PedidoFilter], 
   templateUrl: './tabela-finalizados.html',
   styleUrl: './tabela-finalizados.scss'
 })

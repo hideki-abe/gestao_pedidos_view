@@ -40,10 +40,9 @@
         <tr *ngIf="pedidoSelecionadoId === pedido.id" class="itens-row">
           <td colspan="8">
             <div class="details-wrapper">
-              <app-tabela-itens 
-                [pedido]="pedido" 
-                (pedidoAtualizado)="onPedidoStatusAlterado($event)">
-              </app-tabela-itens>
+              <app-tabela-itens-finalizados 
+                [pedido]="pedido">
+              </app-tabela-itens-finalizados>
               <app-painel-pedido-producao [pedido]="pedido"></app-painel-pedido-producao>
               <!---
               <button 

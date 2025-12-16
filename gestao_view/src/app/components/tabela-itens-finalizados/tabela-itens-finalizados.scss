@@ -1,0 +1,177 @@
+// --- Variáveis ---
+$primary-color: #3A7CA5;
+$secondary-color: #6c757d;
+$page-bg: #f4f7f6;
+$container-bg: #ffffff;
+$border-color: #dee2e6;
+$text-color: #333;
+$white: #fff;
+$border-radius: 5px;
+$mobile-breakpoint: 768px;
+
+// --- Container Principal ---
+.itens-container {
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+// --- Cabeçalho ---
+.itens-header {
+  margin-bottom: 20px;
+  display: grid;
+  justify-content: center;
+
+  .header-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: $text-color;
+    margin: 0 0 15px 0;
+  }
+
+  .header-parameters {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+}
+
+// --- Controles do Cabeçalho (Filtros, Botões) ---
+.search-input,
+.filter-select {
+  padding: 8px 12px;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  font-size: 14px;
+}
+
+.search-input {
+  flex-grow: 1;
+  min-width: 150px;
+}
+
+.btn-add-item {
+  padding: 8px 16px;
+  background-color: $primary-color;
+  color: $white;
+  border: none;
+  border-radius: $border-radius;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+// --- Tabela ---
+.table-responsive-container {
+  overflow-x: auto;
+  background-color: $container-bg;
+  border-radius: $border-radius;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.itens-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid $border-color;
+  }
+
+  thead th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    font-size: 14px;
+    color: #495057;
+  }
+
+  tbody tr {
+    &:hover {
+      background-color: #f1f3f5;
+    }
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+.no-items-message {
+  text-align: center;
+  color: #868e96;
+  padding: 30px;
+}
+
+// --- Tags e Botões de Ação ---
+.tag {
+  display: flex;
+  justify-content: center;
+  padding: 4px 8px;
+  width: 100px;
+  border-radius: 4px;
+  font-size: 0.85em;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #343a40;
+  background-color: #e9ecef;
+}
+
+.fase-corte { background-color: #a7c7e7; }
+.fase-montagem { background-color: #b2dfdb; }
+.fase-finalizado { background-color: #c1e1c1; }
+
+.action-button {
+  padding: 4px 10px;
+  font-size: 13px;
+  background-color: $secondary-color;
+  color: $white;
+  border: none;
+  border-radius: $border-radius;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    opacity: 0.85;
+  }
+}
+
+// --- Responsividade ---
+@media (max-width: $mobile-breakpoint) {
+  .itens-table {
+    thead {
+      display: none;
+    }
+
+    tr {
+      display: block;
+      margin-bottom: 15px;
+      border: 1px solid $border-color;
+      border-radius: $border-radius;
+    }
+
+    td {
+      display: flex;
+      justify-content: space-between;
+      text-align: right;
+      padding: 10px;
+      border-bottom: 1px solid #f1f3f5;
+
+      &::before {
+        content: attr(data-label);
+        font-weight: 600;
+        text-align: left;
+        margin-right: 10px;
+        color: #495057;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}
