@@ -9,13 +9,11 @@ $white: #fff;
 $border-radius: 5px;
 $mobile-breakpoint: 768px;
 
-// --- Container Principal ---
 .itens-container {
   padding: 20px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-// --- Cabeçalho ---
 .itens-header {
   margin-bottom: 20px;
   display: grid;
@@ -36,7 +34,6 @@ $mobile-breakpoint: 768px;
   }
 }
 
-// --- Controles do Cabeçalho (Filtros, Botões) ---
 .search-input,
 .filter-select {
   padding: 8px 12px;
@@ -65,7 +62,6 @@ $mobile-breakpoint: 768px;
   }
 }
 
-// --- Tabela ---
 .table-responsive-container {
   overflow-x: auto;
   background-color: $container-bg;
@@ -113,7 +109,6 @@ $mobile-breakpoint: 768px;
   padding: 30px;
 }
 
-// --- Tags e Botões de Ação ---
 .tag {
   display: flex;
   justify-content: center;
@@ -150,7 +145,6 @@ $mobile-breakpoint: 768px;
   position: relative;
   display: inline-block;
 
-  // Adiciona um ícone de seta para o dropdown
   &::after {
     content: '▼';
     font-size: 0.6em;
@@ -158,25 +152,22 @@ $mobile-breakpoint: 768px;
     right: 12px;
     top: 50%;
     transform: translateY(-50%);
-    pointer-events: none; // Permite clicar através do ícone
-    color: inherit; // Herda a cor do texto da tag
+    pointer-events: none; 
+    color: inherit;
   }
 }
 
-// Estilo para o dropdown
 .fluxo-select {
-  // Remove a aparência padrão do navegador
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
 
-  // Herda os estilos da sua classe .tag
   @extend .tag; 
   
-  padding-right: 30px; // Espaço para a seta
+  padding-right: 30px;
   cursor: pointer;
-  border: none; // Remove a borda padrão do select
-  width: 150px; // Ocupa todo o espaço da célula
+  border: none; 
+  width: 150px; 
 }
 
 
@@ -193,7 +184,6 @@ $mobile-breakpoint: 768px;
       font-size: 0.85rem;
     }
 
-    // Aplica width na primeira coluna (Número)
     th:first-child,
     td:first-child {
       width: 50px;
@@ -201,27 +191,23 @@ $mobile-breakpoint: 768px;
       text-align: center;
     }
 
-    // Aplica width na última coluna (Ações/Botões)
     th:last-child,
     td:last-child {
       width: 80px;
       min-width: 80px;
     }
 
-    // Reduz o tamanho do select de fluxo
     .fluxo-select {
       width: 120px;
       font-size: 0.75rem;
     }
 
-    // Reduz o tamanho dos botões de ação
     .action-button {
       padding: 4px 8px;
       font-size: 0.75rem;
     }
   }
 
-  // Ajusta o título do cabeçalho
   .header-title {
     font-size: 20px;
   }
