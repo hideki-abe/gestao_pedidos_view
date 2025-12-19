@@ -1,0 +1,46 @@
+<div class="itens-container">
+
+  <div class="table-responsive-container">
+    <table class="itens-table">
+      <thead>
+        <tr>
+          <th>Cliente</th>   
+          <th>Material</th>
+          <th>Tipo</th>
+          <th>Qtd</th>
+          <th>Med 1</th>
+          <th>Med 2</th>
+          <th>Furo</th>
+          <th>Arquivo</th>
+          <th>Fase Atual</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of itens; track item.id) {
+          <tr>
+            <td data-label="Cliente">Nome do cliente</td>
+            <td data-label="Material">{{ item.nome }}</td>
+            <td data-label="Tipo">{{ item.tipo }}</td>
+            <td data-label="Quantidade">{{ item.quantidade }}</td>
+            <td data-label="Medida 1">{{ item.medida_1 }}</td>
+            <td data-label="Medida 2">{{ item.medida_2 }}</td>
+            <td data-label="Furo">{{ item.furo }}</td>
+            <td data-label="Arquivo">Baixar</td>
+            <td data-label="Fase Atual">
+              <span class="tag fase">{{ item.fase_atual_nome|| 'Aguardando' }}</span>
+            </td>
+            <td data-label="Ações">
+              <button class="action-button" (click)="avancarFase(item)">Avançar</button>
+            </td>
+          </tr>
+        }
+        @if (itens.length === 0) { 
+            <tr>
+                <td colspan="8" class="no-items-message">Nenhum item encontrado.</td>
+            </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
