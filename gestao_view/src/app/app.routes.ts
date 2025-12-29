@@ -7,6 +7,7 @@ import { Login } from './pages/login/login';
 import { CadastroUsuario } from './pages/cadastro-usuario/cadastro-usuario';
 import { CadastroFluxo } from './pages/cadastro-fluxo/cadastro-fluxo';
 import { RoleGuard} from './services/auth-service';
+import { Laser } from './pages/laser/laser';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/producao', pathMatch: 'full' },
@@ -16,5 +17,6 @@ export const routes: Routes = [
   { path: 'cadastro', component: CadastroComponent, canActivate: [RoleGuard], data: { roles: ['admin', 'gerente'] } },
   { path: 'usuarios', component: CadastroUsuario, canActivate: [RoleGuard], data: { roles: ['admin', 'gerente'] } },
   { path: 'login', component: Login },
-  { path: 'cadastro-fluxo', component: CadastroFluxo, canActivate: [RoleGuard], data: { roles: ['admin', 'gerente'] } }
+  { path: 'cadastro-fluxo', component: CadastroFluxo, canActivate: [RoleGuard], data: { roles: ['admin', 'gerente'] } },
+  { path: 'laser', component: Laser }
 ];

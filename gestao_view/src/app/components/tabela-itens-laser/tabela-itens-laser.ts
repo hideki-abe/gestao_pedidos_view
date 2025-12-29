@@ -37,7 +37,11 @@ export class TabelaItensLaser{
       fases: this.faseService.getFases()
     }).subscribe({
       next: (resultados) => {
-        this.itens = resultados.itens || [];
+        for(let item of resultados.itens) {
+          if (item.fase_atual_nome == 'Laser') {
+            this.itens.push(item);
+          } 
+        }
         this.fases = resultados.fases || [];
         console.log('Itens carregados:', this.itens);
       },

@@ -17,7 +17,7 @@ export class ItemService {
   constructor(private http: HttpClient) { }
 
   getItens(): Observable<Item[]> {
-    return this.http.get(this.apiUrl, { responseType: 'text' }).pipe(
+    return this.http.get(this.apiUrlItens, { responseType: 'text' }).pipe(
       map(responseText => {
         try {
           const responseObject = JSON.parse(responseText);
