@@ -86,4 +86,27 @@ export class ArquivoService {
     console.error(errorMessage);
     return throwError(() => new Error(errorMessage));
   }
+
+  getArquivosDoItem(itemId: number): Observable<Arquivo[]> {
+  const url = `/api/arquivos-item/?item_id=${itemId}`;
+  return this.http.get<any>(url).pipe(
+    map(response => response.results || response),
+    catchError(this.handleError)
+  );
+}
+
+uploadArquivoDoItem(itemId: number, file: File): Observable<any> {
+  const formData = new FormData();
+  formData.append('file', file, file.name);
+  formData.append('item', itemId.toString());
+
+  return this.http.post('/api/arquivos-item/', formData, {
+    reportProgress: true,
+    observe: 'events'
+  }).pipe(
+    catchError(this.handleError)
+  );
+}
+
+
 }

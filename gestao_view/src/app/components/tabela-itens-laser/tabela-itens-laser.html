@@ -19,7 +19,7 @@
       <tbody>
         @for (item of itens; track item.id) {
           <tr>
-            <td data-label="Cliente">Nome do cliente</td>
+            <td data-label="Cliente">{{ item.cliente_nome }}</td>
             <td data-label="Material">{{ item.nome }}</td>
             <td data-label="Tipo">{{ item.tipo }}</td>
             <td data-label="Quantidade">{{ item.quantidade }}</td>

@@ -9,6 +9,10 @@ import { Fluxo } from '../../interfaces/fluxo';
 import { Fase } from '../../interfaces/fase';
 import { FaseService } from '../../services/fase';
 import { forkJoin, switchMap, of } from 'rxjs';
+import { Arquivo } from '../../interfaces/arquivo';
+import { ArquivoService } from '../../services/arquivo';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-tabela-itens-encaminhamento',
@@ -26,10 +30,16 @@ export class TabelaItensEncaminhamento implements OnChanges{
   public fases: Fase[] = [];
   public erroAoCarregar: boolean = false;
 
+  public itemFiles: { [itemId: number]: Arquivo[] } = {};
+  public isUploading: { [itemId: number]: boolean } = {};
+  public showFilesList: { [itemId: number]: boolean } = {};
+
   constructor(
     private itemService: ItemService, 
     private fluxoService: FluxoService, 
-    private faseService: FaseService) 
+    private faseService: FaseService,
+    private arquivoService: ArquivoService
+  ) 
   {
   }
 
@@ -59,6 +69,91 @@ export class TabelaItensEncaminhamento implements OnChanges{
       error: (err) => {
         console.error('Falha ao carregar dados iniciais:', err);
         this.erroAoCarregar = true;
+      }
+    });
+  }
+
+    private carregarArquivosDosItens(): void {
+    this.itens.forEach(item => {
+      this.arquivoService.getArquivosDoItem(item.id).subscribe({
+        next: (arquivos) => {
+          this.itemFiles[item.id] = arquivos;
+        },
+        error: (err) => {
+          console.error(`Erro ao carregar arquivos do item ${item.id}:`, err);
+          this.itemFiles[item.id] = [];
+        }
+      });
+    });
+  }
+
+  
+  triggerFileInput(itemId: number): void {
+    const fileInput = document.getElementById(`file-${itemId}`) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
+  }
+
+  onFileSelected(event: Event, item: Item): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.uploadArquivo(item.id, file);
+    }
+  }
+
+  private uploadArquivo(itemId: number, file: File): void {
+    this.isUploading[itemId] = true;
+
+    this.arquivoService.uploadArquivoDoItem(itemId, file).subscribe({
+      next: (event) => {
+        if (event.type === HttpEventType.UploadProgress) {
+          // Pode adicionar uma barra de progresso aqui se quiser
+          const percentDone = Math.round(100 * (event.loaded / (event.total || 1)));
+          console.log(`Upload ${percentDone}% completo`);
+        } else if (event instanceof HttpResponse) {
+          console.log('Upload concluído!', event.body);
+          // Recarrega os arquivos do item
+          this.arquivoService.getArquivosDoItem(itemId).subscribe({
+            next: (arquivos) => {
+              this.itemFiles[itemId] = arquivos;
+            }
+          });
+        }
+      },
+      error: (err) => {
+        console.error('Erro ao fazer upload:', err);
+        alert('Erro ao enviar arquivo. Tente novamente.');
+        this.isUploading[itemId] = false;
+      },
+      complete: () => {
+        this.isUploading[itemId] = false;
+        // Limpa o input
+        const input = document.getElementById(`file-${itemId}`) as HTMLInputElement;
+        if (input) {
+          input.value = '';
+        }
+      }
+    });
+  }
+
+  toggleFilesList(itemId: number): void {
+    this.showFilesList[itemId] = !this.showFilesList[itemId];
+  }
+
+  removerArquivo(arquivo: Arquivo, itemId: number): void {
+    if (!confirm(`Deseja remover o arquivo "${arquivo.file_name}"?`)) {
+      return;
+    }
+
+    this.arquivoService.removerArquivo(arquivo.id).subscribe({
+      next: () => {
+        this.itemFiles[itemId] = this.itemFiles[itemId].filter(a => a.id !== arquivo.id);
+      },
+      error: (err) => {
+        console.error('Erro ao remover arquivo:', err);
+        alert('Erro ao remover arquivo.');
       }
     });
   }

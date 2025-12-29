@@ -19,6 +19,7 @@ export interface Item {
   finalizado: boolean;
   created_at: string | Date;
   updated_at: string | Date;
+  cliente_nome: string;
 }
 
 export interface ItemCadastro {

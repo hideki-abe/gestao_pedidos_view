@@ -24,7 +24,7 @@
           <th>Medida 2</th>
           <th>Furo</th>
           <th>Fluxo</th>
-          <!--<th>Arquivo</th>--->
+          <th>Arquivo</th>
         </tr>
       </thead>
       <tbody>
@@ -56,11 +56,55 @@
                 </select>
               </div>
             </td>
-            <!----
-            <td data-label="Concluir">
-              <button class="action-button">Carregar Arquivo</button>
+            <td data-label="Arquivo">
+              <div class="file-upload-cell">
+                <input 
+                  type="file" 
+                  [id]="'file-' + item.id" 
+                  (change)="onFileSelected($event, item)"
+                  hidden>
+                <button 
+                  class="btn-upload" 
+                  (click)="triggerFileInput(item.id)"
+                  [disabled]="isUploading[item.id]">
+                  @if (isUploading[item.id]) {
+                    <span>Enviando...</span>
+                  } @else {
+                    <span>📎 Anexar</span>
+                  }
+                </button>
+                @if (itemFiles[item.id] && itemFiles[item.id].length > 0) {
+                  <div class="files-indicator">
+                    <span class="file-count">{{ itemFiles[item.id].length }}</span>
+                    <button 
+                      class="btn-view-files" 
+                      (click)="toggleFilesList(item.id)"
+                      title="Ver arquivos">
+                      👁️
+                    </button>
+                  </div>
+                }
+              </div>
+              @if (showFilesList[item.id]) {
+                <div class="files-list-popup">
+                  <div class="files-list-header">
+                    <strong>Arquivos anexados:</strong>
+                    <button class="btn-close" (click)="toggleFilesList(item.id)">×</button>
+                  </div>
+                  <ul>
+                    @for (arquivo of itemFiles[item.id]; track arquivo.id) {
+                      <li>
+                        <a [href]="arquivo.file" target="_blank">{{ arquivo.file_name }}</a>
+                        <button 
+                          class="btn-remove-file" 
+                          (click)="removerArquivo(arquivo, item.id)"
+                          title="Remover">×</button>
+                      </li>
+                    }
+                  </ul>
+                </div>
+              }
             </td>
-            --->
           </tr>
         }
         <tr *ngIf="!itens || itens.length === 0">

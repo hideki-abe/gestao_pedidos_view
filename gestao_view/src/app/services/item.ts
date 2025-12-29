@@ -21,6 +21,7 @@ export class ItemService {
       map(responseText => {
         try {
           const responseObject = JSON.parse(responseText);
+          console.log('Resposta da API de itens:', responseObject);
           return responseObject.results;
         } catch (e) {
           console.error('Falha ao converter a resposta para JSON.', e);
