@@ -31,6 +31,7 @@ export class TabelaItensLaser{
 
   private carregarDadosIniciais(): void {
     this.erroAoCarregar = false;
+    this.itens = [];
 
     forkJoin({
       itens: this.itemService.getItens(),
@@ -38,7 +39,7 @@ export class TabelaItensLaser{
     }).subscribe({
       next: (resultados) => {
         for(let item of resultados.itens) {
-          if (item.fase_atual_nome == 'Laser') {
+          if (item.fase_atual_nome == 'Laser' && item.pedido_status == 'producao') {
             this.itens.push(item);
           } 
         }
@@ -58,7 +59,6 @@ export class TabelaItensLaser{
       return;
     }
 
-    // Encontra a próxima fase na ordem
     const faseAtual = this.fases.find(f => f.id === item.fase_atual);
     if (!faseAtual) {
       console.error('Fase atual não encontrada');
@@ -71,20 +71,17 @@ export class TabelaItensLaser{
 
     if (!proximaFase) {
       console.warn('Não há próxima fase disponível para este item');
-      // TODO: Adicionar toast informando que o item já está na última fase
       return;
     }
 
-    // Atualiza a fase do item
+
     this.itemService.updateItem(item.id, { fase_atual: proximaFase.id }).subscribe({
       next: (itemAtualizado) => {
         console.log('Fase avançada com sucesso:', itemAtualizado);
-        Object.assign(item, itemAtualizado);
-        // TODO: Adicionar toast de sucesso
+        this.carregarDadosIniciais();
       },
       error: (err) => {
         console.error('Erro ao avançar fase:', err);
-        // TODO: Adicionar toast de erro
       }
     });
   }

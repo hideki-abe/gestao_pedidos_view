@@ -70,7 +70,7 @@
                   @if (isUploading[item.id]) {
                     <span>Enviando...</span>
                   } @else {
-                    <span>📎 Anexar</span>
+                    <span> Anexar</span>
                   }
                 </button>
                 @if (itemFiles[item.id] && itemFiles[item.id].length > 0) {
@@ -80,7 +80,7 @@
                       class="btn-view-files" 
                       (click)="toggleFilesList(item.id)"
                       title="Ver arquivos">
-                      👁️
+                      Visualizar
                     </button>
                   </div>
                 }

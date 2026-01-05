@@ -20,6 +20,7 @@ export interface Item {
   created_at: string | Date;
   updated_at: string | Date;
   cliente_nome: string;
+  pedido_status: string;
 }
 
 export interface ItemCadastro {

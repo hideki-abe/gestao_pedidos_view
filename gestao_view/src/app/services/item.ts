@@ -32,6 +32,22 @@ export class ItemService {
     );
   }
 
+  getItensPorStatus(status: string): Observable<Item[]> {
+    return this.http.get(this.apiUrlItens + '?status=' + status, { responseType: 'text' }).pipe(
+      map(responseText => {
+        try {
+          const responseObject = JSON.parse(responseText);
+          console.log('Resposta da API de itens:', responseObject);
+          return responseObject.results;
+        } catch (e) {
+          console.error('Falha ao converter a resposta para JSON.', e);
+          throw new Error('A resposta da API não é um JSON válido.');
+        }
+      }),
+      catchError(this.handleError)
+    );
+  }
+
   getItensDoPedido(pedidoId: number): Observable<Item[]> {
     const url = `${this.apiUrl}${pedidoId}/itens/`;
 
