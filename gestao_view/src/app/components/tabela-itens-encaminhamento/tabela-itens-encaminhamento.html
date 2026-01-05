@@ -63,47 +63,27 @@
                   [id]="'file-' + item.id" 
                   (change)="onFileSelected($event, item)"
                   hidden>
-                <button 
-                  class="btn-upload" 
-                  (click)="triggerFileInput(item.id)"
-                  [disabled]="isUploading[item.id]">
-                  @if (isUploading[item.id]) {
-                    <span>Enviando...</span>
-                  } @else {
-                    <span> Anexar</span>
-                  }
-                </button>
-                @if (itemFiles[item.id] && itemFiles[item.id].length > 0) {
-                  <div class="files-indicator">
-                    <span class="file-count">{{ itemFiles[item.id].length }}</span>
+                
+                @if (item.arquivo_url) {
+                  <!-- Mostra o arquivo anexado -->
+                  <div class="file-attached">
+                    <a [href]="item.arquivo_nome" target="_blank" class="file-link">
+                      {{ item.arquivo_nome }}
+                    </a>
                     <button 
-                      class="btn-view-files" 
-                      (click)="toggleFilesList(item.id)"
-                      title="Ver arquivos">
-                      Visualizar
-                    </button>
+                      class="btn-remove-file" 
+                      (click)="removerArquivo(item)"
+                      title="Remover">×</button>
                   </div>
+                } @else {
+                  <!-- Botão para anexar -->
+                  <button 
+                    class="btn-upload" 
+                    (click)="triggerFileInput(item.id)">
+                      <span>Anexar</span>
+                  </button>
                 }
               </div>
-              @if (showFilesList[item.id]) {
-                <div class="files-list-popup">
-                  <div class="files-list-header">
-                    <strong>Arquivos anexados:</strong>
-                    <button class="btn-close" (click)="toggleFilesList(item.id)">×</button>
-                  </div>
-                  <ul>
-                    @for (arquivo of itemFiles[item.id]; track arquivo.id) {
-                      <li>
-                        <a [href]="arquivo.file" target="_blank">{{ arquivo.file_name }}</a>
-                        <button 
-                          class="btn-remove-file" 
-                          (click)="removerArquivo(arquivo, item.id)"
-                          title="Remover">×</button>
-                      </li>
-                    }
-                  </ul>
-                </div>
-              }
             </td>
           </tr>
         }

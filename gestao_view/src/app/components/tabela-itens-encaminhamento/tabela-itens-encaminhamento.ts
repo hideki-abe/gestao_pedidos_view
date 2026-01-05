@@ -30,7 +30,7 @@ export class TabelaItensEncaminhamento implements OnChanges{
   public fases: Fase[] = [];
   public erroAoCarregar: boolean = false;
 
-  public itemFiles: { [itemId: number]: Arquivo[] } = {};
+  public itemFile: Arquivo | null = null;
   public isUploading: { [itemId: number]: boolean } = {};
   public showFilesList: { [itemId: number]: boolean } = {};
 
@@ -65,6 +65,7 @@ export class TabelaItensEncaminhamento implements OnChanges{
         console.log(this.itens);
         this.relacionaFluxoComTipo();
         this.atribuirFluxoAutomatico();
+        this.carregarArquivosDosItens();
       },
       error: (err) => {
         console.error('Falha ao carregar dados iniciais:', err);
@@ -73,15 +74,18 @@ export class TabelaItensEncaminhamento implements OnChanges{
     });
   }
 
-    private carregarArquivosDosItens(): void {
+  private carregarArquivosDosItens(): void {
     this.itens.forEach(item => {
       this.arquivoService.getArquivosDoItem(item.id).subscribe({
         next: (arquivos) => {
-          this.itemFiles[item.id] = arquivos;
+          // Adiciona o arquivo diretamente no item
+          (item as any).arquivo = arquivos.length > 0 ? arquivos[0] : null;
+          (item as any).isUploading = false;
         },
         error: (err) => {
           console.error(`Erro ao carregar arquivos do item ${item.id}:`, err);
-          this.itemFiles[item.id] = [];
+          (item as any).arquivo = null;
+          (item as any).isUploading = false;
         }
       });
     });
@@ -95,29 +99,49 @@ export class TabelaItensEncaminhamento implements OnChanges{
     }
   }
 
-  onFileSelected(event: Event, item: Item): void {
+  onFileSelected(event: Event, item: any): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-      this.uploadArquivo(item.id, file);
+      
+      // Verifica se já existe um arquivo
+      if (item.arquivo) {
+        const confirmar = confirm('Já existe um arquivo anexado. Deseja substituí-lo?');
+        if (!confirmar) {
+          input.value = '';
+          return;
+        }
+        // Remove o arquivo existente antes de fazer upload do novo
+        this.arquivoService.removerArquivoItem(item.arquivo.id).subscribe({
+          next: () => {
+            this.uploadArquivo(item, file);
+          },
+          error: (err) => {
+            console.error('Erro ao remover arquivo anterior:', err);
+            alert('Erro ao substituir arquivo.');
+            input.value = '';
+          }
+        });
+      } else {
+        this.uploadArquivo(item, file);
+      }
     }
   }
 
-  private uploadArquivo(itemId: number, file: File): void {
-    this.isUploading[itemId] = true;
+  private uploadArquivo(item: any, file: File): void {
+    item.isUploading = true;
 
-    this.arquivoService.uploadArquivoDoItem(itemId, file).subscribe({
+    this.arquivoService.uploadArquivoDoItem(item.id, file).subscribe({
       next: (event) => {
         if (event.type === HttpEventType.UploadProgress) {
-          // Pode adicionar uma barra de progresso aqui se quiser
           const percentDone = Math.round(100 * (event.loaded / (event.total || 1)));
           console.log(`Upload ${percentDone}% completo`);
         } else if (event instanceof HttpResponse) {
           console.log('Upload concluído!', event.body);
-          // Recarrega os arquivos do item
-          this.arquivoService.getArquivosDoItem(itemId).subscribe({
+          // Recarrega o arquivo do item
+          this.arquivoService.getArquivosDoItem(item.id).subscribe({
             next: (arquivos) => {
-              this.itemFiles[itemId] = arquivos;
+              item.arquivo = arquivos.length > 0 ? arquivos[0] : null;
             }
           });
         }
@@ -125,12 +149,11 @@ export class TabelaItensEncaminhamento implements OnChanges{
       error: (err) => {
         console.error('Erro ao fazer upload:', err);
         alert('Erro ao enviar arquivo. Tente novamente.');
-        this.isUploading[itemId] = false;
+        item.isUploading = false;
       },
       complete: () => {
-        this.isUploading[itemId] = false;
-        // Limpa o input
-        const input = document.getElementById(`file-${itemId}`) as HTMLInputElement;
+        item.isUploading = false;
+        const input = document.getElementById(`file-${item.id}`) as HTMLInputElement;
         if (input) {
           input.value = '';
         }
@@ -142,14 +165,15 @@ export class TabelaItensEncaminhamento implements OnChanges{
     this.showFilesList[itemId] = !this.showFilesList[itemId];
   }
 
-  removerArquivo(arquivo: Arquivo, itemId: number): void {
-    if (!confirm(`Deseja remover o arquivo "${arquivo.file_name}"?`)) {
+
+  removerArquivo(item: any): void {
+    if (!confirm(`Deseja remover o arquivo "${item.arquivo.file_name}"?`)) {
       return;
     }
 
-    this.arquivoService.removerArquivo(arquivo.id).subscribe({
+    this.arquivoService.removerArquivoItem(item.arquivo.id).subscribe({
       next: () => {
-        this.itemFiles[itemId] = this.itemFiles[itemId].filter(a => a.id !== arquivo.id);
+        item.arquivo = null;
       },
       error: (err) => {
         console.error('Erro ao remover arquivo:', err);

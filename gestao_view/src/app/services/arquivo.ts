@@ -11,6 +11,7 @@ import { Arquivo } from '../interfaces/arquivo';
 export class ArquivoService {
 
   private apiUrlPedido = '/api/arquivos-pedido/';
+  private apiUrlItem = '/api/arquivos-item/';
   private apiUrlItens = '/api/itens/';
 
   constructor(private http: HttpClient) { }
@@ -52,8 +53,15 @@ export class ArquivoService {
   );
   }
 
-  removerArquivo(arquivoId: number): Observable<void> {
+  removerArquivoPedido(arquivoId: number): Observable<void> {
     const url = `${this.apiUrlPedido}${arquivoId}/`;
+    return this.http.delete<void>(url).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  removerArquivoItem(arquivoId: number): Observable<void> {
+    const url = `${this.apiUrlItem}${arquivoId}/`;
     return this.http.delete<void>(url).pipe(
       catchError(this.handleError)
     );

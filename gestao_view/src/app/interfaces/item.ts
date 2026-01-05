@@ -21,6 +21,10 @@ export interface Item {
   updated_at: string | Date;
   cliente_nome: string;
   pedido_status: string;
+  arquivo_url: string;
+  arquivo_nome: string;
+  arquivo_tipo: string;
+  arquivo_tamanho: number;
 }
 
 export interface ItemCadastro {

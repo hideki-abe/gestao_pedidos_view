@@ -317,6 +317,40 @@ $mobile-breakpoint: 768px;
   }
 }
 
+.file-attached {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .file-link {
+    color: #3A7CA5;
+    text-decoration: none;
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 150px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .btn-remove-file {
+    background: none;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0 4px;
+    line-height: 1;
+
+    &:hover {
+      color: #bd2130;
+    }
+  }
+}
+
 @media (max-width: 1024px) {
   .itens-container {
     padding: 10px;

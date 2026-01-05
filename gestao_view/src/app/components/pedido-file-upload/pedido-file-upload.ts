@@ -139,7 +139,7 @@ export class PedidoFileUpload {
       return;
     }
 
-    this.arquivoService.removerArquivo(arquivo.id).subscribe({
+    this.arquivoService.removerArquivoPedido(arquivo.id).subscribe({
       next: () => {
         this.arquivos = this.arquivos.filter(a => a.id !== arquivo.id);
       },
