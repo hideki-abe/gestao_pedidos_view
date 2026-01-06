@@ -104,13 +104,14 @@ export class TabelaItensEncaminhamento implements OnChanges{
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       
-      // Verifica se já existe um arquivo
       if (item.arquivo) {
+        /*
         const confirmar = confirm('Já existe um arquivo anexado. Deseja substituí-lo?');
         if (!confirmar) {
           input.value = '';
           return;
         }
+          */
         // Remove o arquivo existente antes de fazer upload do novo
         this.arquivoService.removerArquivoItem(item.arquivo.id).subscribe({
           next: () => {

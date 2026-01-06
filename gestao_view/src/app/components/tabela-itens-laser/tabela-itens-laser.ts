@@ -85,4 +85,10 @@ export class TabelaItensLaser{
       }
     });
   }
+
+  baixarArquivo(): void {
+    console.log('Baixando arquivo...');
+
+    
+  }
 }
