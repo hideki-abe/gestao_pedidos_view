@@ -31,6 +31,7 @@ export class TabelaItensEncaminhamento implements OnChanges{
   public erroAoCarregar: boolean = false;
 
   public itemFile: Arquivo | null = null;
+  public itemFiles: Arquivo[] = [];
   public isUploading: { [itemId: number]: boolean } = {};
   public showFilesList: { [itemId: number]: boolean } = {};
 
@@ -139,12 +140,16 @@ export class TabelaItensEncaminhamento implements OnChanges{
           console.log(`Upload ${percentDone}% completo`);
         } else if (event instanceof HttpResponse) {
           console.log('Upload concluído!', event.body);
-          // Recarrega o arquivo do item
-          this.arquivoService.getArquivosDoItem(item.id).subscribe({
-            next: (arquivos) => {
-              item.arquivo = arquivos.length > 0 ? arquivos[0] : null;
-            }
-          });
+          
+          // ✅ Atualiza as propriedades corretas do item
+          const arquivoUpload = event.body;
+          if (arquivoUpload) {
+            item.arquivo_url = arquivoUpload.file;
+            item.arquivo_nome = arquivoUpload.file_name;
+            item.arquivo_tipo = arquivoUpload.file_type;
+            item.arquivo_tamanho = arquivoUpload.tamanho;
+            item.arquivo = arquivoUpload; 
+          }
         }
       },
       error: (err) => {
@@ -174,7 +179,11 @@ export class TabelaItensEncaminhamento implements OnChanges{
 
     this.arquivoService.removerArquivoItem(item.arquivo.id).subscribe({
       next: () => {
-        item.arquivo = null;
+        item.arquivo_url = null;
+        item.arquivo_nome = null;
+        item.arquivo_tipo = null;
+        item.arquivo_tamanho = null;
+        item.arquivo = null; 
       },
       error: (err) => {
         console.error('Erro ao remover arquivo:', err);
