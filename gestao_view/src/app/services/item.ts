@@ -19,7 +19,7 @@ export class ItemService {
   constructor(private http: HttpClient) { }
 
   getItens(): Observable<Item[]> {
-    const params = new HttpParams().set('status', 'producao').set('page_size', '100');
+    const params = new HttpParams().set('page_size', '100');
     return this.http.get<PaginatedResponse<Item>>(this.apiUrlItens, { params }).pipe(
       expand(response => response.next 
         ? this.http.get<PaginatedResponse<Item>>(response.next) 
@@ -31,7 +31,7 @@ export class ItemService {
   }
 
   getItensPorStatus(status: string): Observable<Item[]> {
-    const params = new HttpParams().set('status', 'producao').set('page_size', '50');
+    const params = new HttpParams().set('page_size', '50');
     return this.http.get(this.apiUrlItens + '?status=' + status, {params, responseType: 'text' }).pipe(
       map(responseText => {
         try {
