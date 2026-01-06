@@ -150,6 +150,20 @@ $mobile-breakpoint: 768px;
   width: 150px; 
 }
 
+.no-file {
+  color: #868e96;
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+.file-link {
+  color: $primary-color;
+  text-decoration: none;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+}
 
 @media (max-width: 1024px) {
   .itens-container {

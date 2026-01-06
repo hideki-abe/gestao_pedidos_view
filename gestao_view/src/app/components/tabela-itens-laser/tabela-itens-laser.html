@@ -27,9 +27,13 @@
             <td data-label="Medida 2">{{ item.medida_2 }}</td>
             <td data-label="Furo">{{ item.furo }}</td>
             <td data-label="Arquivo">
-              <a [href]="item.arquivo_url" target="_blank" class="file-link">
-              {{ item.arquivo_nome }}
-              </a>
+              @if (item.arquivo_url && item.arquivo_nome) {
+                <a [href]="item.arquivo_url" target="_blank" class="file-link">
+                  {{ item.arquivo_nome }}
+                </a>
+              } @else {
+                <span class="no-file">Sem arquivo</span>
+              }
             </td>
             <td data-label="Fase Atual">
               <span class="tag fase">{{ item.fase_atual_nome|| 'Aguardando' }}</span>

@@ -104,29 +104,7 @@ export class TabelaItensEncaminhamento implements OnChanges{
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-      
-      if (item.arquivo) {
-        /*
-        const confirmar = confirm('Já existe um arquivo anexado. Deseja substituí-lo?');
-        if (!confirmar) {
-          input.value = '';
-          return;
-        }
-          */
-        // Remove o arquivo existente antes de fazer upload do novo
-        this.arquivoService.removerArquivoItem(item.arquivo.id).subscribe({
-          next: () => {
-            this.uploadArquivo(item, file);
-          },
-          error: (err) => {
-            console.error('Erro ao remover arquivo anterior:', err);
-            alert('Erro ao substituir arquivo.');
-            input.value = '';
-          }
-        });
-      } else {
-        this.uploadArquivo(item, file);
-      }
+      this.uploadArquivo(item, file);
     }
   }
 
@@ -141,14 +119,15 @@ export class TabelaItensEncaminhamento implements OnChanges{
         } else if (event instanceof HttpResponse) {
           console.log('Upload concluído!', event.body);
           
-          // ✅ Atualiza as propriedades corretas do item
+          // ✅ Atualiza TODAS as propriedades necessárias
           const arquivoUpload = event.body;
           if (arquivoUpload) {
             item.arquivo_url = arquivoUpload.file;
             item.arquivo_nome = arquivoUpload.file_name;
             item.arquivo_tipo = arquivoUpload.file_type;
             item.arquivo_tamanho = arquivoUpload.tamanho;
-            item.arquivo = arquivoUpload; 
+            item.arquivo = arquivoUpload; // Mantém consistência
+            console.log('Arquivo atualizado no item:', item.arquivo_nome);
           }
         }
       },
@@ -173,17 +152,29 @@ export class TabelaItensEncaminhamento implements OnChanges{
 
 
   removerArquivo(item: any): void {
-    if (!confirm(`Deseja remover o arquivo "${item.arquivo.file_name}"?`)) {
+    const nomeArquivo = item.arquivo_nome || item.arquivo?.file_name || 'este arquivo';
+    
+    if (!confirm(`Deseja remover o arquivo "${nomeArquivo}"?`)) {
       return;
     }
 
-    this.arquivoService.removerArquivoItem(item.arquivo.id).subscribe({
+    // Pega o ID do arquivo corretamente
+    const arquivoId = item.arquivo?.id;
+    
+    if (!arquivoId) {
+      console.error('ID do arquivo não encontrado');
+      return;
+    }
+
+    this.arquivoService.removerArquivoItem(arquivoId).subscribe({
       next: () => {
-        item.arquivo_url = null;
-        item.arquivo_nome = null;
-        item.arquivo_tipo = null;
-        item.arquivo_tamanho = null;
-        item.arquivo = null; 
+        // ✅ Limpa TODAS as propriedades relacionadas
+        item.arquivo_url = '';
+        item.arquivo_nome = '';
+        item.arquivo_tipo = '';
+        item.arquivo_tamanho = 0;
+        item.arquivo = null;
+        console.log('Arquivo removido com sucesso');
       },
       error: (err) => {
         console.error('Erro ao remover arquivo:', err);
