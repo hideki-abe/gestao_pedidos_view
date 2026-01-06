@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable, throwError, of } from 'rxjs';
+import { catchError, map, expand, reduce } from 'rxjs/operators';
+import { PaginatedResponse } from '../interfaces/api';
 import { Item } from '../interfaces/item';
 import { Tipo } from '../interfaces/tipo';
 import { CreateItemRequest } from '../interfaces/create-item-request';
+
 
 @Injectable({
   providedIn: 'root' 
@@ -17,24 +19,20 @@ export class ItemService {
   constructor(private http: HttpClient) { }
 
   getItens(): Observable<Item[]> {
-    const params = new HttpParams().set('status', 'producao').set('page_size', '50');
-    return this.http.get(this.apiUrlItens, { responseType: 'text' }).pipe(
-      map(responseText => {
-        try {
-          const responseObject = JSON.parse(responseText);
-          console.log('Resposta da API de itens:', responseObject);
-          return responseObject.results;
-        } catch (e) {
-          console.error('Falha ao converter a resposta para JSON.', e);
-          throw new Error('A resposta da API não é um JSON válido.');
-        }
-      }),
+    const params = new HttpParams().set('status', 'producao').set('page_size', '100');
+    return this.http.get<PaginatedResponse<Item>>(this.apiUrlItens, { params }).pipe(
+      expand(response => response.next 
+        ? this.http.get<PaginatedResponse<Item>>(response.next) 
+        : of()
+      ),
+      reduce((acc: Item[], response) => acc.concat(response.results), []),
       catchError(this.handleError)
     );
   }
 
   getItensPorStatus(status: string): Observable<Item[]> {
-    return this.http.get(this.apiUrlItens + '?status=' + status, { responseType: 'text' }).pipe(
+    const params = new HttpParams().set('status', 'producao').set('page_size', '50');
+    return this.http.get(this.apiUrlItens + '?status=' + status, {params, responseType: 'text' }).pipe(
       map(responseText => {
         try {
           const responseObject = JSON.parse(responseText);
