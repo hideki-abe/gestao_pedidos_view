@@ -17,6 +17,7 @@ export class ItemService {
   constructor(private http: HttpClient) { }
 
   getItens(): Observable<Item[]> {
+    const params = new HttpParams().set('status', 'producao').set('page_size', '50');
     return this.http.get(this.apiUrlItens, { responseType: 'text' }).pipe(
       map(responseText => {
         try {
