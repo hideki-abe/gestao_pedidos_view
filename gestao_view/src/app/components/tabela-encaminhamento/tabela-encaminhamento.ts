@@ -231,15 +231,50 @@ export class TabelaEncaminhamento implements OnInit {
     console.log("estou funcionando")
   }
 
-onPedidoDeletado(pedidoId: number): void {
-  console.log(`Pedido ${pedidoId} foi deletado`);
-  
-  this.toastr.success(`Pedido #${pedidoId} deletado com sucesso!`, 'Pedido Deletado');
-  
-  if (this.pedidoSelecionadoId === pedidoId) {
-    this.pedidoSelecionadoId = null;
+  onPedidoDeletado(pedidoId: number): void {
+    console.log(`Pedido ${pedidoId} foi deletado`);
+    
+    this.toastr.success(`Pedido #${pedidoId} deletado com sucesso!`, 'Pedido Deletado');
+    
+    if (this.pedidoSelecionadoId === pedidoId) {
+      this.pedidoSelecionadoId = null;
+    }
+    this.uploadPedidos();
   }
-  this.uploadPedidos();
+
+  formatarPrazoData(prazo: string | Date | null): string {
+    if (!prazo) return '';
+    
+    try {
+      const data = typeof prazo === 'string' ? new Date(prazo) : prazo;
+      
+      if (isNaN(data.getTime())) return '';
+      
+      const dia = String(data.getDate()).padStart(2, '0');
+      const mes = String(data.getMonth() + 1).padStart(2, '0');
+      const ano = data.getFullYear();
+      
+      return `${dia}/${mes}/${ano}`;
+    } catch {
+      return '';
+    }
 }
+
+  formatarPrazoHora(prazo: string | Date | null): string {
+    if (!prazo) return '';
+    
+    try {
+      const data = typeof prazo === 'string' ? new Date(prazo) : prazo;
+      
+      if (isNaN(data.getTime())) return '';
+      
+      const hora = String(data.getHours()).padStart(2, '0');
+      const minuto = String(data.getMinutes()).padStart(2, '0');
+      
+      return `${hora}:${minuto}`;
+    } catch {
+      return '';
+    }
+  }
 
 }

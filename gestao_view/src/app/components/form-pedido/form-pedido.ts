@@ -67,10 +67,10 @@ export class FormPedido implements OnChanges {
     if (changes['prioridadeInicial'] && changes['prioridadeInicial'].currentValue !== this.prioridade) {
       this.prioridade = this.prioridadeInicial || 'normal';
     }
-    if (changes['prazoHoraInicial'] && changes['prazoHoraInicial'].currentValue !== this.prazoHora) {
+    if (changes['prazoHoraInicial']) {
       this.prazoHora = this.prazoHoraInicial || '';
     }
-    if (changes['prazoDataInicial'] && changes['prazoDataInicial'].currentValue !== this.prazoData) {
+    if (changes['prazoDataInicial']) {
       this.prazoData = this.prazoDataInicial || '';
     }
   }

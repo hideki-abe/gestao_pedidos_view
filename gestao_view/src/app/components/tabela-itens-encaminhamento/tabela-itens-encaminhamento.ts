@@ -119,14 +119,13 @@ export class TabelaItensEncaminhamento implements OnChanges{
         } else if (event instanceof HttpResponse) {
           console.log('Upload concluído!', event.body);
           
-          // ✅ Atualiza TODAS as propriedades necessárias
           const arquivoUpload = event.body;
           if (arquivoUpload) {
             item.arquivo_url = arquivoUpload.file;
             item.arquivo_nome = arquivoUpload.file_name;
             item.arquivo_tipo = arquivoUpload.file_type;
             item.arquivo_tamanho = arquivoUpload.tamanho;
-            item.arquivo = arquivoUpload; // Mantém consistência
+            item.arquivo = arquivoUpload; 
             console.log('Arquivo atualizado no item:', item.arquivo_nome);
           }
         }
@@ -158,7 +157,6 @@ export class TabelaItensEncaminhamento implements OnChanges{
       return;
     }
 
-    // Pega o ID do arquivo corretamente
     const arquivoId = item.arquivo?.id;
     
     if (!arquivoId) {
@@ -168,7 +166,6 @@ export class TabelaItensEncaminhamento implements OnChanges{
 
     this.arquivoService.removerArquivoItem(arquivoId).subscribe({
       next: () => {
-        // ✅ Limpa TODAS as propriedades relacionadas
         item.arquivo_url = '';
         item.arquivo_nome = '';
         item.arquivo_tipo = '';
@@ -216,7 +213,6 @@ export class TabelaItensEncaminhamento implements OnChanges{
 
     for (const item of this.itens) {
 
-      //console.log(`Verificando tipo do item: |${item.tipo}|`);
       const regex = tipoParaRegexMap.get(item.tipo);
 
       if (regex) {
@@ -255,14 +251,11 @@ export class TabelaItensEncaminhamento implements OnChanges{
     const novoFluxo = item.fluxos_disponiveis?.find((f: Fluxo) => f.nome === novoFluxoNome);
 
     if (novoFluxo) {
-      // Guarda o estado antigo para reverter em caso de erro
+
       const estadoAntigo = { fluxo: item.fluxo_nome, fase_atual: item.fase_atual };
 
-      // 1. Primeira chamada: Atualiza o fluxo do item
       this.itemService.atualizarFluxoDoItem(item.id, novoFluxo.id).pipe(
-        // 2. Encadeia a próxima operação usando switchMap
         switchMap(itemComFluxoAtualizado => {
-          // Lógica para encontrar a fase inicial
           let faseInicial = this.fases.find(fase => fase.fluxo_nome === novoFluxo.nome && fase.ordem === 1);
 
           if(faseInicial?.nome == 'Projeto') {
@@ -271,27 +264,21 @@ export class TabelaItensEncaminhamento implements OnChanges{
           }
 
           if (faseInicial) {
-            // Se encontrou uma fase inicial, faz a SEGUNDA chamada para atualizar a fase
             console.log(`Fase inicial encontrada (ID: ${faseInicial.id}). Atualizando no banco de dados...`);
             return this.itemService.updateItem(item.id, { fase_atual: faseInicial.id });
           } else {
-            // Se não encontrou, apenas continua o fluxo com o item já atualizado (sem fase)
             console.warn(`Nenhuma fase inicial (ordem 1) encontrada para o fluxo ID: ${novoFluxo.id}`);
-            return of(itemComFluxoAtualizado); // 'of' cria um Observable a partir de um valor
+            return of(itemComFluxoAtualizado); 
           }
         })
       ).subscribe({
         next: (itemFinalAtualizado) => {
-          // 3. Sucesso! Ambas as requisições (ou apenas a primeira) foram concluídas.
           console.log('Processo de atualização concluído. Item final:', itemFinalAtualizado);
-          // Atualiza a UI com o estado final e correto do servidor.
           Object.assign(item, itemFinalAtualizado);
         },
         error: (err) => {
           console.error('Ocorreu um erro durante a atualização:', err);
-          // Reverte a UI para o estado anterior em caso de falha em qualquer uma das etapas.
           Object.assign(item, estadoAntigo);
-          // TODO: Adicionar um toast de erro para o usuário.
         }
       });
     } else {
