@@ -18,17 +18,27 @@ export class ItemService {
 
   constructor(private http: HttpClient) { }
 
-  getItens(): Observable<Item[]> {
-    const params = new HttpParams().set('page_size', '100');
-    return this.http.get<PaginatedResponse<Item>>(this.apiUrlItens, { params }).pipe(
-      expand(response => response.next 
-        ? this.http.get<PaginatedResponse<Item>>(response.next) 
-        : of()
-      ),
-      reduce((acc: Item[], response) => acc.concat(response.results), []),
-      catchError(this.handleError)
-    );
+getItens(): Observable<Item[]> {
+  const params = new HttpParams().set('page_size', '100');
+  return this.http.get<PaginatedResponse<Item>>(this.apiUrlItens, { params }).pipe(
+    expand(response => {
+      if (!response.next) return of();
+      const nextUrl = this.getRelativeUrl(response.next);
+      return this.http.get<PaginatedResponse<Item>>(nextUrl);
+    }),
+    reduce((acc: Item[], response) => acc.concat(response.results), []),
+    catchError(this.handleError)
+  );
+}
+
+private getRelativeUrl(url: string): string {
+  try {
+    const urlObj = new URL(url);
+    return urlObj.pathname + urlObj.search; 
+  } catch {
+    return url;
   }
+}
 
   getItensPorStatus(status: string): Observable<Item[]> {
     const params = new HttpParams().set('page_size', '50');
