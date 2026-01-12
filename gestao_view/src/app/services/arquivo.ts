@@ -39,35 +39,41 @@ export class ArquivoService {
     );
   }
 
-downloadArquivo(arquivoUrl: string, nomeArquivo: string): void {
-  this.http.get(arquivoUrl, {
-    responseType: 'blob',
-    observe: 'response'
-  }).subscribe({
-    next: (response) => {
-      // Cria um blob URL temporário
-      const blob = response.body;
-      if (!blob) return;
-      
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = nomeArquivo || 'arquivo';
-      
-      // Anexa, clica e remove o link
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      // Libera o objeto URL da memória
-      window.URL.revokeObjectURL(url);
-    },
-    error: (err) => {
-      console.error('Erro ao baixar arquivo:', err);
-      alert('Não foi possível baixar o arquivo. Tente novamente.');
+  downloadArquivo(arquivoUrl: string, nomeArquivo: string): void {
+    // Converte URL absoluta em relativa
+    let urlRelativa = arquivoUrl;
+    try {
+      const url = new URL(arquivoUrl);
+      urlRelativa = url.pathname; // Pega apenas /media/itens_arquivos/arquivo.dwg
+    } catch {
+      // Se já for relativa, mantém como está
     }
-  });
-}
+
+    this.http.get(urlRelativa, {
+      responseType: 'blob',
+      observe: 'response'
+    }).subscribe({
+      next: (response) => {
+        const blob = response.body;
+        if (!blob) return;
+        
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = nomeArquivo || 'arquivo';
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Erro ao baixar arquivo:', err);
+        alert('Não foi possível baixar o arquivo. Tente novamente.');
+      }
+    });
+  }
 
   uploadArquivoDoPedido(pedidoId: number, file: File): Observable<any> {
   const formData = new FormData();
