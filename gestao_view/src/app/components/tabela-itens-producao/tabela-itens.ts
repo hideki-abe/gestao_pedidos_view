@@ -7,6 +7,7 @@ import { FaseService } from '../../services/fase';
 import { FluxoService } from '../../services/fluxo';
 import { Fase } from '../../interfaces/fase';
 import { PedidoService } from '../../services/pedido';
+import { ArquivoService } from '../../services/arquivo';
 
 @Component({
   selector: 'app-tabela-itens',
@@ -27,7 +28,8 @@ export class TabelaItens implements OnChanges{
   constructor(
     private itemService: ItemService, 
     private faseService: FaseService,
-    private pedidoService: PedidoService
+    private pedidoService: PedidoService,
+    private arquivoService: ArquivoService
   ) {
   }
 
@@ -109,16 +111,27 @@ export class TabelaItens implements OnChanges{
   }
 
   private atualizarStatusPedidoConcluido(): void {
-  this.pedidoService.updateStatus(this.pedido.id, 'finalizado').subscribe({
-    next: (pedidoAtualizado) => {
-      this.pedido.status = pedidoAtualizado.status;
-      this.pedidoAtualizado.emit(pedidoAtualizado);
+    this.pedidoService.updateStatus(this.pedido.id, 'finalizado').subscribe({
+      next: (pedidoAtualizado) => {
+        this.pedido.status = pedidoAtualizado.status;
+        this.pedidoAtualizado.emit(pedidoAtualizado);
 
-    },
-    error: () => {
-      alert('Não foi possível atualizar o status do pedido.');
+      },
+      error: () => {
+        alert('Não foi possível atualizar o status do pedido.');
+      }
+    });
+  }
+
+  downloadArquivo(item: Item, event: Event): void {
+    event.preventDefault();
+    
+    if (!item.arquivo_url || !item.arquivo_nome) {
+      console.error('Informações do arquivo incompletas');
+      return;
     }
-  });
-}
+    
+    this.arquivoService.downloadArquivo(item.arquivo_url, item.arquivo_nome);
+  }
 
 }

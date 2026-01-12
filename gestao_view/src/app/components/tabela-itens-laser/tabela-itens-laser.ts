@@ -6,6 +6,7 @@ import { Pedido } from '../../interfaces/pedido';
 import { FaseService } from '../../services/fase';
 import { Fase } from '../../interfaces/fase';
 import { forkJoin } from 'rxjs';
+import { ArquivoService } from '../../services/arquivo';
 
 @Component({
   selector: 'app-tabela-itens-laser',
@@ -22,7 +23,8 @@ export class TabelaItensLaser{
 
   constructor(
     private itemService: ItemService,
-    private faseService: FaseService
+    private faseService: FaseService,
+    private arquivoService: ArquivoService
   ) {}
 
   ngOnInit(): void {
@@ -86,9 +88,14 @@ export class TabelaItensLaser{
     });
   }
 
-  baixarArquivo(): void {
-    console.log('Baixando arquivo...');
-
+  downloadArquivo(item: Item, event: Event): void {
+    event.preventDefault();
     
+    if (!item.arquivo_url || !item.arquivo_nome) {
+      console.error('Informações do arquivo incompletas');
+      return;
+    }
+    
+    this.arquivoService.downloadArquivo(item.arquivo_url, item.arquivo_nome);
   }
 }

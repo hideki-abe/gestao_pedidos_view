@@ -28,7 +28,10 @@
             <td data-label="Furo">{{ item.furo }}</td>
             <td data-label="Arquivo">
               @if (item.arquivo_url && item.arquivo_nome) {
-                <a [href]="item.arquivo_url" target="_blank" class="file-link">
+                <a (click)="downloadArquivo(item, $event)" 
+                class="file-link"
+                style="cursor: pointer;"
+                title="Clique para baixar">
                   {{ item.arquivo_nome }}
                 </a>
               } @else {

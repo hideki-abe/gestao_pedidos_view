@@ -35,8 +35,14 @@
           <td data-label="Medida 2">{{ item.medida_2 }}</td>
           <td data-label="Furo">{{ item.furo}}</td>
           <td data-label="Arquivo">
-            <a *ngIf="item.arquivo_url" [href]="item.arquivo_url" target="_blank">{{ item.arquivo_nome || 'Baixar' }}</a>
-            <span *ngIf="!item.arquivo_url">-</span>
+            <div class="file-attached">
+              <a (click)="downloadArquivo(item, $event)" 
+              class="file-link"
+              style="cursor: pointer;"
+              title="Clique para baixar">
+                {{ item.arquivo_nome }}
+              </a>
+            </div>
           </td>
         </tr>
         

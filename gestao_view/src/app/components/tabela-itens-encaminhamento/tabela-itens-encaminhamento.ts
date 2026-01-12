@@ -92,15 +92,15 @@ export class TabelaItensEncaminhamento implements OnChanges{
   }
 
   downloadArquivo(item: Item, event: Event): void {
-  event.preventDefault();
-  
-  if (!item.arquivo_url || !item.arquivo_nome) {
-    console.error('Informações do arquivo incompletas');
-    return;
+    event.preventDefault();
+    
+    if (!item.arquivo_url || !item.arquivo_nome) {
+      console.error('Informações do arquivo incompletas');
+      return;
+    }
+    
+    this.arquivoService.downloadArquivo(item.arquivo_url, item.arquivo_nome);
   }
-  
-  this.arquivoService.downloadArquivo(item.arquivo_url, item.arquivo_nome);
-}
   
   triggerFileInput(itemId: number): void {
     const fileInput = document.getElementById(`file-${itemId}`) as HTMLInputElement;
