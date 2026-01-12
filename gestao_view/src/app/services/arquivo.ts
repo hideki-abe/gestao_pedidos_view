@@ -33,12 +33,41 @@ export class ArquivoService {
 
   getArquivosDoPedido(pedidoId: number): Observable<Arquivo[]> {
     const url = `${this.apiUrlPedido}?pedido_id=${pedidoId}`;
-    //console.log('URL chamada:', url);
     return this.http.get<any>(url).pipe(
-      map(response => response.results), // Corrige para pegar só os arquivos
+      map(response => response.results),
       catchError(this.handleError)
     );
   }
+
+downloadArquivo(arquivoUrl: string, nomeArquivo: string): void {
+  this.http.get(arquivoUrl, {
+    responseType: 'blob',
+    observe: 'response'
+  }).subscribe({
+    next: (response) => {
+      // Cria um blob URL temporário
+      const blob = response.body;
+      if (!blob) return;
+      
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = nomeArquivo || 'arquivo';
+      
+      // Anexa, clica e remove o link
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Libera o objeto URL da memória
+      window.URL.revokeObjectURL(url);
+    },
+    error: (err) => {
+      console.error('Erro ao baixar arquivo:', err);
+      alert('Não foi possível baixar o arquivo. Tente novamente.');
+    }
+  });
+}
 
   uploadArquivoDoPedido(pedidoId: number, file: File): Observable<any> {
   const formData = new FormData();
@@ -85,10 +114,8 @@ export class ArquivoService {
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Ocorreu um erro desconhecido!';
     if (error.error instanceof ErrorEvent) {
-      // Erro do lado do cliente
       errorMessage = `Erro: ${error.error.message}`;
     } else {
-      // O backend retornou um código de erro
       errorMessage = `Código do erro: ${error.status}, ` + `mensagem: ${error.message}`;
     }
     console.error(errorMessage);

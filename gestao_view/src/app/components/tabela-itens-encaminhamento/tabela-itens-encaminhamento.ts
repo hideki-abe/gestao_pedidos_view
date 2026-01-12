@@ -79,7 +79,6 @@ export class TabelaItensEncaminhamento implements OnChanges{
     this.itens.forEach(item => {
       this.arquivoService.getArquivosDoItem(item.id).subscribe({
         next: (arquivos) => {
-          // Adiciona o arquivo diretamente no item
           (item as any).arquivo = arquivos.length > 0 ? arquivos[0] : null;
           (item as any).isUploading = false;
         },
@@ -92,6 +91,16 @@ export class TabelaItensEncaminhamento implements OnChanges{
     });
   }
 
+  downloadArquivo(item: Item, event: Event): void {
+  event.preventDefault();
+  
+  if (!item.arquivo_url || !item.arquivo_nome) {
+    console.error('Informações do arquivo incompletas');
+    return;
+  }
+  
+  this.arquivoService.downloadArquivo(item.arquivo_url, item.arquivo_nome);
+}
   
   triggerFileInput(itemId: number): void {
     const fileInput = document.getElementById(`file-${itemId}`) as HTMLInputElement;

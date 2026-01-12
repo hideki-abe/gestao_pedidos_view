@@ -63,18 +63,20 @@
                   [id]="'file-' + item.id" 
                   (change)="onFileSelected($event, item)"
                   hidden>
-                
-                @if (item.arquivo_url) {
-                  <div class="file-attached">
-                    <a [href]="item.arquivo_url" target="_blank" class="file-link">
-                      {{ item.arquivo_nome }}
-                    </a>
-                    <button 
-                      class="btn-remove-file" 
-                      (click)="removerArquivo(item)"
-                      title="Remover">×</button>
-                  </div>
-                } @else {
+                  @if (item.arquivo_url) {
+                    <div class="file-attached">
+                      <a (click)="downloadArquivo(item, $event)" 
+                        class="file-link"
+                        style="cursor: pointer;"
+                        title="Clique para baixar">
+                        {{ item.arquivo_nome }}
+                      </a>
+                      <button 
+                        class="btn-remove-file" 
+                        (click)="removerArquivo(item)"
+                        title="Remover">×</button>
+                    </div>
+                  } @else {
                   <button 
                     class="btn-upload" 
                     (click)="triggerFileInput(item.id)">
