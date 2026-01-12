@@ -121,6 +121,19 @@ $mobile-breakpoint: 768px;
   background-color: #e9ecef;
 }
 
+.file-link {
+  color: #3A7CA5;
+  text-decoration: none;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 150px;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .fase-corte { background-color: #a7c7e7; }
 .fase-montagem { background-color: #b2dfdb; }
 .fase-finalizado { background-color: #c1e1c1; }
