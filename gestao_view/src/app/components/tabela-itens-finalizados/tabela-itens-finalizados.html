@@ -23,6 +23,7 @@
           <th>Medida 1</th>
           <th>Medida 2</th>
           <th>Furo</th>
+          <th>Arquivo</th>
         </tr>
       </thead>
       <tbody>
@@ -33,10 +34,14 @@
           <td data-label="Medida 1">{{ item.medida_1 }}</td>
           <td data-label="Medida 2">{{ item.medida_2 }}</td>
           <td data-label="Furo">{{ item.furo}}</td>
+          <td data-label="Arquivo">
+            <a *ngIf="item.arquivo_url" [href]="item.arquivo_url" target="_blank">{{ item.arquivo_nome || 'Baixar' }}</a>
+            <span *ngIf="!item.arquivo_url">-</span>
+          </td>
         </tr>
         
         <tr *ngIf="!itens || itens.length === 0">
-          <td colspan="6" class="no-items-message">Nenhum item encontrado.</td>
+          <td colspan="9" class="no-items-message">Nenhum item encontrado.</td>
         </tr>
       </tbody>
     </table>

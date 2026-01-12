@@ -4,7 +4,7 @@ import { PedidoService } from '../../services/pedido';
 import { Pedido } from '../../interfaces/pedido';
 import { ClienteService } from '../../services/cliente';
 import { VendedorService } from '../../services/vendedor';
-import { TabelaItens } from "../tabela-itens/tabela-itens";
+import { TabelaItens } from "../tabela-itens-producao/tabela-itens";
 import { ToastrService } from 'ngx-toastr';
 import { Pagination } from '../pagination/pagination';
 import { PainelPedidoProducao } from "../painel-pedido-producao/painel-pedido-producao";
