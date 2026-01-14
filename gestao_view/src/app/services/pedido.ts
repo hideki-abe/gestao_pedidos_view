@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Pedido } from '../interfaces/pedido';
 import { PrioridadePedido } from '../components/form-pedido/form-pedido';
 import { PaginatedResponse } from '../interfaces/api';

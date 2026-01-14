@@ -62,7 +62,7 @@ export class TabelaFinalizados implements OnInit {
         this.pedidos = response.results;
         this.totalDePedidos = response.count;
         this.erroAoCarregar = false;  
-        console.log(this.pedidos);
+        console.log("função da tabela-finalizados.ts: ", this.pedidos);
         //this.relacionaCliente();
         //this.relacionaVendedor();
         this.formataStatusEPrioridade();
