@@ -9,7 +9,7 @@ app-navbar {
   position: fixed;
   top: 0;
   left: 0;
-  width: 240px;
+  width: 210px;
   height: 100vh;
   z-index: 100;
 }
@@ -17,15 +17,15 @@ app-navbar {
 app-topbar {
   position: fixed;
   top: 0;
-  left: 240px;
+  left: 210px;
   right: 0;
   height: 64px;
   z-index: 101;
 }
 
-.cadastro-page {
+.laser-page {
   min-height: 100vh;
-  padding-left: 260px;
+  padding-left: 210px;
   padding-top: 20px;
   padding-right: 10px;
   padding-bottom: 10px;
