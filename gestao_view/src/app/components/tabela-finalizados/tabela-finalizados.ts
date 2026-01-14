@@ -61,10 +61,10 @@ export class TabelaFinalizados implements OnInit {
       next: (response) => {
         this.pedidos = response.results;
         this.totalDePedidos = response.count;
-        this.erroAoCarregar = false;
+        this.erroAoCarregar = false;  
 
-        this.relacionaCliente();
-        this.relacionaVendedor();
+        //this.relacionaCliente();
+        //this.relacionaVendedor();
         this.formataStatusEPrioridade();
       },
       error: (err) => {

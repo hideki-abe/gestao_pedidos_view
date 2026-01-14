@@ -5,6 +5,8 @@ export interface Pedido {
   id: number;
   cliente: number; // Mantém o ID original
   clienteObj?: Cliente; // Nova propriedade para o objeto completo do cliente
+  cliente_nome?: string;
+  vendedor_nome?: string;
   usuario_responsavel: number;
   usuario_responsavelObj?: Vendedor;
   numero_do_pedido: string;
