@@ -69,7 +69,7 @@ export class TabelaEncaminhamento implements OnInit {
     });
   }
 
-  private uploadPedidos(): void {
+  public uploadPedidos(): void {
     this.erroAoCarregar = false;
     this.pedidoService.getPedidosPaginated(
       this.paginaAtual, 
