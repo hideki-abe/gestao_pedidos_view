@@ -359,8 +359,8 @@ private salvarItensDoPedido(pedidoId: number): void {
       nome: item.nome || `Item ${index + 1}`,
       descricao: item.nome || '',
       quantidade: Number(item.quantidade),
-      medida_1: String(item.medida_1 || ''),
-      medida_2: String(item.medida_2 || ''),
+      medida_1: item.medida_1 ? parseFloat(item.medida_1.toString()).toFixed(3) : '',
+      medida_2: item.medida_2 ? parseFloat(item.medida_2.toString()).toFixed(3) : '',
       furo: String(item.furo || '')
     };
 
@@ -451,6 +451,12 @@ private salvarItensDoPedido(pedidoId: number): void {
     }
   });
 }
+
+  formatarMedida(medida: string | number): string {
+    if (!medida || medida === '') return '';
+    const num = typeof medida === 'string' ? parseFloat(medida) : medida;
+    return isNaN(num) ? '' : num.toFixed(3);
+  }
 
   private limparFormulario(): void {
     this.clienteNome = '';

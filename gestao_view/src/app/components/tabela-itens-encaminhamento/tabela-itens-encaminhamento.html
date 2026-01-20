@@ -33,8 +33,8 @@
             <td data-label="Nome">{{ item.nome }}</td>
             <td data-label="Tipo">{{ item.tipo }}</td>
             <td data-label="Quantidade">{{ item.quantidade }}</td>
-            <td data-label="Medida 1">{{ item.medida_1 }}</td>
-            <td data-label="Medida 2">{{ item.medida_2 }}</td>
+            <td data-label="Medida 1">{{ item.medida_1 | number:'1.3-3' }}</td>
+            <td data-label="Medida 2">{{ item.medida_2 | number:'1.3-3' }}</td>
             <td data-label="Furo">{{ item.furo}}</td>
             <td data-label="Fluxo">
               <div class="select-wrapper">
