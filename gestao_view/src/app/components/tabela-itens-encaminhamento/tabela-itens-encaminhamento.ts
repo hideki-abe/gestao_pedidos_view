@@ -218,6 +218,7 @@ export class TabelaItensEncaminhamento implements OnChanges{
       ['LDE', /^LDE.*/],
       ['LCO', /^LCO.*/],
       ['LS', /^LS.*/],
+      ['RT', /^RT.*/],
     ]);
 
     for (const item of this.itens) {
