@@ -37,17 +37,17 @@ export class UsuarioService {
     return this.http.post<UsuarioResponse>(this.apiUrl, payload);
   }
 
-getUsuarios(): Observable<UsuarioResponse[]> {
-  return this.http.get<{ results: UsuarioResponse[] }>(this.apiUrlGet)
-    .pipe(map(res => res.results));
-}
+  getUsuarios(): Observable<UsuarioResponse[]> {
+    return this.http.get<{ results: UsuarioResponse[] }>(this.apiUrlGet)
+      .pipe(map(res => res.results));
+  }
 
   editarUsuario(id: number, payload: Partial<UsuarioPayload>): Observable<UsuarioResponse> {
     return this.http.patch<UsuarioResponse>(this.apiUrl + id + '/', payload);
   }
 
   deletarUsuario(id: number): Observable<void> {
-    const url = `${this.apiUrl}${id}/`;
+    const url = `${this.apiUrlGet}${id}/delete`;
     return this.http.delete<void>(url);
   }
 
