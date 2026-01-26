@@ -7,18 +7,8 @@
 
   <ul class="nav-links">
     <li>
-      <a routerLink="/laser" routerLinkActive="active-link">
-        <span class="link-text">Laser</span>
-      </a>
-    </li>
-    <li>
       <a routerLink="/producao" routerLinkActive="active-link">
         <span class="link-text">Produção</span>
-      </a>
-    </li>
-    <li>
-      <a routerLink="/encaminhamento" routerLinkActive="active-link">
-        <span class="link-text">Encaminhamento</span>
       </a>
     </li>
     <li>
@@ -26,12 +16,26 @@
         <span class="link-text">Finalizados</span>
       </a>
     </li>
-    @if (isAdminOrGerente) {
+    <li>
+      <a routerLink="/laser" routerLinkActive="active-link">
+        <span class="link-text">Laser</span>
+      </a>
+    </li>
+    @if (isAdmin || isGerente || isVendedor) {
+      <li>
+        <a routerLink="/encaminhamento" routerLinkActive="active-link">
+          <span class="link-text">Encaminhamento</span>
+        </a>
+      </li>
+    }
+    @if (isAdmin || isGerente) {
       <li>
         <a routerLink="/cadastro" routerLinkActive="active-link">
           <span class="link-text">Cadastrar Pedido</span>
         </a>
       </li>
+    }
+    @if(isAdmin) {
       <li>
         <a routerLink="/usuarios" routerLinkActive="active-link">
           <span class="link-text">Gerenciar Usuários</span>
@@ -43,7 +47,6 @@
         </a>
       </li>
     }
-    
   </ul>
 
   <div class="sidebar-footer">

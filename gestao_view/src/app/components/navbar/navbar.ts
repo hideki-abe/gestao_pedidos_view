@@ -25,8 +25,16 @@ export class Navbar {
 
   }
 
-  get isAdminOrGerente(): boolean {
-    return this.usuario.funcao.toLowerCase() === 'admin' || this.usuario.funcao.toLowerCase() === 'gerente';
+  get isAdmin(): boolean {
+    return this.usuario.funcao.toLowerCase() === 'admin';
+  }
+
+  get isVendedor(): boolean {
+    return this.usuario.funcao.toLowerCase() === 'vendedor';
+  }
+
+  get isGerente(): boolean {
+    return this.usuario.funcao.toLowerCase() === 'gerente';
   }
 
   logout() {
