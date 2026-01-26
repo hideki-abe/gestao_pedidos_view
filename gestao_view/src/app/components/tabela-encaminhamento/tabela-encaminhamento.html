@@ -17,8 +17,8 @@
     <tbody>
       <ng-container *ngFor="let pedido of pedidos">
         <tr>
-          <td data-label="Cliente"> {{ pedido.clienteObj?.nome }}</td>
-          <td data-label="Vendedor"> {{ pedido.usuario_responsavelObj?.nome }}</td>
+          <td data-label="Cliente"> {{ pedido.cliente_nome }}</td>
+          <td data-label="Vendedor"> {{ pedido.vendedor_nome }}</td>
           <td data-label="Nº Pedido">{{ pedido.numero_do_pedido }}</td>
           <td data-label="Status">
             <span class="tag" [class]="'status-' + pedido.status">{{ pedido.statusDisplay }}</span>

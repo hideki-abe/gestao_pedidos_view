@@ -8,9 +8,7 @@
           <th>Material</th>
           <th>Tipo</th>
           <th>Qtd</th>
-          <th>Med 1</th>
-          <th>Med 2</th>
-          <th>Furo</th>
+          <th>Med</th>
           <th>Arquivo</th>
           <th>Fase Atual</th>
           <th></th>
@@ -23,9 +21,7 @@
             <td data-label="Material">{{ item.nome }}</td>
             <td data-label="Tipo">{{ item.tipo }}</td>
             <td data-label="Quantidade">{{ item.quantidade }}</td>
-            <td data-label="Medida 1">{{ item.medida_1 | number:'1.3-3' }}</td>
-            <td data-label="Medida 2">{{ item.medida_2 | number:'1.3-3' }}</td>
-            <td data-label="Furo">{{ item.furo }}</td>
+            <td data-label="Medidas">{{ item.medida_1 | number:'1.3-3' }} x {{ item.medida_2 | number:'1.3-3' }}</td>
             <td data-label="Arquivo">
               @if (item.arquivo_url && item.arquivo_nome) {
                 <a (click)="downloadArquivo(item, $event)" 
@@ -48,7 +44,7 @@
         }
         @if (itens.length === 0) { 
             <tr>
-                <td colspan="8" class="no-items-message">Nenhum item encontrado.</td>
+                <td colspan="7" class="no-items-message">Nenhum item encontrado.</td>
             </tr>
         }
       </tbody>

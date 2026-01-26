@@ -63,8 +63,8 @@ export class TabelaProducao implements OnInit {
         this.totalDePedidos = response.count;
         this.erroAoCarregar = false;
 
-        this.relacionaCliente();
-        this.relacionaVendedor();
+        //this.relacionaCliente();
+        //this.relacionaVendedor();
         this.formataStatusEPrioridade();
       },
       error: (err) => {
