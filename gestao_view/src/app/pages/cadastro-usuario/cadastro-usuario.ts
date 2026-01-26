@@ -89,7 +89,6 @@ export class CadastroUsuario {
         is_staff: this.usuario.is_staff,
       };
 
-      // Só inclua password se ela estiver preenchida
       if (this.usuario.password) {
         payload.password = this.usuario.password;
       }
@@ -124,8 +123,7 @@ export class CadastroUsuario {
     }
   }
 
-  
-  editar(usuario: Usuario) {
+  editar(usuario:Usuario) {
     this.editando = usuario;
     this.usuario = {
       nome: usuario.nome,
@@ -136,8 +134,29 @@ export class CadastroUsuario {
       is_active: usuario.is_active,
       is_staff: usuario.is_staff
     };
-    this.success = '';
-    this.error = '';
+  }
+
+  
+  editarUsuario(usuario: Usuario) {
+    this.editando = usuario;
+    const payload: Partial<UsuarioPayload> = {
+      nome: usuario.nome,
+      email: usuario.email,
+      password: '',
+      funcao: usuario.funcao,
+      nivel_acesso: usuario.nivel_acesso,
+      is_active: usuario.is_active,
+      is_staff: usuario.is_staff
+    };
+
+    this.usuarioService.editarUsuario(usuario.id, payload).subscribe({
+      next: () => {
+        this.success = 'Usuário atualizado com sucesso!';
+        this.carregarUsuarios();
+      },
+      error: () => this.error = 'Erro ao atualizar usuário.'
+    });
+      
   }
 
   cancelarEdicao() {

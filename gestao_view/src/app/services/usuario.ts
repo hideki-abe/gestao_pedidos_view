@@ -43,7 +43,7 @@ export class UsuarioService {
   }
 
   editarUsuario(id: number, payload: Partial<UsuarioPayload>): Observable<UsuarioResponse> {
-    return this.http.patch<UsuarioResponse>(this.apiUrl + id + '/', payload);
+    return this.http.patch<UsuarioResponse>(this.apiUrlGet + id + '/edit', payload);
   }
 
   deletarUsuario(id: number): Observable<void> {

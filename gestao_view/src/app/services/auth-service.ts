@@ -34,7 +34,6 @@ export class AuthService {
       tap(response => {
         localStorage.setItem('auth_token', response.token);
         
-        // Armazena apenas dados para exibição na UI
         const userStorage: UserStorage = {
           id: response.user.id,
           nome: response.user.nome,
@@ -55,24 +54,18 @@ export class AuthService {
       
       const parsed = JSON.parse(user);
       
-      // Validação básica apenas
       if (!parsed.id || !parsed.nome || !parsed.funcao) {
         this.clearUserData();
         return null;
       }
       
-      // NOTA: A função pode ter sido alterada no localStorage
-      // mas o backend SEMPRE validará a permissão real
       return parsed as UserStorage;
     } catch (error) {
-      console.error('Erro ao recuperar dados do usuário:', error);
       this.clearUserData();
       return null;
     }
   }
 
-  // Método apenas para exibição na UI
-  // O backend é quem realmente valida as permissões
   hasRole(roles: string[]): boolean {
     const user = this.getUser();
     if (!user) return false;
@@ -122,15 +115,11 @@ export class RoleGuard implements CanActivate {
       return false;
     }
 
-    // Verifica apenas para UI
-    // O backend fará a validação real
     const hasRole = requiredRoles.some(role => 
       user.funcao.toLowerCase() === role.toLowerCase()
     );
 
     if (!hasRole) {
-      console.warn(`Acesso negado (UI). Função necessária: ${requiredRoles.join(', ')}. Função no localStorage: ${user.funcao}`);
-      console.warn('⚠️ IMPORTANTE: Mesmo que você altere o localStorage, o backend bloqueará requisições não autorizadas.');
       this.router.navigate(['/producao']);
       return false;
     }

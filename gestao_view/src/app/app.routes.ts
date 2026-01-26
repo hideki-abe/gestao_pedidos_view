@@ -10,7 +10,7 @@ import { RoleGuard} from './services/auth-service';
 import { Laser } from './pages/laser/laser';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/producao', pathMatch: 'full', canActivate: [RoleGuard], data: { roles: ['admin', 'gerente', 'vendedor', 'producao', 'qualidade', 'financeiro'] } },
+  { path: '', redirectTo: '/producao', pathMatch: 'full' },
   { path: 'producao', component: ProducaoComponent, canActivate: [RoleGuard], data: { roles: ['admin', 'gerente', 'vendedor', 'producao', 'qualidade', 'financeiro'] } },
   { path: 'encaminhamento', component: EncaminhamentoComponent, canActivate: [RoleGuard], data: { roles: ['admin', 'gerente', 'vendedor'] } },
   { path: 'finalizados', component: FinalizadosComponent, canActivate: [RoleGuard], data: { roles: ['admin', 'gerente', 'vendedor', 'producao', 'qualidade', 'financeiro'] } },
@@ -18,5 +18,6 @@ export const routes: Routes = [
   { path: 'usuarios', component: CadastroUsuario, canActivate: [RoleGuard], data: { roles: ['admin', 'gerente'] } },
   { path: 'login', component: Login },
   { path: 'cadastro-fluxo', component: CadastroFluxo, canActivate: [RoleGuard], data: { roles: ['admin'] } },
-  { path: 'laser', component: Laser, canActivate: [RoleGuard], data: { roles: ['admin', 'gerente', 'vendedor', 'producao', 'qualidade', 'financeiro'] } }
+  { path: 'laser', component: Laser, canActivate: [RoleGuard], data: { roles: ['admin', 'gerente', 'vendedor', 'producao', 'qualidade', 'financeiro'] } },
+  { path: '**', redirectTo: '/login' }
 ];
