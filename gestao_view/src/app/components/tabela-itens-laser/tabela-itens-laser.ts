@@ -7,6 +7,7 @@ import { FaseService } from '../../services/fase';
 import { Fase } from '../../interfaces/fase';
 import { forkJoin } from 'rxjs';
 import { ArquivoService } from '../../services/arquivo';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-tabela-itens-laser',
@@ -36,15 +37,11 @@ export class TabelaItensLaser{
     this.itens = [];
 
     forkJoin({
-      itens: this.itemService.getItens(),
+      itens: this.itemService.getItensFiltrados('Laser', 'producao'),
       fases: this.faseService.getFases()
     }).subscribe({
       next: (resultados) => {
-        for(let item of resultados.itens) {
-          if (item.fase_atual_nome == 'Laser' && item.pedido_status == 'producao') {
-            this.itens.push(item);
-          } 
-        }
+        this.itens = resultados.itens || [];
         this.fases = resultados.fases || [];
         console.log('Itens carregados:', this.itens);
       },

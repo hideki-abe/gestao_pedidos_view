@@ -31,6 +31,17 @@ getItens(): Observable<Item[]> {
   );
 }
 
+getItensFiltrados(faseNome: string, pedidoStatus: string): Observable<Item[]> {
+  const params = new HttpParams()
+    .set('fase_atual', faseNome)
+    .set('pedido_status', pedidoStatus)
+    .set('page_size', '100');
+  return this.http.get<PaginatedResponse<Item>>(this.apiUrlItens, { params }).pipe(
+    map(response => response.results),
+    catchError(this.handleError)
+  );
+}
+
 private getRelativeUrl(url: string): string {
   try {
     const urlObj = new URL(url);
