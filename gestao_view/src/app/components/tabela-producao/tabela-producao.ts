@@ -195,6 +195,7 @@ export class TabelaProducao implements OnInit {
       this.formataStatusEPrioridade(); 
       alert('Pedido concluído! Mudando status do pedido!');
     }
+    this.uploadPedidos();
   }
 
 }
