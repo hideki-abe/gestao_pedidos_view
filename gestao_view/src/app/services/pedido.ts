@@ -133,7 +133,6 @@ export class PedidoService {
       params = params.append('prioridade', filtros.prioridade);
     }
 
-    // A chamada GET agora é limpa e padronizada
     return this.http.get<PaginatedResponse<Pedido>>(this.apiUrl, { params }).pipe(
       catchError(this.handleError)
     );
@@ -162,7 +161,7 @@ export class PedidoService {
   }
 
   updateStatus(pedidoId: number, status: string): Observable<Pedido> {
-    const url = `${this.apiUrl}${pedidoId}/`;
+    const url = `${this.apiUrl}${pedidoId}/alterar_status/`;
     const body = { status: status };
 
     return this.http.patch<Pedido>(url, body).pipe(
