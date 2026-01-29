@@ -147,7 +147,7 @@ export class PedidoService {
 
   updateObservacao(pedidoId: number, observacao: string): Observable<Pedido> {
     const url = `${this.apiUrl}${pedidoId}/`;
-    const body = { observacao: observacao };
+    const body = { observacoes: observacao };
     return this.http.patch<Pedido>(url, body).pipe(
       catchError(this.handleError)
     );

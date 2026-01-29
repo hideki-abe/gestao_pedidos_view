@@ -53,20 +53,23 @@
       placeholder="Digite uma observação sobre o pedido..."
       rows="4">
     </textarea>
+    <div class="btn-obs" (click)="salvarObservacao()"> Salvar Observação </div>
   </div>
   
   <button 
     type="submit"
-    class="form-button">
+    class="form-button enviar">
     Enviar para Produção
   </button>
   @if (isAdminOrGerente) {
+    <!---
     <button 
       type="submit"
       class="form-button edit"
       (click)="editarPedido()">
       Editar Pedido
     </button>
+    -->
     <button 
       type="button"
       class="form-button delete"

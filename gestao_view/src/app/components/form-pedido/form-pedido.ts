@@ -151,6 +151,22 @@ export class FormPedido implements OnChanges {
     });
   }
 
+  salvarObservacao(): void {
+    if (!this.pedidoId) {
+      alert('Erro: ID do pedido não encontrado');
+      return;
+    }
+    console.log("Salvando observação:", this.texto, "para o pedido ID:", this.pedidoId);
+    this.pedidoService.updateObservacao(this.pedidoId, this.texto).subscribe({
+      next: (response) => {
+        alert('Observação salva com sucesso!');
+      },
+      error: (error) => {
+        alert('Erro ao salvar observação: ' + (error.message || 'Erro desconhecido'));
+      }
+    });
+  }
+
   formatarData(event: any): void {
     const input = event.target;
     let valor = input.value;

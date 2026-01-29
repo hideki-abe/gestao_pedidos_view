@@ -83,8 +83,6 @@ export class TabelaEncaminhamento implements OnInit {
         this.totalDePedidos = response.count;
         this.erroAoCarregar = false;
 
-        //this.relacionaCliente();
-        //this.relacionaVendedor();
         this.formataStatusEPrioridade();
       },
       error: (err) => {
@@ -104,32 +102,6 @@ export class TabelaEncaminhamento implements OnInit {
     this.paginaAtual = 1;
     console.log("Filtros atualizados:", this.filtrosAtuais);
     this.uploadPedidos(); 
-  }
-
-  private relacionaCliente(): void {
-    this.pedidos.forEach(pedido => {
-      this.clienteService.getClienteById(pedido.cliente).subscribe({
-        next: (cliente) => {
-          pedido.clienteObj = cliente;
-        },
-        error: (err) => {
-          console.error(`Falha ao carregar cliente para o pedido ${pedido.id}:`, err);
-        }
-      });
-    });
-  }
-
-  private relacionaVendedor(): void {
-    this.pedidos.forEach(pedido => {
-      this.vendedorService.getVendedorById(pedido.usuario_responsavel).subscribe({
-        next: (vendedor) => {
-          pedido.usuario_responsavelObj = vendedor;
-        },
-        error: (err) => {
-          console.error(`Falha ao carregar vendedor para o pedido ${pedido.id}:`, err);
-        }
-      });
-    });
   }
 
   private formataStatusEPrioridade(): void {
@@ -197,16 +169,12 @@ export class TabelaEncaminhamento implements OnInit {
       prazo: pedido.prazo,
     };
 
-    console.log(`Iniciando processo de salvamento para o pedido ${pedido.id}:`, dadosParaSalvar);
-
     this.pedidoService.updatePedido(pedido.id, dadosParaSalvar).pipe(
       switchMap((pedidoAtualizadoComDados) => {
-        console.log('Dados do pedido atualizados, agora atualizando o status...');
         return this.pedidoService.updateStatus(pedido.id, 'producao');
       })
     ).subscribe({
       next: (pedidoAtualizadoComStatus) => {
-        console.log('Processo concluído! Pedido final:', pedidoAtualizadoComStatus);
         this.toastr.success(`Pedido ${pedido.numero_do_pedido} enviado para produção!`, 'Sucesso!');
         this.pedidoSelecionadoId = null;
         this.pedidos = this.pedidos.filter(p => p.id !== pedido.id);

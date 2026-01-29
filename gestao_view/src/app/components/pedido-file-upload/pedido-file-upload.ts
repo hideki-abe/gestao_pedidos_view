@@ -4,8 +4,8 @@ import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
 import { Subscription, finalize, forkJoin, map, tap } from 'rxjs';
 import { ArquivoService } from '../../services/arquivo';
 import { Arquivo } from '../../interfaces/arquivo';
+import { PedidoService } from '../../services/pedido';
 
-// Interface para gerenciar o estado de cada arquivo
 export interface FileUploadState {
   file: File;
   status: 'pending' | 'uploading' | 'success' | 'error';
@@ -15,7 +15,7 @@ export interface FileUploadState {
 
 @Component({
   selector: 'app-pedido-file-upload',
-  standalone: true, // Melhor prática para componentes reutilizáveis
+  standalone: true, 
   imports: [CommonModule],
   templateUrl: './pedido-file-upload.html',
   styleUrl: './pedido-file-upload.scss'
@@ -33,12 +33,14 @@ export class PedidoFileUpload {
   arquivoEmEdicaoId: number | null = null;
   nomeEditado: string = '';
 
-  constructor(private http: HttpClient, private arquivoService: ArquivoService) {
+  constructor(
+    private http: HttpClient, 
+    private arquivoService: ArquivoService, 
+    private pedidoService: PedidoService) {
   }
 
   ngOnInit() {
     this.getArquivos();
-    console.log(this.arquivos);
   }
 
   onDragOver(event: DragEvent): void {
@@ -71,7 +73,6 @@ export class PedidoFileUpload {
   }
 
   addFiles(newFiles: File[]): void {
-    console.log("addFiles");
     newFiles.forEach(file => {
       if (!this.files.some(f => f.file.name === file.name)) {
         this.files.push({ file, status: 'pending', progress: 0 });
@@ -114,6 +115,8 @@ export class PedidoFileUpload {
         } else if (event instanceof HttpResponse) {
           fileState.status = 'success';
           fileState.progress = 100;
+          this.pedidoService.updateStatus(this.pedidoId, 'encaminhar').subscribe();
+          console.log('Upload concluído:', event.body);
         }
       }),
       map(() => true),
@@ -127,7 +130,7 @@ export class PedidoFileUpload {
 
   baixarArquivo(arquivo: any) {
     const link = document.createElement('a');
-    link.href = arquivo.file; // Adicione esta linha
+    link.href = arquivo.file; 
     link.download = arquivo.file_name || 'arquivo';
     document.body.appendChild(link);
     link.click();
@@ -144,7 +147,7 @@ export class PedidoFileUpload {
         this.arquivos = this.arquivos.filter(a => a.id !== arquivo.id);
       },
       error: (err) => {
-        console.error('Erro ao remover arquivo:', err);
+        //console.error('Erro ao remover arquivo:', err);
       }
     });
   }
@@ -153,10 +156,9 @@ export class PedidoFileUpload {
       this.arquivoService.getArquivosDoPedido(this.pedidoId).subscribe({
         next: (arquivos) => {
           this.arquivos = arquivos;
-          console.log('Arquivos carregados:', this.arquivos);
         },
         error: (err) => {
-          console.error('Erro ao buscar arquivos:', err);
+          //console.error('Erro ao buscar arquivos:', err);
         }
       });
   }
@@ -164,5 +166,7 @@ export class PedidoFileUpload {
   cancelar() {
     this.files = [];
   }
+
+
 
 }
