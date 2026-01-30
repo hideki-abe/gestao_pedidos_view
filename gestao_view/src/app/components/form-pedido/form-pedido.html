@@ -16,7 +16,7 @@
     <h4 class="prazo-title">Prazo de Entrega</h4>
     <div class="prazo-inputs-group">
       <p-datepicker
-        #prazo 
+        #picker 
         [(ngModel)]="prazo" 
         name="prazo"
         dateFormat="dd/mm/yy" 
@@ -29,10 +29,10 @@
         <ng-template pTemplate="footer">
         <div style="padding: 0.5rem; border-top: 1px solid #ddd; text-align: right;">
             <p-button 
-                label="Confirmar (OK)" 
+                label="Confirmar" 
                 icon="pi pi-check" 
                 size="small"
-                (onClick)="onConfirmar(prazo)">
+                (onClick)="onConfirmar(picker)">
                 
             </p-button>
         </div>

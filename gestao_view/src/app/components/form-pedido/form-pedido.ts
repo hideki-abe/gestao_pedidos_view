@@ -44,7 +44,7 @@ export class FormPedido implements OnChanges {
   prioridade: PrioridadePedido = 'normal';
   prazoData: string = '';
   prazoHora: string = '';
-  prazo: Date = new Date();
+  prazo: Date | null = null;
 
   usuario = {
     nome: '',
@@ -74,7 +74,7 @@ export class FormPedido implements OnChanges {
     if (changes['prazoInicial'] && changes['prazoInicial'].currentValue !== this.prazo) {
       const valor = changes['prazoInicial'].currentValue;
       this.prazo = valor ? (typeof valor === 'string' ? new Date(valor) : valor) : null;
-      //console.log('prazoInicial:', valor, 'prazo convertido:', this.prazo);
+      console.log('prazoInicial:', valor, 'prazo convertido:', this.prazo);
     }
 
   }
@@ -131,15 +131,16 @@ export class FormPedido implements OnChanges {
   }
 
   onConfirmar(picker: any): void {
-    this.salvaData(this.prazo);
+    this.salvaData(picker.value);
     picker.overlayVisible = false;
   }
 
-  salvaData(event: Date): void {
+  salvaData(event: Date | null): void {
     this.prazo = event;
+      console.log('Data selecionada:', event);
     this.pedidoService.updatePrazo(this.pedidoId!, this.prazo ? this.prazo.toISOString() : null).subscribe({
       next: (response) => {
-        //alert('Prazo atualizado com sucesso!');
+        alert('Prazo atualizado com sucesso!');
       },
       error: (error) => {
         alert('Erro ao atualizar prazo: ' + (error.message || 'Erro desconhecido'));
