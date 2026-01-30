@@ -1,15 +1,31 @@
 # Etapa 1: Build do Angular
 FROM node:20-alpine AS build
+
 WORKDIR /app
+
+# Copia apenas os arquivos de dependência primeiro (para cachear o npm install)
 COPY package*.json ./
-RUN npm install -g @angular/cli
-RUN npm install
+
+# Instala as dependências do projeto (incluindo o CLI local)
+# --legacy-peer-deps ajuda se tiver conflito de versões (comum no Angular 20 + PrimeNG)
+RUN npm install --legacy-peer-deps
+
+# Copia todo o resto do projeto
 COPY . .
-RUN ng build --configuration production
+
+# CORREÇÃO AQUI: Usa o script do package.json em vez do comando global
+# O "--" serve para passar argumentos para o comando interno do npm
+RUN npm run build -- --configuration=production
 
 # Etapa 2: Servir com Nginx
 FROM nginx:alpine
+
+# Confirme se o caminho dist/gestao_view/browser está correto. 
+# No Angular 17+ é ".../browser", nos antigos é só ".../gestao_view"
 COPY --from=build /app/dist/gestao_view/browser/ /usr/share/nginx/html
+
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 EXPOSE 80
+
 CMD ["nginx", "-g", "daemon off;"]
