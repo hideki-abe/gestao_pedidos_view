@@ -62,8 +62,7 @@ export class TabelaItensEncaminhamento implements OnChanges{
         this.itens = resultados.itens || [];
         this.fluxos = resultados.fluxos || [];
         this.fases = resultados.fases || [];
-
-        console.log(this.itens);
+        
         this.relacionaFluxoComTipo();
         this.atribuirFluxoAutomatico();
         this.carregarArquivosDosItens();

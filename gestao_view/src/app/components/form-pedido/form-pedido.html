@@ -1,12 +1,11 @@
 <form (ngSubmit)="salvarForm()">
   <div class="prioridade-container">
     <h4 class="prioridade-title">Prioridade</h4>
-    <!-- Substituindo os botões por um select normal -->
     <select 
       class="prioridade-select" 
       name="prioridade"
       [(ngModel)]="prioridade"
-      (ngModelChange)="onPrioridadeMudou()">
+      (ngModelChange)="onPrioridadeMudou($event)">
       <option value="baixa">Baixa</option>
       <option value="normal">Normal</option>
       <option value="alta">Alta</option>
@@ -16,31 +15,30 @@
   <div class="prazo-container">
     <h4 class="prazo-title">Prazo de Entrega</h4>
     <div class="prazo-inputs-group">
-      <div class="prazo-input-wrapper">
-        <label class="prazo-label">Data:</label>
-        <input 
-          type="text"
-          class="prazo-input prazo-date"
-          name="prazoData"
-          [(ngModel)]="prazoData"
-          (ngModelChange)="onPrazoMudou()"
-          (input)="formatarData($event)"
-          placeholder="dd/mm/aaaa"
-          maxlength="10">
-      </div>
+      <p-datepicker
+        #prazo 
+        [(ngModel)]="prazo" 
+        name="prazo"
+        dateFormat="dd/mm/yy" 
+        [showIcon]="true" 
+        [showTime]="true"
+        [readonlyInput]="true"
+        [hideOnDateTimeSelect]="false"
+        placeholder="Seleciona data e hora">
 
-      <div class="prazo-input-wrapper">
-        <label class="prazo-label">Hora:</label>
-        <input 
-          type="text"
-          class="prazo-input prazo-time"
-          name="prazoHora"
-          [(ngModel)]="prazoHora"
-          (ngModelChange)="onPrazoMudou()"
-          (input)="formatarHora($event)"
-          placeholder="hh:mm"
-          maxlength="5">
-      </div>
+        <ng-template pTemplate="footer">
+        <div style="padding: 0.5rem; border-top: 1px solid #ddd; text-align: right;">
+            <p-button 
+                label="Confirmar (OK)" 
+                icon="pi pi-check" 
+                size="small"
+                (onClick)="onConfirmar(prazo)">
+                
+            </p-button>
+        </div>
+      </ng-template>
+
+      </p-datepicker>
     </div>
   </div>
   <div class="observacoes-container">

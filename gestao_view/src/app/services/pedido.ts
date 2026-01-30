@@ -89,7 +89,6 @@ export class PedidoService {
       .set('page', page.toString())
       .set('page_size', pageSize.toString());
 
-    // Adiciona status, se houver
     if (status) {
       if (Array.isArray(status)) {
         status.forEach(s => { params = params.append('status', s); });
@@ -169,22 +168,28 @@ export class PedidoService {
     );
   }
 
+  updatePrazo(pedidoId: number, prazo: string | null): Observable<Pedido> {
+    const url = `${this.apiUrl}${pedidoId}/alterar_prazo/`;
+    const body = { prazo: prazo };
+
+    return this.http.patch<Pedido>(url, body).pipe(
+      catchError(this.handleError)
+    );
+  }
   createPedido(pedido: CreatePedidoRequest): Observable<Pedido> {
     return this.http.post<Pedido>(this.apiUrl, pedido).pipe(
       catchError(this.handleError)
     );
   }
 
-
- /*
-  updatePedido(id: number, pedido: Partial<Pedido>): Observable<Pedido> {
-    const url = `${this.apiUrl}/${id}`;
-    return this.http.put<Pedido>(url, pedido).pipe(
+  updatePrioridade(pedidoId: number, prioridade: PrioridadePedido): Observable<Pedido> {
+    const url = `${this.apiUrl}${pedidoId}/alterar_prioridade/`;
+    const body = { prioridade: prioridade };
+    return this.http.patch<Pedido>(url, body).pipe(
       catchError(this.handleError)
     );
   }
 
-  */
   deletePedido(id: number): Observable<void> {
     const url = `${this.apiUrl}${id}/`;
     return this.http.delete<void>(url).pipe(
@@ -195,10 +200,8 @@ export class PedidoService {
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Ocorreu um erro desconhecido!';
     if (error.error instanceof ErrorEvent) {
-      // Erro do lado do cliente
       errorMessage = `Erro: ${error.error.message}`;
     } else {
-      // O backend retornou um código de erro
       errorMessage = `Código do erro: ${error.status}, ` + `mensagem: ${error.message}`;
     }
     console.error(errorMessage);

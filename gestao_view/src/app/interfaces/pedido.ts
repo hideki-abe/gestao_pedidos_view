@@ -17,7 +17,7 @@ export interface Pedido {
   prioridade: 'baixa' | 'normal' | 'alta' | 'urgente';
   prioridadeDisplay?: string;
   observacoes: string;
-  prazo: string | Date | null;
+  prazo: Date | null;
   data_inicial: string | Date;
   created_at: string | Date;
   updated_at: string | Date;

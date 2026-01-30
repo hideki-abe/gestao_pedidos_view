@@ -40,6 +40,7 @@
                   [prioridadeInicial]="pedido.prioridade"
                   [prazoDataInicial]="formatarPrazoData(pedido.prazo)"
                   [prazoHoraInicial]="formatarPrazoHora(pedido.prazo)"
+                  [prazoInicial]="pedido.prazo"
                   (formChange)="onFormChange($event, pedido)"
                   (pedidoDeletado)="onPedidoDeletado($event)"
                   (formSubmit)="salvarForm(pedido)"

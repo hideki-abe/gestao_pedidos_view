@@ -60,7 +60,7 @@ export class TabelaEncaminhamento implements OnInit {
     this.vendedorService.getVendedores().subscribe({
       next: (vendedores) => {
         this.listaDeVendedores = vendedores;
-        console.log('Vendedores carregados:', this.listaDeVendedores);
+        //console.log('Vendedores carregados:', this.listaDeVendedores);
       },
       error: (err) => {
         console.error('Falha ao carregar a lista de vendedores:', err);
@@ -100,7 +100,7 @@ export class TabelaEncaminhamento implements OnInit {
   onFiltroChange(filtros: FiltrosPedido): void {
     this.filtrosAtuais = filtros;
     this.paginaAtual = 1;
-    console.log("Filtros atualizados:", this.filtrosAtuais);
+    //console.log("Filtros atualizados:", this.filtrosAtuais);
     this.uploadPedidos(); 
   }
 
@@ -147,18 +147,11 @@ export class TabelaEncaminhamento implements OnInit {
     });
   }
 
-  onFormChange(dados: { texto: string; prioridade: PrioridadePedido; prazo: Date | null }, pedido: Pedido): void {
+  onFormChange(dados: { texto: string; prioridade: PrioridadePedido; prazo: string | Date | null; }, pedido: Pedido): void {
     pedido.observacoes = dados.texto;
     pedido.prioridade = dados.prioridade;
-    console.log('Dados do formulário atualizados:', pedido);
-
-    if (dados.prazo) {
-
-    pedido.prazo = dados.prazo.toISOString(); 
-
-    } else {
-      pedido.prazo = null;
-    }
+    pedido.prazo = dados.prazo ? new Date(dados.prazo) : new Date();
+    //console.log('Dados do formulário atualizados:', pedido);
 
   }
 
@@ -168,7 +161,7 @@ export class TabelaEncaminhamento implements OnInit {
       prioridade: pedido.prioridade,
       prazo: pedido.prazo,
     };
-
+    console.log('pedido: ', pedido);
     this.pedidoService.updatePedido(pedido.id, dadosParaSalvar).pipe(
       switchMap((pedidoAtualizadoComDados) => {
         return this.pedidoService.updateStatus(pedido.id, 'producao');
@@ -196,11 +189,10 @@ export class TabelaEncaminhamento implements OnInit {
 
   public toggle() {
     this.isShown.update((isShown) => !isShown);
-    console.log("estou funcionando")
   }
 
   onPedidoDeletado(pedidoId: number): void {
-    console.log(`Pedido ${pedidoId} foi deletado`);
+    //console.log(`Pedido ${pedidoId} foi deletado`);
     
     this.toastr.success(`Pedido #${pedidoId} deletado com sucesso!`, 'Pedido Deletado');
     
