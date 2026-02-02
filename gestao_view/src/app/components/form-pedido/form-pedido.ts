@@ -73,10 +73,24 @@ export class FormPedido implements OnChanges {
     }
     if (changes['prazoInicial'] && changes['prazoInicial'].currentValue !== this.prazo) {
       const valor = changes['prazoInicial'].currentValue;
-      this.prazo = valor ? (typeof valor === 'string' ? new Date(valor) : valor) : null;
+      this.prazo = valor ? (typeof valor === 'string' ? this.arredondarParaQuinzeMinutos(new Date(valor)) : this.arredondarParaQuinzeMinutos(valor)) : null;
       console.log('prazoInicial:', valor, 'prazo convertido:', this.prazo);
     }
 
+  }
+
+  private arredondarParaQuinzeMinutos(data: Date | null): Date | null {
+    if (!data) return null;
+    
+    const dataArredondada = new Date(data);
+    const minutos = dataArredondada.getMinutes();
+    const minutosArredondados = Math.round(minutos / 15) * 15;
+    
+    dataArredondada.setMinutes(minutosArredondados);
+    dataArredondada.setSeconds(0);
+    dataArredondada.setMilliseconds(0);
+    
+    return dataArredondada;
   }
 
   onPrioridadeMudou(event: PrioridadePedido): void {

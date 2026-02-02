@@ -64,9 +64,13 @@ export class TabelaItensLaser{
       return;
     }
 
-    const proximaFase = this.fases.find(
-      f => f.fluxo_nome === faseAtual.fluxo_nome && f.ordem === faseAtual.ordem + 1
-    );
+    let proximaFase: Fase | undefined;
+    if(confirm('Deseja avançar para a próxima fase?')) {
+      proximaFase = this.fases.find(
+        f => f.fluxo_nome === faseAtual.fluxo_nome && f.ordem === faseAtual.ordem + 1
+      );
+      this.carregarDadosIniciais();
+    }
 
     if (!proximaFase) {
       console.warn('Não há próxima fase disponível para este item');

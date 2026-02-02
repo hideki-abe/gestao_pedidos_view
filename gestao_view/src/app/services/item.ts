@@ -33,7 +33,7 @@ getItens(): Observable<Item[]> {
 
 getItensFiltrados(faseNome: string, pedidoStatus: string): Observable<Item[]> {
   const params = new HttpParams()
-    .set('fase_atual', faseNome)
+    .set('fase', faseNome)
     .set('pedido_status', pedidoStatus)
     .set('page_size', '100');
   return this.http.get<PaginatedResponse<Item>>(this.apiUrlItens, { params }).pipe(
