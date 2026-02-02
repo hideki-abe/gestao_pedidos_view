@@ -17,6 +17,8 @@
     <div class="prazo-inputs-group">
       <p-datepicker
         #picker 
+        (ngModelChange)="onPrazoChange($event)"
+        (onShow)="onDatepickerShow()"
         [(ngModel)]="prazo" 
         name="prazo"
         dateFormat="dd/mm/yy" 
@@ -55,12 +57,12 @@
     <div class="btn-obs" (click)="salvarObservacao()"> Salvar Observação </div>
   </div>
   
+  @if (isAdminOrGerente) {
   <button 
     type="submit"
     class="form-button enviar">
     Enviar para Produção
   </button>
-  @if (isAdminOrGerente) {
     <!---
     <button 
       type="submit"

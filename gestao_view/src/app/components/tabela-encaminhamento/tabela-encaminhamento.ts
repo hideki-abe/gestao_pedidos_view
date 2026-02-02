@@ -147,14 +147,6 @@ export class TabelaEncaminhamento implements OnInit {
     });
   }
 
-  onFormChange(dados: { texto: string; prioridade: PrioridadePedido; prazo: string | Date | null; }, pedido: Pedido): void {
-    pedido.observacoes = dados.texto;
-    pedido.prioridade = dados.prioridade;
-    pedido.prazo = dados.prazo ? new Date(dados.prazo) : new Date();
-    //console.log('Dados do formulário atualizados:', pedido);
-
-  }
-
   salvarForm(pedido: Pedido): void {
     const dadosParaSalvar = {
       observacoes: pedido.observacoes,

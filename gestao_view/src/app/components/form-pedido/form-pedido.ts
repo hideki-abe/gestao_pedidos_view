@@ -26,12 +26,6 @@ export class FormPedido implements OnChanges {
   @Input() pedidoId?: number;
   @Input() prazoInicial: Date | string | null = null;  
 
-  @Output() formChange = new EventEmitter<{ 
-    texto: string; 
-    prioridade: PrioridadePedido; 
-    prazo: string | Date | null; 
-  }>();
-
   @Output() formSubmit = new EventEmitter<{ 
     texto: string; 
     prioridade: PrioridadePedido; 
@@ -82,19 +76,39 @@ export class FormPedido implements OnChanges {
   private arredondarParaQuinzeMinutos(data: Date | null): Date | null {
     if (!data) return null;
     
-    const dataArredondada = new Date(data);
-    const minutos = dataArredondada.getMinutes();
-    const minutosArredondados = Math.round(minutos / 15) * 15;
+    let dataArredondada = new Date(data);
+    let minutos = dataArredondada.getMinutes();
     
-    dataArredondada.setMinutes(minutosArredondados);
+    if (minutos <= 15) {
+      dataArredondada.setHours(dataArredondada.getHours());
+      dataArredondada.setMinutes(15);
+    } else if (minutos <= 30) {
+      dataArredondada.setHours(dataArredondada.getHours());
+      dataArredondada.setMinutes(30);
+    } else if ( minutos == 45) {
+      dataArredondada.setHours(dataArredondada.getHours());
+      dataArredondada.setMinutes(45);
+    } else if (minutos > 45) {
+      dataArredondada.setHours(dataArredondada.getHours() + 1);
+      dataArredondada.setMinutes(0);
+    }
     dataArredondada.setSeconds(0);
     dataArredondada.setMilliseconds(0);
     
     return dataArredondada;
   }
 
+  onPrazoChange(event: Date | null): void {
+    this.prazo = this.arredondarParaQuinzeMinutos(event);
+  }
+
+  onDatepickerShow(): void {
+    if (!this.prazo) {
+      this.prazo = this.arredondarParaQuinzeMinutos(new Date());
+    }
+  }
+
   onPrioridadeMudou(event: PrioridadePedido): void {
-    this.emitFormChanges();
     this.pedidoService.updatePrioridade(this.pedidoId!, event).subscribe({
       next: (response) => {
         //alert('Prioridade atualizada com sucesso!');
@@ -107,16 +121,6 @@ export class FormPedido implements OnChanges {
 
   onTextoMudou(novoTexto: string): void {
     this.texto = novoTexto;
-    this.emitFormChanges();
-  }
-
-  private emitFormChanges(): void {
-
-    this.formChange.emit({ 
-      texto: this.texto, 
-      prioridade: this.prioridade,
-      prazo: this.prazo
-      });
   }
 
   salvarForm(): void {
@@ -150,20 +154,16 @@ export class FormPedido implements OnChanges {
   }
 
   salvaData(event: Date | null): void {
-    this.prazo = event;
+    this.prazo = this.arredondarParaQuinzeMinutos(event);  // ✅ Adicionar arredondamento
       console.log('Data selecionada:', event);
     this.pedidoService.updatePrazo(this.pedidoId!, this.prazo ? this.prazo.toISOString() : null).subscribe({
       next: (response) => {
-        alert('Prazo atualizado com sucesso!');
+        //alert('Prazo atualizado com sucesso!');
       },
       error: (error) => {
         alert('Erro ao atualizar prazo: ' + (error.message || 'Erro desconhecido'));
       }
     });
-  }
-
-  hideOverlay(): void {
-    // Lógica para esconder o overlay, se necessário
   }
 
   deletarPedido(): void {
