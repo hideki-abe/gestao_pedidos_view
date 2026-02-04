@@ -31,6 +31,21 @@ export class ArquivoService {
     );
   }
 
+  getArquivosDeItens(itemIds: number[]): Observable<Arquivo[]> {
+
+    if(!itemIds || itemIds.length === 0) {
+      return throwError(() => new Error('A lista de IDs de itens está vazia.'));
+    }
+
+    const idsString = itemIds.join(',');
+    const url = `${this.apiUrlItem}?item_ids=${idsString}`;
+
+    return this.http.get<any>(url).pipe(
+      map(response => response.results || response || []),
+      catchError(this.handleError)
+    );
+  }
+
   getArquivosDoPedido(pedidoId: number): Observable<Arquivo[]> {
     const url = `${this.apiUrlPedido}?pedido_id=${pedidoId}`;
     return this.http.get<any>(url).pipe(
@@ -40,15 +55,23 @@ export class ArquivoService {
   }
 
   downloadArquivo(arquivoUrl: string, nomeArquivo: string): void {
-    // Converte URL absoluta em relativa
-    let urlRelativa = arquivoUrl;
+    let urlFinal = arquivoUrl;
+    
     try {
       const url = new URL(arquivoUrl);
-      urlRelativa = url.pathname; 
+      urlFinal = arquivoUrl;
     } catch {
+
+      if (arquivoUrl.startsWith('/media')) {
+        urlFinal = `http://localhost:8000${arquivoUrl}`;
+      } else {
+        urlFinal = arquivoUrl;
+      }
     }
 
-    this.http.get(urlRelativa, {
+    console.log('Baixando de:', urlFinal);
+
+    this.http.get(urlFinal, {
       responseType: 'blob',
       observe: 'response'
     }).subscribe({
@@ -59,9 +82,11 @@ export class ArquivoService {
           alert('Arquivo não encontrado no servidor.');
           return;
         }
+        
         if (blob.size < 1000 && (blob.type.includes('text') || blob.type.includes('json') || blob.type.includes('html'))) {
           blob.text().then(text => {
-            alert('Erro do servidor: ' + text.substring(0, 200));
+            console.error('Resposta HTML recebida:', text);
+            alert('Erro: recebeu HTML em vez do arquivo. URL: ' + urlFinal);
           });
           return;
         }
@@ -78,6 +103,7 @@ export class ArquivoService {
         window.URL.revokeObjectURL(url);
       },
       error: (err) => {
+        console.error('Erro ao baixar arquivo:', err);
         alert('Não foi possível baixar o arquivo. Verifique o console para mais detalhes.');
       }
     });
