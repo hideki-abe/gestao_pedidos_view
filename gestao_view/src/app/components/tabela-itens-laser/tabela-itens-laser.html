@@ -4,20 +4,52 @@
     <table class="itens-table">
       <thead>
         <tr>
-          <th>Cliente</th>   
+          <th>Cliente</th>
+          <th>
+            @if(this.show) {
+              <div class="options">
+                <p-select 
+                [options]="operadores" 
+                (ngModelChange)="atualizarOperador($event)"
+                [ngModel]="selectedOperador" 
+                [checkmark]="true" 
+                appendTo="body" 
+                optionLabel="nome" 
+                [showClear]="true" 
+                placeholder="" 
+                class="w-full md:w-56" />
+              </div>
+            } @else {
+              Operador
+            }
+          </th>   
           <th>Material</th>
           <th>Tipo</th>
           <th>Qtd</th>
           <th>Med</th>
           <th>Arquivo</th>
           <th>Fase Atual</th>
-          <th></th>
+          <th>
+            <div class="options">
+              <p-select 
+              (ngModelChange)="showCheckbox($event)" 
+              [options]="options" 
+              [ngModel]="selectedOption" 
+              [checkmark]="true" 
+              appendTo="body" 
+              optionLabel="option" 
+              [showClear]="true" 
+              placeholder="" 
+              class="w-full md:w-56" />
+            </div>
+          </th>
         </tr>
       </thead>
       <tbody>
         @for (item of itens; track item.id) {
           <tr>
             <td data-label="Cliente">{{ item.cliente_nome }}</td>
+            <td data-label="Usuário Responsável">{{ item.operador_nome || 'Sem operador' }}</td>
             <td data-label="Material">{{ item.nome }}</td>
             <td data-label="Tipo">{{ item.tipo }}</td>
             <td data-label="Quantidade">{{ item.quantidade }}</td>
@@ -37,8 +69,18 @@
             <td data-label="Fase Atual">
               <span class="tag fase">{{ item.fase_atual_nome|| 'Aguardando' }}</span>
             </td>
+            <!--
             <td data-label="Ações">
-              <button class="action-button" (click)="avancarFase(item)">Concluir Fase</button>
+              <button class="action-button" (click)="avancarFase(item)">Concluir</button>
+            </td>
+            -->
+            <td data-label="checkbox">
+              <p-checkbox 
+                [binary]="true" 
+                size="large"
+                [ngModel]="isItemSelected(item)"
+                (ngModelChange)="onItemSelect(item, $event)">
+              </p-checkbox>
             </td>
           </tr>
         }

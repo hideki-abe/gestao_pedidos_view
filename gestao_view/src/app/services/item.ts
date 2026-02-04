@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { Observable, throwError, of } from 'rxjs';
+import { Observable, throwError, of, forkJoin } from 'rxjs';
 import { catchError, map, expand, reduce } from 'rxjs/operators';
 import { PaginatedResponse } from '../interfaces/api';
 import { Item } from '../interfaces/item';
@@ -99,11 +99,52 @@ private getRelativeUrl(url: string): string {
     );
   }
 
+  atualizarOperadorDoItem(itemId: number, usuarioMaquinaId: number): Observable<Item> {
+    console.log("Chamando função para atualizar o operador", itemId, usuarioMaquinaId);
+    const url = `${this.apiUrlItens}${itemId}/`;
+    const payload = { usuario_maquina: usuarioMaquinaId };
+    return this.http.patch<Item>(url, payload).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   updateItem(itemId: number, dados: Partial<Item>): Observable<Item> {
     const url = `${this.apiUrlItens}${itemId}/`;
     return this.http.patch<Item>(url, dados);
   }
 
+  updateItens(itemIds: number[], dados: Partial<Item>): Observable<Item[]> {
+    const requests = itemIds.map(id => this.updateItem(id, dados));
+    return requests.length > 0 ? forkJoin(requests) : of([]);
+  }
+
+  updateItensMultiplos(itemIds: number[], dados: any): Observable<any> {
+    const url = `${this.apiUrlItens}atualizar-multiplos/`;
+    
+    // Validação: verifica se há itens para atualizar
+    if (!itemIds || itemIds.length === 0) {
+      alert('Nenhum item selecionado para atualização');
+      return throwError(() => new Error('Nenhum item selecionado para atualização'));
+    }
+    
+    // Validação: verifica se há dados para atualizar
+    if (!dados || Object.keys(dados).length === 0) {
+      alert('Nenhum dado fornecido para atualização');
+      return throwError(() => new Error('Nenhum dado fornecido para atualização'));
+    }
+    
+    const itens = itemIds.map(id => ({
+      id: id,
+      ...dados
+    }));
+    
+    const payload = { itens: itens };
+    console.log('Payload para atualização múltipla:', payload);
+    
+    return this.http.patch(url, payload).pipe(
+      catchError(this.handleError)
+    );
+  }
   
   createItem(item: CreateItemRequest): Observable<any> {
     console.log('=== CREATEITEM ===');
@@ -111,7 +152,7 @@ private getRelativeUrl(url: string): string {
     console.log('pedido_id presente?', !!item.pedido_id);
     
     // ✅ VALIDAÇÃO: Se não tem pedido_id, é erro
-    if (!item.pedido_id) {
+    if (!item.pedido_id ) {
       console.error('❌ ERRO: pedido_id não fornecido no item:', item);
       return throwError(() => new Error('pedido_id é obrigatório para criar item'));
     }

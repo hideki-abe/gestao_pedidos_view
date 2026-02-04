@@ -1,5 +1,6 @@
 import { Cliente } from './cliente';
 import { Vendedor } from './vendedor';
+import { Operador } from './operador';
 
 export interface Pedido {
   id: number;
@@ -9,6 +10,7 @@ export interface Pedido {
   vendedor_nome?: string;
   usuario_responsavel: number;
   usuario_responsavelObj?: Vendedor;
+  operadorObj?: Operador;
   numero_do_pedido: string;
   contato: string;
   status: 'encaminhar' | 'producao' | 'finalizado' | 'cancelado' | 'aguardando';

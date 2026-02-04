@@ -1,5 +1,6 @@
 import { Fase } from "./fase";
 import { Fluxo } from  "./fluxo";
+import { Operador } from "./operador";
 export interface Item {
   id: number;
   nome: string;
@@ -20,6 +21,9 @@ export interface Item {
   created_at: string | Date;
   updated_at: string | Date;
   cliente_nome: string;
+  operador: Operador;
+  operador_nome: string;
+  operador_id: number | null;
   pedido_status: string;
   arquivo_url: string;
   arquivo_nome: string;
