@@ -159,12 +159,16 @@ export class TabelaItensLaser{
   }
 
   isItemSelected(item: Item): boolean {
-    // Implementar lógica para verificar se o item está selecionado
-    return false;
+    return this.selectedItens.get(item) || false;
   }
 
   onItemSelect(item: Item, $event: boolean): void {
-    this.selectedItens.set(item, $event);
+    if ($event) {
+      this.selectedItens.set(item, true);
+    } else {
+      this.selectedItens.delete(item); // Remove do Map quando desmarcado
+    }
+    console.log('Itens selecionados:', Array.from(this.selectedItens.keys()).map(i => i.id));
   }
 
   showCheckbox(event?: any): void {
