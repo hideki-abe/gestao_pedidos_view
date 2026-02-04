@@ -6,7 +6,7 @@ import { Pedido } from '../../interfaces/pedido';
 import { Operador } from '../../interfaces/operador';
 import { FaseService } from '../../services/fase';
 import { Fase } from '../../interfaces/fase';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { ArquivoService } from '../../services/arquivo';
 import { HttpParams } from '@angular/common/http';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -14,6 +14,9 @@ import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { OperadorService } from '../../services/operador';
+import { map } from 'rxjs/operators'; 
+import { PedidoService } from '../../services/pedido';
+
 
 @Component({
   selector: 'app-tabela-itens-laser',
@@ -41,11 +44,13 @@ export class TabelaItensLaser{
   selectedOperador: Operador | null = null;
   show: boolean = false;
 
+  
   constructor(
     private itemService: ItemService,
     private faseService: FaseService,
     private arquivoService: ArquivoService,
-    private operadorService: OperadorService
+    private operadorService: OperadorService,
+    private pedidoService: PedidoService
   ) {}
 
   ngOnInit(): void {
@@ -183,45 +188,113 @@ export class TabelaItensLaser{
     
   }
 
-  atualizarFases(): void {
-    const itens = Array.from(this.selectedItens.keys()).map(item => item);
+  verificarTodosItensNaExpedicao(pedidoId: number): Observable<boolean> {
+    console.log('Verificando se todos os itens do pedido', pedidoId, 'estão na Expedição');
+    return this.itemService.getItensDoPedido(pedidoId).pipe(
+      map(itens => {
+        const todosNaExpedicao = itens.every(item => {
+          const fase = this.fases.find(f => f.id === item.fase_atual);
+          return fase?.nome === 'Expedição' || fase?.fluxo_nome === 'Expedição';
+        });
+        
+        return todosNaExpedicao;
+      })
+    );
+  }
 
+  atualizarFases(): void {
+    const itens = Array.from(this.selectedItens.keys());
     const itensFases = new Map<number, number>();
 
-    alert("Deseja atualizar as fases dos itens selecionados?");
-    for (const item of itens) {
+    if (!confirm("Deseja atualizar as fases dos itens selecionados?")) {
+      return;
+    }
 
+    for (const item of itens) {
       const proximaFase = this.proximaFase(item);
 
       if (proximaFase) {
         itensFases.set(item.id, proximaFase.id);
       } else {
         alert(`O item "${item.nome}" não possui próxima fase definida.`);
+        return;
       }
-      //console.log('Próxima fase para o item', item.id, ':', proximaFase);
     }
 
+    const itensPorPedido = new Map<number, number[]>();
+    itens.forEach(item => {
+
+      const pedidoId = typeof item.pedido === 'number' ? item.pedido : item.pedido?.id;
+      
+      if (!pedidoId) {
+        console.error('Item sem pedido válido:', item);
+        return;
+      }
+      
+      if (!itensPorPedido.has(pedidoId)) {
+        itensPorPedido.set(pedidoId, []);
+      }
+      itensPorPedido.get(pedidoId)!.push(item.id);
+    });
+
+    console.log('Itens agrupados por pedido:', Array.from(itensPorPedido.entries()));
+
+    let atualizacoesCompletas = 0;
+    const totalAtualizacoes = itensFases.size;
 
     itensFases.forEach((faseId, itemId) => {
       this.itemService.updateItem(itemId, { fase_atual: faseId }).subscribe({
         next: (itemAtualizado) => {
           console.log(`Item ${itemId} atualizado para a fase ${faseId}:`, itemAtualizado);
-          this.carregarDadosIniciais();
-          this.selectedItens.clear();
-          this.selectedOperador = null;
-          this.show = false;
-          this.selectedOption = '';
+          atualizacoesCompletas++;
+
+          if (atualizacoesCompletas === totalAtualizacoes) {
+            console.log('Todas as atualizações completas. Verificando pedidos:', Array.from(itensPorPedido.keys()));
+            
+            itensPorPedido.forEach((itemIds, pedidoId) => {
+              console.log(`Verificando pedido ${pedidoId}...`);
+              
+              this.verificarTodosItensNaExpedicao(pedidoId).subscribe({
+                next: (todosNaExpedicao) => {
+                  console.log(`Pedido ${pedidoId} - Todos na expedição?`, todosNaExpedicao);
+                  
+                  if (todosNaExpedicao) {
+                    console.log(`✅ Todos os itens do pedido ${pedidoId} estão na Expedição!`);
+                    alert(`Todos os itens do pedido ${pedidoId} foram finalizados e estão prontos para expedição!`);
+                    this.pedidoService.updateStatus(pedidoId, 'finalizado').subscribe({
+                      next: () => console.log(`Status do pedido ${pedidoId} atualizado para finalizado`),
+                      error: (err) => console.error(`Erro ao atualizar status do pedido ${pedidoId}:`, err)
+                    });
+                  }
+                },
+                error: (err) => {
+                  console.error(`Erro ao verificar expedição do pedido ${pedidoId}:`, err);
+                }
+              });
+            });
+
+            this.carregarDadosIniciais();
+            this.selectedItens.clear();
+            this.selectedOperador = null;
+            this.show = false;
+            this.selectedOption = '';
+            alert('Fases atualizadas com sucesso!');
+          }
         },
         error: (err) => {
           console.error(`Erro ao atualizar o item ${itemId} para a fase ${faseId}:`, err);
-          this.selectedItens.clear();
-          this.selectedOperador = null;
-          this.show = false;
-          this.selectedOption = '';
+          atualizacoesCompletas++;
+          
+          if (atualizacoesCompletas === totalAtualizacoes) {
+            this.carregarDadosIniciais();
+            this.selectedItens.clear();
+            this.selectedOperador = null;
+            this.show = false;
+            this.selectedOption = '';
+          }
         }
       });
     });
-
   }
 
   atualizarOperador(operador: Operador): void {

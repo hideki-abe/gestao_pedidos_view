@@ -1,6 +1,7 @@
 import { Fase } from "./fase";
 import { Fluxo } from  "./fluxo";
 import { Operador } from "./operador";
+import { Pedido } from "./pedido";
 export interface Item {
   id: number;
   nome: string;
@@ -24,6 +25,7 @@ export interface Item {
   operador: Operador;
   operador_nome: string;
   operador_id: number | null;
+  pedido: Pedido;
   pedido_status: string;
   arquivo_url: string;
   arquivo_nome: string;

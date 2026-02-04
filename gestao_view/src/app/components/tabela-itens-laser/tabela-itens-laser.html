@@ -43,6 +43,7 @@
               class="w-full md:w-56" />
             </div>
           </th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -76,6 +77,9 @@
                 [ngModel]="isItemSelected(item)"
                 (ngModelChange)="onItemSelect(item, $event)">
               </p-checkbox>
+            </td>
+            <td>
+              <button class="action-button" (click)="verificarTodosItensNaExpedicao(item.pedido.id)">Concluir Fase</button>
             </td>
           </tr>
         }
