@@ -39,17 +39,21 @@ export class FormPedido implements OnChanges {
   prazoData: string = '';
   prazoHora: string = '';
   prazo: Date | null = null;
+  dataDefault: Date;
 
   usuario = {
     nome: '',
     funcao: ''
   };
 
+
   constructor(
     private pedidoService: PedidoService, 
     private router: Router, 
     private auth: AuthService) 
   {
+    this.dataDefault = new Date();
+    this.dataDefault.setHours(12, 0, 0, 0);
   }
 
   ngOnInit() {
@@ -67,44 +71,19 @@ export class FormPedido implements OnChanges {
     }
     if (changes['prazoInicial'] && changes['prazoInicial'].currentValue !== this.prazo) {
       const valor = changes['prazoInicial'].currentValue;
-      this.prazo = valor ? (typeof valor === 'string' ? this.arredondarParaQuinzeMinutos(new Date(valor)) : this.arredondarParaQuinzeMinutos(valor)) : null;
+      this.prazo = valor ? (typeof valor === 'string' ? new Date(valor) : valor) : null;
       console.log('prazoInicial:', valor, 'prazo convertido:', this.prazo);
     }
 
   }
 
-  private arredondarParaQuinzeMinutos(data: Date | null): Date | null {
-    if (!data) return null;
-    
-    let dataArredondada = new Date(data);
-    let minutos = dataArredondada.getMinutes();
-    
-    if (minutos <= 15) {
-      dataArredondada.setHours(dataArredondada.getHours());
-      dataArredondada.setMinutes(15);
-    } else if (minutos <= 30) {
-      dataArredondada.setHours(dataArredondada.getHours());
-      dataArredondada.setMinutes(30);
-    } else if ( minutos == 45) {
-      dataArredondada.setHours(dataArredondada.getHours());
-      dataArredondada.setMinutes(45);
-    } else if (minutos > 45) {
-      dataArredondada.setHours(dataArredondada.getHours() + 1);
-      dataArredondada.setMinutes(0);
-    }
-    dataArredondada.setSeconds(0);
-    dataArredondada.setMilliseconds(0);
-    
-    return dataArredondada;
+  onDateChange(event: Date): void {
+    this.prazo = new Date(event);
   }
 
-  onPrazoChange(event: Date | null): void {
-    this.prazo = this.arredondarParaQuinzeMinutos(event);
-  }
-
-  onDatepickerShow(): void {
+  onDatePickerShow(): void {
     if (!this.prazo) {
-      this.prazo = this.arredondarParaQuinzeMinutos(new Date());
+      this.prazo = this.dataDefault;
     }
   }
 
@@ -153,12 +132,11 @@ export class FormPedido implements OnChanges {
     picker.overlayVisible = false;
   }
 
-  salvaData(event: Date | null): void {
-    this.prazo = this.arredondarParaQuinzeMinutos(event);  // ✅ Adicionar arredondamento
+  salvaData(event: Date): void {
+    this.prazo = new Date(event);
       console.log('Data selecionada:', event);
     this.pedidoService.updatePrazo(this.pedidoId!, this.prazo ? this.prazo.toISOString() : null).subscribe({
       next: (response) => {
-        //alert('Prazo atualizado com sucesso!');
       },
       error: (error) => {
         alert('Erro ao atualizar prazo: ' + (error.message || 'Erro desconhecido'));

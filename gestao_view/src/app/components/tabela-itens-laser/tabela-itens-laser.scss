@@ -14,6 +14,30 @@ $mobile-breakpoint: 768px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
+.cliente-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+}
+
+.edit-buttons {
+  display: flex;
+  gap: 10px;
+  padding: 16px;
+
+  p-inputgroup:first-child {
+    max-width: 260px;
+    margin-right: auto;
+  }
+
+  ::ng-deep p-inputgroup {
+    .p-select {
+      min-width: 180px;
+    }
+  }
+}
+
 .search-input,
 .filter-select {
   padding: 8px 12px;

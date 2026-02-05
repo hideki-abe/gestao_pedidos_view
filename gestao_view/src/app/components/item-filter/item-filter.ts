@@ -4,53 +4,49 @@ import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { Vendedor } from '../../interfaces/vendedor';
+import { Operador } from '../../interfaces/operador';
+import { Cliente } from '../../interfaces/cliente';
 
 export interface FiltrosPedido {
-  cliente_nome?: string;  
-  numero_pedido?: string;     
-  data_inicio?: string;    
-  data_fim?: string;      
-  prioridade?: string;      
-  vendedor_id?: number | string;  
-  vendedor_nome?: string;   
-  fase?: string;            
+  cliente_nome?: string;        
+  operador_nome?: string;   
+  material?: string;     
 }
 
 @Component({
-  selector: 'app-pedido-filter',
+  selector: 'app-item-filter',
   standalone: true,
-  imports: [FormsModule, CommonModule], 
-  templateUrl: './pedido-filter.html',
-  styleUrl: './pedido-filter.scss'
+  imports: [FormsModule, CommonModule], // Módulos para ngModel e ngFor
+  templateUrl: './item-filter.html',
+  styleUrl: './item-filter.scss'
 })
-export class PedidoFilter implements OnInit, OnDestroy {
+export class ItemFilter implements OnInit, OnDestroy {
 
-  @Input() vendedores: Vendedor[] = [];
+  @Input() operadores: Operador[] = [];
+
+  @Input() clientes: Cliente[] = [];
   
   @Output() filtroChange = new EventEmitter<FiltrosPedido>();
 
-  secoes: string[] = 
-  [
-    'Guilhotina', 
-    'Dobra',
-    'Laser',
-    'Fogo',
-    'Calandra',
-    'Serra'
-  ];
+  materiais: string[] = [
+    '2,00mm',
+    '2,25mm',
+    '3,00mm',
+    '4,75mm',
+    '6,35mm',
+    '8,00mm',
+    '9,50mm',
+    '12,50mm',
+    '16,00mm',
+    '19,00mm',
+    '25,40mm',
+
+  ]
 
   filtros: FiltrosPedido = {
-    cliente_nome: '',
-    numero_pedido: '',
-    data_inicio: '',
-    data_fim: '',
-    prioridade: '',
-    vendedor_id: '',
-    vendedor_nome: '',
-    fase: ''
+    material: '',
   };
 
-  // Subject para controlar o debounce e evitar emissões excessivas
   private filtroSubject = new Subject<void>();
   private destroy$ = new Subject<void>();
 
@@ -74,13 +70,8 @@ export class PedidoFilter implements OnInit, OnDestroy {
   limparFiltros(): void {
     this.filtros = {
       cliente_nome: '',
-      numero_pedido: '',
-      data_inicio: '',
-      data_fim: '',
-      prioridade: '',
-      vendedor_id: '',
-      vendedor_nome: '',
-      fase: ''
+      operador_nome: '',
+      material: ''
     };
     this.onFiltroChange();
   }

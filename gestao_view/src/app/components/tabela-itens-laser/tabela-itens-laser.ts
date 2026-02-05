@@ -16,12 +16,26 @@ import { SelectModule } from 'primeng/select';
 import { OperadorService } from '../../services/operador';
 import { map } from 'rxjs/operators'; 
 import { PedidoService } from '../../services/pedido';
+import { Pagination } from '../pagination/pagination';
+import { ItemFilter } from '../item-filter/item-filter';
+import { InputGroup } from 'primeng/inputgroup';
+import { InputGroupAddon } from 'primeng/inputgroupaddon';
 
 
 @Component({
   selector: 'app-tabela-itens-laser',
   standalone: true,
-  imports: [CommonModule, CheckboxModule, ButtonModule, FormsModule, SelectModule],
+  imports: [
+    CommonModule, 
+    CheckboxModule, 
+    ButtonModule, 
+    FormsModule, 
+    SelectModule, 
+    Pagination, 
+    ItemFilter,
+    InputGroup,
+    InputGroupAddon
+  ],
   templateUrl: './tabela-itens-laser.html',
   styleUrl: './tabela-itens-laser.scss'
 })
@@ -44,7 +58,11 @@ export class TabelaItensLaser{
   selectedOperador: Operador | null = null;
   show: boolean = false;
 
-  
+  public paginaAtual: number = 1;
+  public itensPorPagina: number = 20;
+  public totalDeItens: number = 0;
+  public filtroMaterial: string = '';
+
   constructor(
     private itemService: ItemService,
     private faseService: FaseService,
@@ -57,21 +75,34 @@ export class TabelaItensLaser{
     this.carregarDadosIniciais();
   }
 
+  onFiltroChange(filtros: any): void {
+    console.log('Tipo de filtros:', typeof filtros, 'Valor:', filtros);
+    
+    if(!filtros || !filtros.material) { 
+      this.filtroMaterial = '';
+    } else {
+      this.filtroMaterial = filtros.material;
+    }
+    this.paginaAtual = 1; 
+    this.carregarDadosIniciais();
+  }
+
   private carregarDadosIniciais(): void {
     this.erroAoCarregar = false;
     this.itens = [];
 
     forkJoin({
-      itens: this.itemService.getItensFiltrados('Laser', 'producao'),
+      itens: this.itemService.getItensFiltrados('Laser', 'producao', this.paginaAtual, this.itensPorPagina, this.filtroMaterial),
       fases: this.faseService.getFases(),
       operadores: this.operadorService.getOperadores()
 
     }).subscribe({
       next: (resultados) => {
-        this.itens = resultados.itens || [];
+        this.itens = resultados.itens.results || [];
         this.fases = resultados.fases || [];
+        this.totalDeItens = resultados.itens.count;
         this.operadores = resultados.operadores || [];
-        console.log('Itens carregados:', this.itens);
+        console.log('Itens carregados:', this.totalDeItens);
       },
       error: (err) => {
         console.error('Falha ao carregar dados iniciais:', err);
@@ -166,9 +197,9 @@ export class TabelaItensLaser{
     if ($event) {
       this.selectedItens.set(item, true);
     } else {
-      this.selectedItens.delete(item); // Remove do Map quando desmarcado
+      this.selectedItens.delete(item); 
     }
-    console.log('Itens selecionados:', Array.from(this.selectedItens.keys()).map(i => i.id));
+    //console.log('Itens selecionados:', Array.from(this.selectedItens.keys()).map(i => i.id));
   }
 
   showCheckbox(event?: any): void {
@@ -263,11 +294,11 @@ export class TabelaItensLaser{
                   console.log(`Pedido ${pedidoId} - Todos na expedição?`, todosNaExpedicao);
                   
                   if (todosNaExpedicao) {
-                    console.log(`✅ Todos os itens do pedido ${pedidoId} estão na Expedição!`);
-                    alert(`Todos os itens do pedido ${pedidoId} foram finalizados e estão prontos para expedição!`);
+                    //console.log(`✅ Todos os itens do pedido ${pedidoId} estão na Expedição!`);
+                    //alert(`Todos os itens do pedido ${pedidoId} foram finalizados e estão prontos para expedição!`);
                     this.pedidoService.updateStatus(pedidoId, 'finalizado').subscribe({
-                      next: () => console.log(`Status do pedido ${pedidoId} atualizado para finalizado`),
-                      error: (err) => console.error(`Erro ao atualizar status do pedido ${pedidoId}:`, err)
+                      next: () => {},
+                      error: (err) => alert(`Erro ao atualizar status do pedido ${pedidoId}: ${err}`)
                     });
                   }
                 },
@@ -320,6 +351,12 @@ export class TabelaItensLaser{
         this.selectedOption = '';
       }
     });
+  }
+
+  onPageChange(novaPagina: number): void {
+    console.log('Página alterada para:', novaPagina);
+    this.paginaAtual = novaPagina;
+    this.carregarDadosIniciais();
   }
 
 }

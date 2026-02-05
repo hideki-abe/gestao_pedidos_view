@@ -1,54 +1,62 @@
 <div class="itens-container">
+  <app-item-filter 
+    class="item-filter"
+    [operadores]="operadores" 
+    (filtroChange)="onFiltroChange($event)">
+  </app-item-filter>
 
   <div class="table-responsive-container">
+    <div class="edit-buttons">
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-user"></i>
+        </p-inputgroup-addon>
+        <p-select 
+          [options]="operadores" 
+          [(ngModel)]="selectedOperador"
+          (ngModelChange)="atualizarOperador($event)"
+          optionLabel="nome" 
+          placeholder="Selecionar Operador"
+          [showClear]="true"
+          [disabled]="selectedItens.size === 0" />
+      </p-inputgroup>
+      <button pButton severity="info" (click)="downloadArquivosSelecionados()" [disabled]="selectedItens.size === 0">
+        <i class="pi pi-download" pButtonIcon></i>
+        <span pButtonLabel>Baixar Arquivos</span>
+      </button>
+        <button pButton (click)="atualizarFases()" [disabled]="selectedItens.size === 0">
+          <i class="pi pi-check" pButtonIcon></i>
+          <span pButtonLabel>Concluir</span>
+      </button>
+    </div>
     <table class="itens-table">
       <thead>
         <tr>
           <th>Cliente</th>
           <th>
-            @if(this.show) {
-              <div class="options">
-                <p-select 
-                [options]="operadores" 
-                (ngModelChange)="atualizarOperador($event)"
-                [ngModel]="selectedOperador" 
-                [checkmark]="true" 
-                appendTo="body" 
-                optionLabel="nome" 
-                [showClear]="true" 
-                placeholder="" 
-                class="w-full md:w-56" />
-              </div>
-            } @else {
-              Operador
-            }
+            Operador
           </th>   
           <th>Material</th>
           <th>Tipo</th>
           <th>Qtd</th>
           <th>Med</th>
           <th>Arquivo</th>
-          <th>Fase Atual</th>
-          <th>
-            <div class="options">
-              <p-select 
-              (ngModelChange)="showCheckbox($event)" 
-              [options]="options" 
-              [ngModel]="selectedOption" 
-              [checkmark]="true" 
-              appendTo="body" 
-              optionLabel="option" 
-              [showClear]="true" 
-              placeholder="" 
-              class="w-full md:w-56" />
-            </div>
-          </th>
         </tr>
       </thead>
       <tbody>
         @for (item of itens; track item.id) {
           <tr>
-            <td data-label="Cliente">{{ item.cliente_nome }}</td>
+            <td data-label="Cliente">
+              <div class="cliente-container">
+                <p-checkbox 
+                  [binary]="true" 
+                  size="large"
+                  [ngModel]="isItemSelected(item)"
+                  (ngModelChange)="onItemSelect(item, $event)">
+                </p-checkbox>
+                {{ item.cliente_nome }}
+              </div>
+            </td>
             <td data-label="Usuário Responsável">{{ item.operador_nome || 'Sem operador' }}</td>
             <td data-label="Material">{{ item.nome }}</td>
             <td data-label="Tipo">{{ item.tipo }}</td>
@@ -66,17 +74,7 @@
                 <span class="no-file">Sem arquivo</span>
               }
             </td>
-            <td data-label="Fase Atual">
-              <span class="tag fase">{{ item.fase_atual_nome|| 'Aguardando' }}</span>
-            </td>
-            <td data-label="checkbox">
-              <p-checkbox 
-                [binary]="true" 
-                size="large"
-                [ngModel]="isItemSelected(item)"
-                (ngModelChange)="onItemSelect(item, $event)">
-              </p-checkbox>
-            </td>
+
           </tr>
         }
         @if (itens.length === 0) { 
@@ -87,4 +85,12 @@
       </tbody>
     </table>
   </div>
+  @if(!erroAoCarregar && totalDeItens > itensPorPagina){
+    <app-pagination
+      [paginaAtual]="paginaAtual"
+      [totalDeItens]="totalDeItens"
+      [itensPorPagina]="itensPorPagina"
+      (pageChange)="onPageChange($event)">
+    </app-pagination>
+  }
 </div>

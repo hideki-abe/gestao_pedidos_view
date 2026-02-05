@@ -17,14 +17,15 @@
     <div class="prazo-inputs-group">
       <p-datepicker
         #picker 
-        (ngModelChange)="onPrazoChange($event)"
-        (onShow)="onDatepickerShow()"
+        (ngModelChange)="onDateChange($event)"
+        (onShow)="onDatePickerShow()"
         [(ngModel)]="prazo" 
         name="prazo"
         dateFormat="dd/mm/yy" 
         [showIcon]="true" 
         [showTime]="true"
         [readonlyInput]="true"
+        [defaultDate]="dataDefault"
         [stepMinute]="15"
         [hideOnDateTimeSelect]="false"
         placeholder="Seleciona data e hora">
