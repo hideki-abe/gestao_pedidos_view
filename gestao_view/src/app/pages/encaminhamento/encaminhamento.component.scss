@@ -28,7 +28,36 @@ app-topbar {
   box-sizing: border-box;
 }
 
-// --- Cabeçalho da Página ---
+.p-inputgroup {
+  height: min-content;
+
+  input {
+    border: 1px solid #ced4da;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+    &:focus {
+      border-color: $primary-color;
+      box-shadow: 0 0 0 0.2rem rgba(58, 124, 165, 0.25);
+      outline: none;
+    }
+
+    &:not(:placeholder-shown) {
+      border-color: $primary-color;
+    }
+  }
+
+  &:has(input:not(:placeholder-shown)) {
+    .p-inputgroup-addon {
+      border-color: $primary-color;
+    }
+  }
+}
+
+.p-inputgroup:active {
+  border-color: $primary-color;
+  box-shadow: 0 0 0 0.2rem rgba(58, 124, 165, 0.25);
+}
+
 .page-header {
   display: flex;
   justify-content: space-between;
@@ -44,13 +73,12 @@ app-topbar {
   }
 }
 
-// --- Container dos Botões de Ação ---
 .actions {
   display: flex;
-  gap: 10px; // Espaçamento entre os botões
+  align-items: center;
+  gap: 10px; 
 }
 
-// --- Estilo Base dos Botões ---
 .btn {
   padding: 10px 20px;
   border: none;
@@ -69,9 +97,9 @@ app-topbar {
   }
 }
 
-// --- Variações dos Botões ---
 .btn-primary {
   background-color: $primary-color;
+  width: 250px;
   color: $white;
 }
 

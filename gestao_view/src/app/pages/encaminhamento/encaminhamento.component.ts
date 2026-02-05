@@ -2,19 +2,27 @@ import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TabelaEncaminhamento } from '../../components/tabela-encaminhamento/tabela-encaminhamento';
 import { Navbar } from "../../components/navbar/navbar";
-import { TopbarComponent } from "../../components/topbar/topbar.component";
 import { ImportacaoService } from '../../services/importacao_sankhya';
 import { ToastrService } from 'ngx-toastr';
+import { Select } from "primeng/select";
+import { Button } from "primeng/button";
+import { FormsModule } from '@angular/forms';
+import { InputGroupAddon } from 'primeng/inputgroupaddon';
+import { InputGroup } from 'primeng/inputgroup';
+import { InputText } from 'primeng/inputtext';
+import { Menu } from 'primeng/menu';
 
 @Component({
   selector: 'app-encaminhamento',
-  imports: [CommonModule, TabelaEncaminhamento, Navbar],
+  imports: [CommonModule, TabelaEncaminhamento, Navbar, InputGroup, InputGroupAddon, InputText, Button, FormsModule],
   templateUrl: './encaminhamento.component.html',
   styleUrl: './encaminhamento.component.scss'
 })
 export class EncaminhamentoComponent {
   @ViewChild(TabelaEncaminhamento) tabelaEncaminhamento!: TabelaEncaminhamento;
   public importando: boolean = false;
+  
+  nunota = '';
 
   constructor(
     private importacaoService: ImportacaoService,
@@ -43,4 +51,27 @@ export class EncaminhamentoComponent {
       }
     });
   }
+
+  importaPedidoUnico(nunota: String): void {
+    if (!nunota || nunota.trim() === '') {
+      this.toastr.warning('Por favor, informe o número único do pedido.', 'Atenção');
+      return;
+    }
+
+    this.importacaoService.importarUnicoPedido(nunota).subscribe({
+      next: (response) => {
+        console.log('Importação do pedido concluída:', response);
+        this.toastr.success('Pedido importado com sucesso!', 'Sucesso');
+
+        if (this.tabelaEncaminhamento) {
+          this.tabelaEncaminhamento.uploadPedidos();
+        }
+      },
+      error: (err) => {
+        console.error('Erro ao importar o pedido:', err);
+        this.toastr.error('Erro ao importar o pedido. Tente novamente.', 'Erro');
+      }
+    });
+  }
+
 }

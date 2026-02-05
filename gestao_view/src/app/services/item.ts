@@ -31,13 +31,21 @@ getItens(): Observable<Item[]> {
   );
 }
 
-getItensFiltrados(faseNome: string, pedidoStatus: string): Observable<Item[]> {
-  const params = new HttpParams()
+getItensFiltrados(faseNome: string, pedidoStatus: string, page: number = 1, pageSize: number = 20, nome: string): Observable<PaginatedResponse<Item>> {
+  let params = new HttpParams()
     .set('fase', faseNome)
     .set('pedido_status', pedidoStatus)
-    .set('page_size', '100');
+    .set('page', page.toString())
+    .set('page_size', pageSize.toString())
+
+  if (nome && typeof nome === 'string' && nome.trim() !== '') {
+    // Remove todos os caracteres exceto números e vírgula
+    const nomeSanitizado = nome.replace(/[^0-9,]/g, '');
+    params = params.set('nome', nomeSanitizado);
+    console.log('Filtro original:', nome, '| Filtro sanitizado:', nomeSanitizado);
+  }
+  
   return this.http.get<PaginatedResponse<Item>>(this.apiUrlItens, { params }).pipe(
-    map(response => response.results),
     catchError(this.handleError)
   );
 }

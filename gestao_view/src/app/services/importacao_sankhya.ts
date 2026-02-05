@@ -15,4 +15,11 @@ export class ImportacaoService {
   triggerImportacao(): Observable<any> {
     return this.http.post(`${this.apiUrl}/trigger-importacao/`, {});
   }
+
+  importarUnicoPedido(nunota: String): Observable<any> {
+    return this.http.post(`${this.apiUrl}/importar-pedido-sankhya/`, { 
+      nunota: nunota 
+    });
+  }
+
 }
