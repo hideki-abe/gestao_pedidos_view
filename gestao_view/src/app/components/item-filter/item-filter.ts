@@ -49,6 +49,7 @@ export class ItemFilter implements OnInit, OnDestroy {
 
   filtros: FiltrosPedido = {
     material: '',
+    operador_nome: ''
   };
 
   private filtroSubject = new Subject<void>();
