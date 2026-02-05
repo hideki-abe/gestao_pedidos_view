@@ -29,16 +29,20 @@ export class ItemFilter implements OnInit, OnDestroy {
   @Output() filtroChange = new EventEmitter<FiltrosPedido>();
 
   materiais: string[] = [
+    '1,20mm',
+    '1,50mm',
     '2,00mm',
     '2,25mm',
+    '2,65mm',
     '3,00mm',
     '4,75mm',
-    '6,35mm',
+    '6,30mm',
     '8,00mm',
     '9,50mm',
     '12,50mm',
     '16,00mm',
     '19,00mm',
+    '22,00mm',
     '25,40mm',
 
   ]
