@@ -14,35 +14,21 @@
         </option>
       </select>
     </div>
-    <!----
+
     <div class="filter-group">
       <label for="filtro-operador">Operador</label>
       <select 
         id="filtro-operador" 
         class="filter-select"
-        [(ngModel)]="filtros.operador_nome"
+        [(ngModel)]="filtros.operador"
         (ngModelChange)="onFiltroChange()">
-        <option [ngValue]="null">Todos</option>
+        <option [ngValue]="''">Todos</option>
         <option *ngFor="let operador of operadores" [ngValue]="operador.nome">
           {{ operador.nome }}
         </option>
       </select>
     </div>
 
-    <div class="filter-group">
-      <label for="filtro-cliente">Cliente</label>
-      <select 
-        id="filtro-cliente" 
-        class="filter-select"
-        [(ngModel)]="filtros.cliente_nome"
-        (ngModelChange)="onFiltroChange()">
-        <option [ngValue]="null">Todos</option>
-        <option *ngFor="let cliente of clientes" [ngValue]="cliente.nome">
-          {{ cliente.nome }}
-        </option>
-      </select>
-    </div>
-    -->
   </div>
 
   <div class="filter-actions">

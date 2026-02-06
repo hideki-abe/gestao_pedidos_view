@@ -7,9 +7,8 @@ import { Vendedor } from '../../interfaces/vendedor';
 import { Operador } from '../../interfaces/operador';
 import { Cliente } from '../../interfaces/cliente';
 
-export interface FiltrosPedido {
-  cliente_nome?: string;        
-  operador_nome?: string;   
+export interface FiltrosPedido {    
+  operador?: string;   
   material?: string;     
 }
 
@@ -49,6 +48,7 @@ export class ItemFilter implements OnInit, OnDestroy {
 
   filtros: FiltrosPedido = {
     material: '',
+    operador: ''
   };
 
   private filtroSubject = new Subject<void>();
@@ -73,8 +73,7 @@ export class ItemFilter implements OnInit, OnDestroy {
   }
   limparFiltros(): void {
     this.filtros = {
-      cliente_nome: '',
-      operador_nome: '',
+      operador: '',
       material: ''
     };
     this.onFiltroChange();

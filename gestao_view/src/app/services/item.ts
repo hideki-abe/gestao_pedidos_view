@@ -31,12 +31,13 @@ getItens(): Observable<Item[]> {
   );
 }
 
-getItensFiltrados(faseNome: string, pedidoStatus: string, page: number = 1, pageSize: number = 20, nome: string): Observable<PaginatedResponse<Item>> {
+getItensFiltrados(faseNome: string, pedidoStatus: string, page: number = 1, pageSize: number = 20, nome: string, operador: string): Observable<PaginatedResponse<Item>> {
   let params = new HttpParams()
     .set('fase', faseNome)
     .set('pedido_status', pedidoStatus)
     .set('page', page.toString())
     .set('page_size', pageSize.toString())
+    .set('operador', operador);
 
   if (nome && typeof nome === 'string' && nome.trim() !== '') {
     // Remove todos os caracteres exceto números e vírgula
