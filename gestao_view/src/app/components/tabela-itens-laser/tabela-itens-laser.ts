@@ -61,7 +61,7 @@ export class TabelaItensLaser{
   public paginaAtual: number = 1;
   public itensPorPagina: number = 20;
   public totalDeItens: number = 0;
-  public filtros: string = '';
+  public filtroMaterial: string = '';
 
   constructor(
     private itemService: ItemService,
@@ -78,10 +78,11 @@ export class TabelaItensLaser{
   onFiltroChange(filtros: any): void {
     console.log('Tipo de filtros:', typeof filtros, 'Valor:', filtros);
     
-    if(!filtros) { 
-      this.filtros = '';
-    } 
-    
+    if(!filtros || !filtros.material) { 
+      this.filtroMaterial = '';
+    } else {
+      this.filtroMaterial = filtros.material;
+    }
     this.paginaAtual = 1; 
     this.carregarDadosIniciais();
   }
@@ -91,7 +92,7 @@ export class TabelaItensLaser{
     this.itens = [];
 
     forkJoin({
-      itens: this.itemService.getItensFiltrados('Laser', 'producao', this.paginaAtual, this.itensPorPagina, this.filtros),
+      itens: this.itemService.getItensFiltrados('Laser', 'producao', this.paginaAtual, this.itensPorPagina, this.filtroMaterial),
       fases: this.faseService.getFases(),
       operadores: this.operadorService.getOperadores()
 
