@@ -42,8 +42,8 @@ export class ItemFilter implements OnInit, OnDestroy {
     '12,50mm',
     '16,00mm',
     '19,00mm',
-    '22,00mm',
-    '25,40mm',
+    '22,22mm',
+    '25,00mm',
 
   ]
 
