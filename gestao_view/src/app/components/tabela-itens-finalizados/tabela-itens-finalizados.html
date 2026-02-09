@@ -31,8 +31,12 @@
           <td data-label="Nome">{{ item.nome }}</td>
           <td data-label="Tipo">{{ item.tipo| slice:0:3 }}</td>
           <td data-label="Quantidade">{{ item.quantidade }}</td>
-          <td data-label="Medida 1">{{ item.medida_1 | number:'1.3-3' }}</td>
-          <td data-label="Medida 2">{{ item.medida_2 | number:'1.3-3' }}</td>
+          <td data-label="Medida 1">
+            {{ item.medida_1 === 'N/A' || typeof item.medida_1 === 'string' ? item.medida_1 : (item.medida_1 | number:'1.3-3') }}
+          </td>
+          <td data-label="Medida 2">
+            {{ item.medida_2 === 'N/A' || typeof item.medida_2 === 'string' ? item.medida_2 : (item.medida_2 | number:'1.3-3') }}
+          </td>
           <td data-label="Furo">{{ item.furo}}</td>
           <td data-label="Arquivo">
             <div class="file-attached">
