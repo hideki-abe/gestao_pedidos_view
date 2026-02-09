@@ -74,6 +74,13 @@ export class TabelaItensEncaminhamento implements OnChanges{
     });
   }
 
+  public recarregarItens(): void {
+    if (!this.pedido?.id) {
+      return;
+    }
+    this.carregarDadosIniciais();
+  }
+
   private carregarArquivosDosItens(): void {
     this.itens.forEach(item => {
       this.arquivoService.getArquivosDoItem(item.id).subscribe({

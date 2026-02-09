@@ -32,8 +32,14 @@
           <tr class="itens-row" animate.enter="enter-animation" >
             <td  colspan="5" class="itens-row" animate.leave="leaving">
               <div class="details-wrapper">
-                <app-tabela-itens-encaminhamento [pedido]="pedido" ></app-tabela-itens-encaminhamento>
-                <app-pedido-file-upload [pedidoId]="pedido.id"></app-pedido-file-upload>
+                <app-tabela-itens-encaminhamento 
+                  #itensEnc 
+                  [pedido]="pedido" >
+                </app-tabela-itens-encaminhamento>
+                <app-pedido-file-upload 
+                  [pedidoId]="pedido.id"
+                  (uploadCompleto)="itensEnc.recarregarItens()">
+                </app-pedido-file-upload>
                 <app-form-pedido
                   [pedidoId]="pedido.id"
                   [textoInicial]="pedido.observacoes" 
