@@ -57,6 +57,7 @@ export class TabelaItensLaser{
   selectedOption: String = '';
   selectedOperador: Operador | null = null;
   show: boolean = false;
+  selectAll: boolean = false;
 
   public paginaAtual: number = 1;
   public itensPorPagina: number = 20;
@@ -355,6 +356,21 @@ export class TabelaItensLaser{
     console.log('Página alterada para:', novaPagina);
     this.paginaAtual = novaPagina;
     this.carregarDadosIniciais();
+  }
+  
+  selectAllItens(checked: boolean): void {
+    this.selectAll = checked;
+    if (checked) {
+      this.itens.forEach(item => this.selectedItens.set(item, true));
+    } else {
+      this.itens.forEach(item => this.selectedItens.delete(item));
+    }
+  }
+
+  private updateSelectAllState(): void {
+    const todosNaPaginaSelecionados = this.itens.length > 0 && 
+      this.itens.every(item => this.selectedItens.has(item));
+    this.selectAll = todosNaPaginaSelecionados;
   }
 
 }

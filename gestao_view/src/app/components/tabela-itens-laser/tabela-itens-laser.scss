@@ -78,7 +78,7 @@ $mobile-breakpoint: 768px;
   border-collapse: collapse;
 
   th,
-  td {
+  td {  
     padding: 12px 15px;
     text-align: center;
     border-bottom: 1px solid $border-color;
@@ -131,11 +131,20 @@ $mobile-breakpoint: 768px;
     color: #495057;
     max-height: 80px;
 
-    &:nth-child(1) { min-width: 100px; } // Cliente
-    &:nth-child(2) { min-width: 50px; max-width: 100px;} // Cliente
-    &:nth-child(3) { min-width: 100px; } // Pedido
-    &:nth-child(4) { max-width: 50px; } // Pedido
-    &:nth-child(9) { min-width: 100px; max-width: 100px;} // Pedido
+    &:nth-child(1) { 
+      min-width: 100px;
+      text-align: left;
+      .select-all {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 16px;
+      }
+      min-width: 100px; 
+    } 
+    &:nth-child(2) { min-width: 50px; max-width: 100px;}
+    &:nth-child(3) { min-width: 100px; } 
+    &:nth-child(4) { max-width: 50px; } 
+    &:nth-child(9) { min-width: 100px; max-width: 100px;}
 
     .options {
       width: 100%;
@@ -161,6 +170,10 @@ $mobile-breakpoint: 768px;
     }
   }
   tbody tr {
+    &:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+
     &:hover {
       background-color: #f1f3f5;
     }

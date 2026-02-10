@@ -24,9 +24,11 @@
           <td data-label="Cliente"> {{ pedido.cliente_nome }}</td>
           <td data-label="Vendedor"> {{ pedido.vendedor_nome }}</td>
           <td data-label="Nº Pedido">{{ pedido.numero_do_pedido }}</td>
+          <!---
           <td data-label="Status">
             <span class="tag" [class]="'status-' + pedido.status">{{ pedido.statusDisplay }}</span>
           </td>
+          -->
           <td data-label="Prioridade">
             <span class="tag" [class]="'prioridade-' + pedido.prioridade">{{ pedido.prioridadeDisplay }}</span>
           </td>
