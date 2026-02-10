@@ -19,9 +19,8 @@
         <tr>
           <th>Nome do Item</th>
           <th>Tipo</th>
-          <th>Quantidade</th>
-          <th>Medida 1</th>
-          <th>Medida 2</th>
+          <th>Qtd</th>
+          <th>Med</th>
           <th>Furo</th>
           <th>Fase Atual</th>
           <th>Arquivo</th>
@@ -33,8 +32,7 @@
           <td data-label="Nome">{{ item.nome }}</td>
           <td data-label="Tipo">{{ item.tipo| slice:0:3 }}</td>
           <td data-label="Quantidade">{{ item.quantidade }}</td>
-          <td data-label="Medida 1">{{ item.medida_1 | number:'1.3-3' }}</td>
-          <td data-label="Medida 2">{{ item.medida_2 | number:'1.3-3' }}</td>
+          <td data-label="Med ">{{ item.medida_1 | number:'1.3-3' }} x {{ item.medida_2 | number:'1.3-3' }}</td>
           <td data-label="Furo">{{ item.furo }}</td>
           <td data-label="Fase">
             <span [class]="'tag fase-' + item.fase_atual">{{ item.fase_atual_nome }}</span>

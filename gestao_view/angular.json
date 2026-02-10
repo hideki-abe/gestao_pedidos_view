@@ -28,7 +28,12 @@
                 "glob": "**/*",
                 "input": "public"
               },
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/primeicons/fonts",
+                "output": "fonts"
+              }
             ],
             "styles": [
               "node_modules/primeicons/primeicons.css",

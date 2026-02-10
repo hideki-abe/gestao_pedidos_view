@@ -72,7 +72,7 @@
                       <a (click)="downloadArquivo(item, $event)" 
                         class="file-link"
                         style="cursor: pointer;"
-                        title="Clique para baixar">
+                        title="{{ item.arquivo_nome }}">
                         {{ item.arquivo_nome }}
                       </a>
                       <button 
