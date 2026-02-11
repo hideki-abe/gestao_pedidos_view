@@ -263,6 +263,9 @@ $mobile-breakpoint: 768px;
 .file-link {
   color: $primary-color;
   text-decoration: none;
+  white-space: normal;
+  word-break: break-word;
+  display: block;
   
   &:hover {
     text-decoration: underline;
