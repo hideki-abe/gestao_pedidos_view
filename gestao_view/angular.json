@@ -32,7 +32,7 @@
               {
                 "glob": "**/*",
                 "input": "node_modules/primeicons/fonts",
-                "output": "fonts"
+                "output": "."
               }
             ],
             "styles": [
