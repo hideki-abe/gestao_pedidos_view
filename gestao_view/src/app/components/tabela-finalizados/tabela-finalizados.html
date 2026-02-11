@@ -10,9 +10,7 @@
         <th>Cliente</th>
         <th>Vendedor</th>
         <th>N° do Pedido</th>
-        <th>Status</th>
         <th>Prioridade</th>
-        <th>Prazo</th>
         <th></th>
       </tr>
     </thead>
@@ -24,13 +22,9 @@
           <td data-label="Cliente"> {{ pedido.cliente_nome }}</td>
           <td data-label="Vendedor"> {{ pedido.vendedor_nome }}</td>
           <td data-label="Nº Pedido">{{ pedido.numero_do_pedido }}</td>
-          <td data-label="Status">
-            <span class="tag" [class]="'status-' + pedido.status">{{ pedido.statusDisplay }}</span>
-          </td>
           <td data-label="Prioridade">
             <span class="tag" [class]="'prioridade-' + pedido.prioridade">{{ pedido.prioridadeDisplay }}</span>
           </td>
-          <td data-label="Prazo">{{ pedido.prazo | date: 'dd/MM/yy HH:mm' }}</td>
           <td data-label="Ações">
             <button class="action-button" (click)="toggleItens(pedido.id)">+</button>
           </td>
@@ -38,7 +32,7 @@
 
         <!-- Linha 2: Tabela de Itens (agora está DENTRO do loop e no escopo correto) -->
         <tr *ngIf="pedidoSelecionadoId === pedido.id" class="itens-row">
-          <td colspan="8">
+          <td colspan="6">
             <div class="details-wrapper">
               <app-tabela-itens-finalizados 
                 [pedido]="pedido">
@@ -59,12 +53,12 @@
 
       <!-- Mensagem se não houver pedidos -->
       <tr *ngIf="pedidos.length === 0 && !erroAoCarregar">
-        <td colspan="7" style="text-align: center;">Nenhum pedido encontrado.</td>
+        <td colspan="6" style="text-align: center;">Nenhum pedido encontrado.</td>
       </tr>
 
       <!-- Mensagem de erro -->
       <tr *ngIf="erroAoCarregar">
-        <td colspan="7" style="text-align: center; color: red;">Ocorreu um erro ao carregar os pedidos.</td>
+        <td colspan="6" style="text-align: center; color: red;">Ocorreu um erro ao carregar os pedidos.</td>
       </tr>
     </tbody>
   </table>

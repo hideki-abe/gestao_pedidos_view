@@ -10,6 +10,7 @@
         <th>Cliente</th>
         <th>Vendedor</th>
         <th>N° do Pedido</th>
+        <th>Emissão</th>
         <th>Status</th>
         <th></th>
       </tr>
@@ -20,6 +21,7 @@
           <td data-label="Cliente"> {{ pedido.cliente_nome }}</td>
           <td data-label="Vendedor"> {{ pedido.vendedor_nome }}</td>
           <td data-label="Nº Pedido">{{ pedido.numero_do_pedido }}</td>
+          <td data-label="Emissão">{{ pedido.data_inicial| date: 'dd/MM/yy HH:mm' }}</td>
           <td data-label="Status">
             <span class="tag" [class]="'status-' + pedido.status">{{ pedido.statusDisplay }}</span>
           </td>
@@ -30,7 +32,7 @@
 
         @if (pedidoSelecionadoId === pedido.id) {
           <tr class="itens-row" animate.enter="enter-animation" >
-            <td  colspan="5" class="itens-row" animate.leave="leaving">
+            <td  colspan="6" class="itens-row" animate.leave="leaving">
               <div class="details-wrapper">
                 <app-tabela-itens-encaminhamento 
                   #itensEnc 
@@ -56,11 +58,11 @@
       </ng-container>
 
       <tr *ngIf="pedidos.length === 0 && !erroAoCarregar">
-        <td colspan="7" style="text-align: center;">Nenhum pedido encontrado.</td>
+        <td colspan="6" style="text-align: center;">Nenhum pedido encontrado.</td>
       </tr>
 
       <tr *ngIf="erroAoCarregar">
-        <td colspan="7" style="text-align: center; color: red;">Ocorreu um erro ao carregar os pedidos.</td>
+        <td colspan="6" style="text-align: center; color: red;">Ocorreu um erro ao carregar os pedidos.</td>
       </tr>
     </tbody>
   </table>

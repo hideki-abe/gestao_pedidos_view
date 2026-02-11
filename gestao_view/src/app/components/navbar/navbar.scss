@@ -1,17 +1,18 @@
 // Variáveis para fácil customização
 $sidebar-width: 210px;
 $sidebar-width-collapsed: 80px;
-$primary-bg-color: #68b04d; // Um fundo escuro
-$secondary-bg-color: #2d3748;
+$primary-bg-color: #68b04d; // Mantido - Verde principal
+$secondary-bg-color: #4a7c3a; // Verde escuro
 $text-color: #fff;
-$accent-color: #4299e1; // Cor de destaque para links ativos e hover
-$border-color: #4a5568;
+$accent-color: #3d8f2e; // Verde de destaque para links ativos e hover
+$border-color: #5a9444; // Verde médio para bordas
+$black-color: #26411e;
 $transition-speed: 0.3s;
 
 .sidebar {
   width: $sidebar-width;
-  height: 100vh; // Ocupa toda a altura da tela
-  position: fixed; // Fica fixo na tela
+  height: 100vh;
+  position: fixed;
   top: 0;
   left: 0;
   background-color: $primary-bg-color;
@@ -20,7 +21,6 @@ $transition-speed: 0.3s;
   flex-direction: column;
   transition: width $transition-speed ease;
 
-  // Estilo do cabeçalho (logo)
   .sidebar-header {
     padding: 20px;
     text-align: center;
@@ -35,16 +35,14 @@ $transition-speed: 0.3s;
         max-width: 100%;
         height: 60px;
       }
-
     }
   }
 
-  // Lista de links de navegação
   .nav-links {
     list-style: none;
     padding: 0;
     margin: 20px 0;
-    flex-grow: 1; // Ocupa o espaço disponível
+    flex-grow: 1;
 
     li {
       a {
@@ -64,7 +62,6 @@ $transition-speed: 0.3s;
           background-color: $secondary-bg-color;
         }
 
-        // Estilo do link ativo
         &.active-link {
           background-color: $accent-color;
           color: #fff;
@@ -74,7 +71,6 @@ $transition-speed: 0.3s;
     }
   }
 
-  // Rodapé da barra lateral
   .sidebar-footer {
     padding: 20px;
     border-top: 1px solid $border-color;
@@ -88,23 +84,19 @@ $transition-speed: 0.3s;
       text-decoration: none;
       color: $text-color;
 
-      // ... (pode adicionar no final do arquivo ou dentro do .sidebar-footer)
-
-    .avatar-initials {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%; // Isso cria o círculo
-      background-color: $accent-color; // Usa a cor de destaque que já definimos
-      color: #fff; // Cor da letra
-      font-weight: bold;
-      font-size: 1.2rem;
-      margin-right: 10px;
-
-      // Centraliza a letra perfeitamente
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+      .avatar-initials {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: $black-color;
+        color: #fff;
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
       .user-name {
         font-size: 0.9rem;
@@ -117,17 +109,36 @@ $transition-speed: 0.3s;
       text-decoration: none;
 
       &:hover {
-        color: $accent-color;
+        color: #e8f5e9;
+      }
+    }
+
+    .btn.btn-secondary {
+      background: #fff;
+      color: $primary-bg-color;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 9px;
+      font-weight: 400;
+      font-size: 1rem;
+      margin-left: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+
+      &:hover {
+        background: $accent-color;
+        color: #fff;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
       }
     }
   }
 
-  // Estilos para quando a barra estiver recolhida (exemplo)
-  // Você pode adicionar uma classe .collapsed ao .sidebar
   &.collapsed {
     width: $sidebar-width-collapsed;
 
-    .link-text, .user-name {
+    .link-text,
+    .user-name {
       opacity: 0;
       width: 0;
       overflow: hidden;
@@ -141,26 +152,6 @@ $transition-speed: 0.3s;
     .sidebar-footer {
       flex-direction: column;
       gap: 15px;
-    }
-  }
-
-  .sidebar-footer .btn.btn-secondary {
-    background: #fff;
-    color: $primary-bg-color;
-    border: none;
-    border-radius: 4px;
-    padding: 5px 9px;
-    font-weight: 400;
-    font-size: 1rem;
-    margin-left: 10px;
-    box-shadow: 0 2px 8px #0001;
-    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-    cursor: pointer;
-
-    &:hover {
-      background: $accent-color;
-      color: #fff;
-      box-shadow: 0 4px 16px #0002;
     }
   }
 }

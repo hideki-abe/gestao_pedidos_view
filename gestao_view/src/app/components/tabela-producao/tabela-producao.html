@@ -40,7 +40,7 @@
 
         <!-- Linha 2: Tabela de Itens (agora está DENTRO do loop e no escopo correto) -->
         <tr *ngIf="pedidoSelecionadoId === pedido.id" class="itens-row">
-          <td colspan="8">
+          <td colspan="6">
             <div class="details-wrapper">
               <app-tabela-itens 
                 [pedido]="pedido" 
@@ -60,12 +60,12 @@
 
       <!-- Mensagem se não houver pedidos -->
       <tr *ngIf="pedidos.length === 0 && !erroAoCarregar">
-        <td colspan="7" style="text-align: center;">Nenhum pedido encontrado.</td>
+        <td colspan="6" style="text-align: center;">Nenhum pedido encontrado.</td>
       </tr>
 
       <!-- Mensagem de erro -->
       <tr *ngIf="erroAoCarregar">
-        <td colspan="7" style="text-align: center; color: red;">Ocorreu um erro ao carregar os pedidos.</td>
+        <td colspan="6" style="text-align: center; color: red;">Ocorreu um erro ao carregar os pedidos.</td>
       </tr>
     </tbody>
   </table>

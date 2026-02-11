@@ -1,57 +1,64 @@
-// --- Variáveis de Cores ---
+// --- Variáveis ---
 @use 'sass:color';
+
+$primary-color: #3A7CA5;
 $table-bg: #fff;
+$table-bg-alt: #f8f9fa;
 $header-bg: #f8f9fa;
 $border-color: #dee2e6;
 $text-color: #000000;
 $mobile-breakpoint: 768px;
-$primary-color: #3A7CA5;
-
+$tablet-breakpoint: 1024px;
 
 $colors: (
-  // --- Status ---
-  "status-producao": #E3F2FD,      // Azul Céu
-  "status-finalizado": #E6F4EA,    // Verde Menta
-  "status-aguardando": #F1F3F4,    // Amarelo Pastel
-  "status-encaminhar": #FFF8E1,    // Ciano Suave
-  "status-cancelado": #FCE8E6,     // Rosa Claro
-
-  // --- Fases ---
-  "fase-inicial": #e9ecef,         // Cinza Claro
-  "fase-producao": #b2dfdb,         // Ciano Suave
-  "fase-finalizacao": #c1e1c1,     // Verde Menta
-
-  // --- Prioridades ---
-  "prioridade-baixa": #F1F3F4,      // Cinza Claro
-  "prioridade-normal": #E3F2FD,     // Azul Céu
-  "prioridade-alta": #FFF8E1,       // Pêssego
-  "prioridade-urgente": #FCE8E6      // Rosa Claro
+  // Status
+  "status-producao": #E3F2FD,
+  "status-finalizado": #E6F4EA,
+  "status-aguardando": #F1F3F4,
+  "status-encaminhar": #FFF8E1,
+  "status-cancelado": #FCE8E6,
+  
+  // Fases
+  "fase-inicial": #e9ecef,
+  "fase-producao": #b2dfdb,
+  "fase-finalizacao": #c1e1c1,
+  
+  // Prioridades
+  "prioridade-baixa": #F1F3F4,
+  "prioridade-normal": #E3F2FD,
+  "prioridade-alta": #FFF8E1,
+  "prioridade-urgente": #FCE8E6
 );
 
-// --- Estilos Base da Tabela ---
+// --- Container Principal ---
 .table-container {
   width: 100%;
-  overflow-x: auto; // Garante que a tabela não quebre o layout em telas muito pequenas
+  overflow-x: auto;
+}
+
+.pedido-filter {
+  margin-bottom: 0;
 }
 
 .producao-page {
   border-radius: 10px;
 }
 
+// --- Tabela ---
 .production-table {
   width: 100%;
   border-collapse: collapse;
   background-color: $table-bg;
 
-  th, td {
+  th,
+  td {
     padding: 6px 15px;
-    //border: 1px solid $border-color;
     text-align: left;
   }
 
   thead tr {
     background-color: $header-bg;
-    
+
     th {
       font-weight: 600;
       color: $text-color;
@@ -59,18 +66,59 @@ $colors: (
   }
 
   tbody tr {
-    border-bottom: 1px solid $border-color; 
+    border-bottom: 1px solid $border-color;
+    background-color: $table-bg;
 
     &:nth-of-type(even) {
-      background-color: #fff;
+      background-color: $table-bg-alt;
     }
+
     &:hover {
-      background-color: #f1f1f1;
+      background-color: #e9ecef;
     }
+
+  }
+
+  th:last-child,
+  td:last-child {
+    text-align: right;
   }
 }
 
-// --- Estilos para as Tags (Status, Fase, Prioridade) ---
+// --- Linhas Expandidas ---
+.itens-row > td {
+  padding: 0;
+  background-color: $header-bg;
+  text-align: left !important; // Força alinhamento à esquerda na linha expandida
+}
+
+.details-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0 20px 20px 20px;
+  width: 100%; // Garante que não exceda o tamanho
+  box-sizing: border-box; // Inclui padding no cálculo da largura
+}
+
+// --- Animações ---
+@keyframes slide-fade {
+  from {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.leaving {
+  opacity: 0;
+  transform: translateY(0);
+}
+
+// --- Tags (Status, Fase, Prioridade) ---
 .tag {
   display: block;
   padding: 4px 8px;
@@ -80,38 +128,12 @@ $colors: (
   font-weight: 600;
   white-space: nowrap;
   text-align: center;
-
-}
-
-.itens-row > td {
-  padding: 0; // Remove o padding padrão da célula
-  background-color: #f8f9fa; // Cor de fundo para a área expandida
-}
-
-// 2. Estilos para o container que empilha os componentes
-.details-wrapper {
-  display: flex;
-  align-items: center;
-  flex-direction: column; // Empilha os itens verticalmente
-  gap: 0; // Cria um espaçamento de 20px entre cada componente
-  padding: 20px; // Adiciona um espaçamento interno em toda a área
-  width: 97%;
-}
-
-.details-wrapper > * {
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  box-sizing: border-box;
-
 }
 
 .tag[class*="prioridade-"] {
-  //padding: 4px 35px ; // Aumenta o padding horizontal para deixar a box mais larga
   text-align: center;
 }
 
-// Gera as classes de cor dinamicamente a partir do mapa $colors
 @each $name, $color in $colors {
   .#{$name} {
     background-color: $color;
@@ -119,6 +141,7 @@ $colors: (
   }
 }
 
+// --- Botão de Ação ---
 .action-button {
   background-color: #95a1ac;
   color: white;
@@ -136,7 +159,7 @@ $colors: (
 
 .form-button {
   justify-self: center;
-  max-width: 97%;
+  max-width: 100%;
   padding: 0.75rem;
   font-size: 1rem;
   font-weight: 600;
@@ -148,23 +171,56 @@ $colors: (
   transition: background-color 0.2s ease-in-out;
 
   &:hover:not(:disabled) {
-    background-color: #2a5a77; // Tom mais escuro da cor primária
+    background-color: #2a5a77;
   }
 
   &:disabled {
-    background-color: #E0E0E0; 
+    background-color: #E0E0E0;
     color: #A0A0A0;
     cursor: not-allowed;
   }
 }
 
-// --- Estilos Responsivos ---
+// --- Media Queries ---
+@media screen and (max-width: $tablet-breakpoint) {
+  .table-container {
+    max-width: 100%;
+    padding: 0 10px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .production-table {
+    max-width: 100%;
+    font-size: 0.9rem;
+
+    th,
+    td {
+      padding: 8px 10px;
+    }
+
+    .tag {
+      font-size: 0.75em;
+      padding: 3px 6px;
+    }
+
+    .action-button {
+      font-size: 16px;
+      padding: 6px 10px;
+    }
+  }
+
+  .details-wrapper {
+    padding: 0 10px 15px 10px;
+  }
+}
+
 @media screen and (max-width: $mobile-breakpoint) {
   .production-table {
     border: 0;
 
     thead {
-      display: none; // Esconde o cabeçalho da tabela
+      display: none;
     }
 
     tr {
@@ -172,18 +228,17 @@ $colors: (
       margin-bottom: 15px;
       border: 1px solid $border-color;
       border-radius: 5px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
     td {
       display: block;
-      text-align: right; // Alinha o valor à direita
+      text-align: right;
       border: none;
       border-bottom: 1px solid #eee;
       position: relative;
-      padding-left: 50%; // Deixa espaço para o label
+      padding-left: 50%;
 
-      // Adiciona o label (do atributo data-label) antes do conteúdo da célula
       &::before {
         content: attr(data-label);
         position: absolute;
