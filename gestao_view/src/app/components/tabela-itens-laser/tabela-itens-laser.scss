@@ -266,6 +266,7 @@ $mobile-breakpoint: 768px;
   white-space: normal;
   word-break: break-word;
   display: block;
+  min-width: ;
   
   &:hover {
     text-decoration: underline;
@@ -294,8 +295,8 @@ $mobile-breakpoint: 768px;
 
     th:last-child,
     td:last-child {
-      width: 80px;
-      min-width: 80px;
+      width: 120px;
+      min-width: 120px;
     }
 
     .fluxo-select {
